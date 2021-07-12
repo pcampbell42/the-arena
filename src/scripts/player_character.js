@@ -1,10 +1,14 @@
-const MovingObject = require("./moving_object.js");
+// const MovingObject = require("./moving_object.js");
+const Character = require("./character.js");
+const Projectile = require("./projectile.js");
 
 class PlayerCharacter extends MovingObject {
     constructor(params) {
         super(params);
         this.health = 100;
         this.status = "idle";
+        this.attacking = false;
+        this.direction = "right";
         this.step = 0;
     }
 
@@ -20,14 +24,21 @@ class PlayerCharacter extends MovingObject {
             this.direction = "right"
         }
 
-        const velocityScale = dt / (1000 / 60),
-            offsetX = this.velocity[0] * velocityScale,
-            offsetY = this.velocity[1] * velocityScale;
+        // const velocityScale = dt / (1000 / 60),
+        //     offsetX = this.velocity[0] * velocityScale,
+        //     offsetY = this.velocity[1] * velocityScale;
 
-        this.position = [this.position[0] + offsetX, this.position[1] + offsetY];
+        // this.position = [this.position[0] + offsetX, this.position[1] + offsetY];
 
-        this.position[0] += this.velocity[0];
-        this.position[1] += this.velocity[1];
+        let freePosition = true;
+        for (let i = 0; i < this.game.enemies.length; i++) {
+            if (this.isCollidedWith(this.game.enemies[i])) freePosition = false;
+        }
+
+        if (freePosition) {
+            this.position[0] += this.velocity[0];
+            this.position[1] += this.velocity[1];
+        }
 
         if (this.velocity[0] !== 0 || this.velocity[1] !== 0) this.status = "moving";
         if (this.velocity[0] === 0 && this.velocity[1] === 0) this.status = "idle";
@@ -78,30 +89,26 @@ class PlayerCharacter extends MovingObject {
         return selection;
     }
 
-    // selectFrameIdle() {
-    //     if (this.step > 3) this.step = 0;
-
-    //     let selection;
-
-    //     switch (this.step) {
-    //         case 0:
-
-    //             break;
-    //         case 1:
-    //             break;
-    //         case 2:
-    //             break;
-    //         case 3:
-
-    //     }
-    //     this.step += 1;
-    //     if (this.step === 4) this.step = 0;
-
-    //     return selection;
-    // }
-
     collidedWith(otherObject) {
+        // if (!otherObject instanceof Projectile) {
+        //     this.runningIntoEnemy = true;
+        // }
+    }
 
+    
+
+    shoot(target) {
+        // FIX THIS SHIT SO ALL MOVE SAME SPEED
+        let a = 800 / ((target[0] - this.position[0]) ** 2 + (target[1] - this.position[1]) ** 2)
+        this.attacking = true;
+        this.step = 0;
+
+        const p = new Projectile({
+            position: [this.position[0], this.position[1]],
+            velocity: [a * (target[0] - this.position[0]), a * (target[1] - this.position[1])],
+            game: this.game
+        });
+        this.game.projectiles.push(p);
     }
 }
 

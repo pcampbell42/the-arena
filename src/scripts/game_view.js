@@ -31,7 +31,7 @@ class GameView {
         }
 
         document.addEventListener("click", (e) => {
-            
+            that.game.player.shoot(that.mousePos);
         });
     }
 
@@ -43,7 +43,13 @@ class GameView {
 
     drawCrosshair() {
         this.ctx.beginPath();
-        this.ctx.arc(this.mousePos[0], this.mousePos[1], 4, 0, 2 * Math.PI, true);
+
+        this.ctx.moveTo(this.mousePos[0] - 10, this.mousePos[1]);
+        this.ctx.lineTo(this.mousePos[0] + 10, this.mousePos[1]);
+
+        this.ctx.moveTo(this.mousePos[0], this.mousePos[1] - 10);
+        this.ctx.lineTo(this.mousePos[0], this.mousePos[1] + 10);
+
         this.ctx.stroke();
     }
 }

@@ -4,10 +4,11 @@ class Projectile extends MovingObject {
     constructor(params) {
         super(params);
         this.damage = 20;
+        this.direction;
     }
 
     collidedWith(otherObject) {
-
+        
     }
 }
 
