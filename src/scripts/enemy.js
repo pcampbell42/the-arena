@@ -1,64 +1,96 @@
-// const MovingObject = require("./moving_object.js");
 const Character = require("./character.js");
 
 class Enemy extends Character {
     constructor(params) {
         super(params);
+        this.images = "./dist/assets/shooter";
         this.health = 20;
-        this.status = "idle"
-        this.attacking = false;
-        this.direction = "right"
-        this.step = 0;
+        this.chillCounter = 100; // Adding randomness to AI behavior
+        // this.sprintCounter = 50; // Adding more randomness to AI behavior
+        this.wanderLeft = 0;
+        this.wanderRight = 0;
+        this.firingRate = 300; // Way to set difficulty, lower the harder
     }
 
-    move(dt) {
-        
+    action(dt) {
+        if (this.attacking) return;
+
+        // Calculating distance between player and enemy        
+        let distanceToPlayer = Math.sqrt((this.game.player.position[0] - this.position[0]) ** 2 +
+            (this.game.player.position[1] - this.position[1]) ** 2);
+
+        let randNum = Math.floor(Math.random() * this.firingRate);
+        if (randNum === 1 && distanceToPlayer < 300) { // 1 in firingRate chance to fire at player
+            this.shoot(this.game.player.position);
+        } else { // Else moves towards player - enemies can't move and shoot at same time - 1 or the other
+            this.move(dt, distanceToPlayer);
+        }
+    }
+
+    move(dt, distanceToPlayer) {
+        let randNum = Math.floor(Math.random() * 200); // For later use
+
+        // --------- If enemy is close to player, enemy will chase player down ---------
+        if (distanceToPlayer < 300) {
+            // --------- Getting the direction the player is in and setting velocity ---------
+            let xDir = Math.sign(this.game.player.position[0] - this.position[0]);
+            let yDir = Math.sign(this.game.player.position[1] - this.position[1]);
+            this.velocity = [xDir, yDir]; // The AI is very slow
+            (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
+        } else {
+            // --------- AI decides to chill for a bit ---------
+            if (randNum <= 10) this.status = "idle";
+
+            // --------- AI is chilling, standing around ---------
+            if (this.status === "idle") {
+                this.chillCounter -= 1;
+                if (this.chillCounter === 0) {
+                    this.status = "moving";
+                    this.chillCounter = 300;
+                }
+                return; // Break out
+            }
+
+            // --------- AI moves randomly ---------
+            let possibleDirs = [1, -1];
+
+            if (this.wanderLeft > 0) {
+                this.velocity = [-1 * Math.random(), possibleDirs[Math.floor(Math.random() * 2)] * Math.random()];
+                this.wanderLeft--;
+            } else if (this.wanderRight > 0) {
+                this.velocity = [Math.random(), possibleDirs[Math.floor(Math.random() * 2)] * Math.random()];
+                this.wanderRight--;
+            } else {
+                this.velocity = [possibleDirs[Math.floor(Math.random() * 2)] * Math.random(), 
+                                possibleDirs[Math.floor(Math.random() * 2)] * Math.random()];
+                (Math.sign(this.velocity[0]) === -1) ? this.wanderLeft = 50 : this.wanderRight = 50;
+                (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
+            }
+        }
+
+        super.move(dt); // Bulk of move work happens here
     }
 
     draw(ctx) {
-        let stepXCoord = this.selectFrame();
-        if (this.status === "moving") {
-            if (this.direction === "right") {
-                this.drawing.src = "./dist/assets/shooter/shooter_walk_r.png";
-            } else {
-                this.drawing.src = "./dist/assets/shooter/shooter_walk_l.png";
-            }
-        } else if (this.status === "idle") {
-            if (this.direction === "right") {
-                this.drawing.src = "./dist/assets/shooter/shooter_idle_r.png";
-            } else {
-                this.drawing.src = "./dist/assets/shooter/shooter_idle_l.png";
-            }
+        super.draw(ctx); // Handles bulk of drawing
+
+        // --------- If not full health, display health bar ---------
+        if (this.health !== 20) {
+            ctx.fillStyle = "white";
+            ctx.fillRect(this.position[0] + 15, this.position[1], 30, 10);
+
+            ctx.fillStyle = "#32CD32";
+            ctx.fillRect(this.position[0] + 15, this.position[1], 30 * (this.health / 20), 10)
         }
-        ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
     }
 
-    selectFrame() {
-        if (this.status === "idle" && this.step > 44) this.step = 0;
-        if (this.status === "moving" && this.step > 90) this.step = 0;
-
-        let selection;
-        if (this.step < 18) {
-            selection = 48;
-        } else if (this.step < 36) {
-            selection = 96;
-        } else if (this.step < 54) {
-            selection = 144;
-        } else if (this.step < 72) {
-            selection = 192;
-        } else if (this.step < 90) {
-            selection = 240;
-        } else {
-            selection = 288;
-        }
-        if (this.direction === "left") selection += 10;
-        this.step += 1;
-
-        return selection;
+    takeDamage(damage) {
+        this.shoot(this.game.player.position); // Enemy shoots in players direction if hit
+        super.takeDamage(damage);
     }
 
-    collidedWith(otherObject) {
-        
+    dead() {
+        this.remove();
     }
 }
 

@@ -1,10 +1,11 @@
 const Enemy = require("./enemy.js");
-const PlayerCharacter = require("./player_character.js");
+const Player = require("./player.js");
+const Projectile = require("./projectile.js");
 
 class Game {
     constructor() {
-        this.player = new PlayerCharacter({
-            position: [0, 300],
+        this.player = new Player({
+            position: [400, 500],
             velocity: [0, 0],
             game: this
         });
@@ -34,24 +35,18 @@ class Game {
 
     step(dt) {
         this.player.move(dt);
-        this.enemies.forEach(ele => ele.move(dt));
+        this.enemies.forEach(ele => ele.action(dt));
         this.projectiles.forEach(ele => ele.move(dt));
-        this.checkCollisions();
+        // this.checkProjectileCollisions();
     }
 
-    allObjects() {
-        return [this.player].concat(this.enemies).concat(this.projectiles);
-    }
-
-    checkCollisions() {
-        const allMOs = this.allObjects();
-        for (let i = 0; i < allMOs.length; i++) {
-            for (let j = 0; j < allMOs.length; j++) {
-                if (allMOs[i].isCollidedWith(allMOs[j])) {
-                    allMOs[i].collidedWith(allMOs[j]);
-                }
-            }
-        }
+    checkProjectileCollisions() {
+        this.projectiles.forEach( proj => {
+            this.enemies.forEach( enemy => {
+                if (proj.ticksSinceFired >= 20 && proj.isCollidedWith(enemy)) proj.collidedWith(enemy);
+            });
+            if (proj.ticksSinceFired >= 20 && proj.isCollidedWith(this.player)) proj.collidedWith(this.player);
+        });
     }
 
     remove(obj) {
