@@ -9,6 +9,7 @@ class Character extends MovingObject {
         this.attacking = false;
         this.direction = "right";
         this.step = 0;
+        this.target = [];
     }
 
     move(dt) {
@@ -29,7 +30,7 @@ class Character extends MovingObject {
 
     draw(ctx) {
         // --------- Figuring out which part of animation to do next ---------
-        let stepXCoord = this._selectFrame();
+        let stepXCoord = this._selectFrame(18);
 
         // --------- Figuring out which general animation to do ---------
         if (this.status === "moving") {
@@ -49,26 +50,40 @@ class Character extends MovingObject {
         ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
     }
 
-    _selectFrame() {
+    _selectFrame(stepFactor) {
         // --------- If past last step of animation, reset to first step ---------
-        if (this.status === "idle" && this.step > 44) this.step = 0;
-        if (this.status === "moving" && this.step > 90) this.step = 0;
+        if (this.status === "idle" && this.step > 71) this.step = 0;
+        if (this.status === "moving" && this.step > 107) this.step = 0;
 
         // --------- Using step to find correct part of animation ---------
         let selection;
-        if (this.step < 18) { // Values are large to slow animation down
+        if (this.step < 1 * stepFactor) { // Values are large to slow animation down
+            selection = 0;
+        } else if (this.step < 2 * stepFactor) {
             selection = 48;
-        } else if (this.step < 36) {
+        } else if (this.step < 3 * stepFactor) {
             selection = 96;
-        } else if (this.step < 54) {
+        } else if (this.step < 4 * stepFactor) {
             selection = 144;
-        } else if (this.step < 72) {
-            selection = 192;
-        } else if (this.step < 90) {
-            selection = 240;
+        } else if (this.step < 5 * stepFactor) {
+            selection = 196;
         } else {
-            selection = 288;
+            selection = 240;
         }
+        // let selection;
+        // if (this.step < 18) { // Values are large to slow animation down
+        //     selection = 0;
+        // } else if (this.step < 36) {
+        //     selection = 48;
+        // } else if (this.step < 54) {
+        //     selection = 96;
+        // } else if (this.step < 72) {
+        //     selection = 144;
+        // } else if (this.step < 90) {
+        //     selection = 196;
+        // } else {
+        //     selection = 240;
+        // }
         
         // --------- Correcting x values for left facing animations, incrementing step ---------
         if (this.direction === "left") selection += 10;
@@ -77,17 +92,36 @@ class Character extends MovingObject {
         return selection;
     }
 
-    shoot(target) {
-        // FIX THIS TRASH SO ALL MOVE SAME SPEED AND FIRE FROM MORE LOGICAL SPOT
-        // let angle = Math.atan((target[1] - this.position[1] + 30), (target[0] - this.position[0] + 25));
-        // this.attacking = true;
+    startAttack(target) {
+        this.attacking = true;
         this.step = 0;
-        // this.status = "idle";
+        this.target = target;
+    }
 
-        let a = 800 / ((target[0] - (this.position[0] + 30)) ** 2 + (target[1] - (this.position[1] + 25)) ** 2)
+    launchProjectile() {
+        let z = Math.sqrt((this.target[0] - (this.position[0] + 30)) ** 2 + (this.target[1] - (this.position[1] + 25)) ** 2);
+
         const p = new Projectile({
             position: [this.position[0] + 30, this.position[1] + 25],
-            velocity: [a * (target[0] - (this.position[0] + 30)), a * (target[1] - (this.position[1] + 25))],
+            velocity: [(this.target[0] - (this.position[0] + 30)) / z * 10, (this.target[1] - (this.position[1] + 25)) / z * 10],
+            damage: 10,
+            shooter: this,
+            game: this.game
+        });
+        this.game.projectiles.push(p);
+    }
+
+    shoot(target) {
+        // let angle = Math.atan((target[1] - this.position[1] + 30), (target[0] - this.position[0] + 25));
+        // this.attacking = true;
+        // this.step = 0;
+        // this.status = "idle";
+        let z = Math.sqrt((target[0] - (this.position[0] + 30)) ** 2 + (target[1] - (this.position[1] + 25)) ** 2);
+
+        const p = new Projectile({
+            position: [this.position[0] + 30, this.position[1] + 25],
+            velocity: [(target[0] - (this.position[0] + 30)) / z * 10, (target[1] - (this.position[1] + 25)) / z * 10],
+            shooter: this,
             game: this.game
         });
         this.game.projectiles.push(p);
@@ -103,7 +137,7 @@ class Character extends MovingObject {
         // --------- Checking if moving into a wall ---------
         const futureXCoord = this.position[0] + this.velocity[0];
         const futureYCoord = this.position[1] + this.velocity[1];
-        if (futureXCoord < 0 || futureYCoord < 0 || futureXCoord > 850 || futureYCoord > 530) return false;
+        if (futureXCoord < 0 || futureYCoord < 0 || futureXCoord > 830 || futureYCoord > 510) return false;
 
         // --------- Checking if moving into player ---------
         if (this !== this.game.player && this.willCollideWith(this.game.player)) return false;

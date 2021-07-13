@@ -4,7 +4,7 @@ class Enemy extends Character {
     constructor(params) {
         super(params);
         this.images = "./dist/assets/shooter";
-        this.health = 20;
+        this.health = 30;
         this.chillCounter = 100; // Adding randomness to AI behavior
         // this.sprintCounter = 50; // Adding more randomness to AI behavior
         this.wanderLeft = 0;
@@ -20,8 +20,11 @@ class Enemy extends Character {
             (this.game.player.position[1] - this.position[1]) ** 2);
 
         let randNum = Math.floor(Math.random() * this.firingRate);
-        if (randNum === 1 && distanceToPlayer < 300) { // 1 in firingRate chance to fire at player
-            this.shoot(this.game.player.position);
+        if (randNum <= 5 && distanceToPlayer < 300) { // 1 in firingRate chance to fire at player
+            // this.shoot(this.game.player.position);
+            this.startAttack(this.game.player.position);
+        } else if (this.attacking) {
+            return; // No action, already attacking
         } else { // Else moves towards player - enemies can't move and shoot at same time - 1 or the other
             this.move(dt, distanceToPlayer);
         }
@@ -72,20 +75,35 @@ class Enemy extends Character {
     }
 
     draw(ctx) {
-        super.draw(ctx); // Handles bulk of drawing
-
         // --------- If not full health, display health bar ---------
-        if (this.health !== 20) {
+        if (this.health !== 30) {
             ctx.fillStyle = "white";
             ctx.fillRect(this.position[0] + 15, this.position[1], 30, 10);
 
             ctx.fillStyle = "#32CD32";
-            ctx.fillRect(this.position[0] + 15, this.position[1], 30 * (this.health / 20), 10)
+            ctx.fillRect(this.position[0] + 15, this.position[1], 30 * (this.health / 30), 10)
+        }
+
+        if (this.attacking) {
+            let stepXCoord = this._selectFrame(18);
+            if (this.direction === "right") {
+                this.drawing.src = `${this.images}/attack_r.png`;
+            } else {
+                this.drawing.src = `${this.images}/attack_l.png`;
+            }
+            if (this.step % 18 === 0) this.launchProjectile();
+            if (stepXCoord >= 144) {
+                this.attacking = false;
+            }
+            ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
+
+        } else {
+            super.draw(ctx); // Handles bulk of drawing
         }
     }
 
     takeDamage(damage) {
-        this.shoot(this.game.player.position); // Enemy shoots in players direction if hit
+        if (!this.attacking) this.startAttack(this.game.player.position); // Enemy shoots in players direction if hit
         super.takeDamage(damage);
     }
 

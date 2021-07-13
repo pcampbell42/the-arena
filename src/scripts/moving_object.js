@@ -5,13 +5,14 @@ class MovingObject {
         this.velocity = params["velocity"];
         this.game = params["game"];
         this.drawing = new Image();
-        // this.size
     }
 
     draw(ctx) {
         ctx.beginPath();
         ctx.arc(this.position[0], this.position[1], 4, 0, 2 * Math.PI, true);
         ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fill();
     }
 
     move(dt) {
@@ -25,12 +26,15 @@ class MovingObject {
         this.position[1] += this.velocity[1];
     }
 
-    isCollidedWith(otherMO) {
-        return Math.abs(this.position[0] - otherMO.position[0]) < 25 && Math.abs(this.position[1] - otherMO.position[1]) < 25
+    isCollidedWith(otherObj) {
+        let xDiff = this.position[0] - otherObj.position[0];
+        let yDiff = this.position[1] - otherObj.position[1]
+        return (xDiff > 0) && (xDiff < 45) && (yDiff > 0) && (yDiff < 65);
     }
 
-    willCollideWith(otherMO) {
-        return Math.abs(this.position[0] + this.velocity[0] - otherMO.position[0]) < 25 && Math.abs(this.position[1] + this.velocity[1] - otherMO.position[1]) < 25
+    willCollideWith(otherObj) {
+        return Math.abs(this.position[0] + this.velocity[0] - otherObj.position[0]) < 25 && 
+            Math.abs(this.position[1] + this.velocity[1] - otherObj.position[1]) < 35
     }
 
     remove() {

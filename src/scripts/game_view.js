@@ -31,7 +31,8 @@ class GameView {
         }
 
         document.addEventListener("click", (e) => {
-            that.game.player.shoot(that.mousePos);
+            // that.game.player.shoot(that.mousePos);
+            that.game.player.startAttack(that.mousePos);
         });
     }
 
@@ -39,6 +40,7 @@ class GameView {
         this.ctx.clearRect(0, 0, 900, 600);
         this.game.draw(this.ctx);
         this.drawCrosshair();
+        this.drawHealth();
     }
 
     drawCrosshair() {
@@ -51,6 +53,17 @@ class GameView {
         this.ctx.lineTo(this.mousePos[0], this.mousePos[1] + 10);
 
         this.ctx.stroke();
+    }
+
+    drawHealth() {
+        this.ctx.fillStyle = "white";
+        this.ctx.fillRect(20, 540, 200, 40);
+
+        this.ctx.fillStyle = "#32CD32";
+        this.ctx.fillRect(20, 540, 200 * (this.game.player.health / 100), 40)
+
+        this.ctx.fillStyle = "black";
+        this.ctx.fillText("Health:", 30, 535);
     }
 }
 
