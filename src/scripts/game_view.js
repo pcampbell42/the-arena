@@ -10,6 +10,7 @@ class GameView {
     start() {
         this.lastTime = 0;
         this.mouseHandler();
+        this.keyBindHandler();
         requestAnimationFrame(this.animate.bind(this));
     }
 
@@ -31,19 +32,32 @@ class GameView {
         }
 
         document.addEventListener("click", (e) => {
-            // that.game.player.shoot(that.mousePos);
-            that.game.player.startAttack(that.mousePos);
+            if (!that.game.player.busy) that.game.player.startAttack(that.mousePos);
+        });
+    }
+
+    keyBindHandler() {
+        let that = this;
+
+        key("f", () => {
+            // if (!that.game.player.busy) that.game.player.kick();
+        });
+
+        key("space", () => {
+            if (!that.game.player.busy) that.game.player.roll();
         });
     }
 
     draw() {
-        this.ctx.clearRect(0, 0, 900, 600);
+        this.ctx.clearRect(0, 0, this.game.canvasSizeX, this.game.canvasSizeY);
         this.game.draw(this.ctx);
         this.drawCrosshair();
-        this.drawHealth();
+        this.drawHealthAndEnergy();
     }
 
     drawCrosshair() {
+        this.ctx.strokeStyle = "green";
+        this.ctx.lineWidth = 4;
         this.ctx.beginPath();
 
         this.ctx.moveTo(this.mousePos[0] - 10, this.mousePos[1]);
@@ -55,15 +69,22 @@ class GameView {
         this.ctx.stroke();
     }
 
-    drawHealth() {
+    drawHealthAndEnergy() {
         this.ctx.fillStyle = "white";
-        this.ctx.fillRect(20, 540, 200, 40);
+        this.ctx.fillRect(10, this.game.canvasSizeY - 40, 150, 30);
 
         this.ctx.fillStyle = "#32CD32";
-        this.ctx.fillRect(20, 540, 200 * (this.game.player.health / 100), 40)
+        this.ctx.fillRect(10, this.game.canvasSizeY - 40, 150 * (this.game.player.health / 100), 30)
 
-        this.ctx.fillStyle = "black";
-        this.ctx.fillText("Health:", 30, 535);
+        this.ctx.fillStyle = "white";
+        this.ctx.fillRect(170, this.game.canvasSizeY - 40, 150, 30);
+
+        this.ctx.fillStyle = "blue";
+        this.ctx.fillRect(170, this.game.canvasSizeY - 40, 150 * (this.game.player.energy / 100), 30)
+
+        // this.ctx.fillStyle = "black";
+        // this.ctx.font = '20px sans';
+        // this.ctx.fillText("Health:", 30, this.game.canvasSizeY - 65);
     }
 }
 

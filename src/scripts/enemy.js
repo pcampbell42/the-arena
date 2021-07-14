@@ -13,7 +13,7 @@ class Enemy extends Character {
     }
 
     action(dt) {
-        if (this.attacking) return;
+        if (this.busy) return;
 
         // Calculating distance between player and enemy        
         let distanceToPlayer = Math.sqrt((this.game.player.position[0] - this.position[0]) ** 2 +
@@ -23,8 +23,6 @@ class Enemy extends Character {
         if (randNum <= 5 && distanceToPlayer < 300) { // 1 in firingRate chance to fire at player
             // this.shoot(this.game.player.position);
             this.startAttack(this.game.player.position);
-        } else if (this.attacking) {
-            return; // No action, already attacking
         } else { // Else moves towards player - enemies can't move and shoot at same time - 1 or the other
             this.move(dt, distanceToPlayer);
         }
@@ -71,6 +69,10 @@ class Enemy extends Character {
             }
         }
 
+        if (this.game.slowed) {
+            this.velocity[0] /= 4;
+            this.velocity[1] /= 4;
+        }
         super.move(dt); // Bulk of move work happens here
     }
 
@@ -85,15 +87,17 @@ class Enemy extends Character {
         }
 
         if (this.attacking) {
-            let stepXCoord = this._selectFrame(18);
+            let stepXCoord = this._selectFrame(18 / this.animationPace);
             if (this.direction === "right") {
                 this.drawing.src = `${this.images}/attack_r.png`;
             } else {
                 this.drawing.src = `${this.images}/attack_l.png`;
             }
-            if (this.step % 18 === 0) this.launchProjectile();
+            if (!this.game.slowed && this.step % 9 === 0) this.launchProjectile();
+            if (this.game.slowed && this.step % 36 === 0) this.launchProjectile();
             if (stepXCoord >= 144) {
                 this.attacking = false;
+                this.busy = false;
             }
             ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
 
@@ -103,7 +107,7 @@ class Enemy extends Character {
     }
 
     takeDamage(damage) {
-        if (!this.attacking) this.startAttack(this.game.player.position); // Enemy shoots in players direction if hit
+        if (!this.busy) this.startAttack(this.game.player.position); // Enemy shoots in players direction if hit
         super.takeDamage(damage);
     }
 

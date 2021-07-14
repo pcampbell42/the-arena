@@ -5,20 +5,29 @@ const Room = require("./room.js");
 
 class Game {
     constructor() {
+        this.canvasSizeX = 720;
+        this.canvasSizeY = 440;
+        this.room = new Room({
+            canvasSizeX: this.canvasSizeX,
+            canvasSizeY: this.canvasSizeY
+        });
+
         this.player = new Player({
-            position: [400, 500],
+            position: [this.canvasSizeX / 2 - 50, this.canvasSizeY - 100],
             velocity: [0, 0],
             game: this
         });
-        this.room = new Room();
         this.projectiles = [];
         this.enemies = [];
+
+        this.slowed = false;
+
         this.spawnEnemies(6);
     }
 
     spawnEnemies(num) {
         for (let i = 0; i < num; i++) {
-            let randomPos = [800 * Math.random(), 500 * Math.random()];
+            let randomPos = [(this.canvasSizeX - 100) * Math.random(), (this.canvasSizeY - 100) * Math.random()];
             let e = new Enemy({
                 position: randomPos,
                 velocity: [0, 0],
@@ -29,15 +38,22 @@ class Game {
     }
 
     draw(ctx) {
-        ctx.clearRect(0, 0, 900, 600);
-        // this.room.draw(ctx);
+        ctx.clearRect(0, 0, this.canvasSizeX, this.canvasSizeY);
+        this.room.draw(ctx);
         this.player.draw(ctx);
         this.enemies.forEach(ele => ele.draw(ctx));
         this.projectiles.forEach(ele => ele.draw(ctx));
     }
 
     step(dt) {
-        this.player.move(dt);
+        if (key.shift && !this.slowed && this.player.energy > 0) {
+            this._slowSpeed();
+        } else if ( (!key.shift && this.slowed) || (this.player.energy <= 0 && this.slowed) ) {
+            this._restoreSpeed();
+        }
+        if (this.slowed && this.player.energy > 0) this.player.energy -= 0.2;
+
+        this.player.action(dt);
         this.enemies.forEach(ele => ele.action(dt));
         this.projectiles.forEach(ele => ele.move(dt));
         this.checkProjectileCollisions();
@@ -59,6 +75,34 @@ class Game {
         } else if (obj instanceof Enemy) {
             this.enemies.splice(this.enemies.indexOf(obj), 1);
         }
+    }
+
+    _slowSpeed() {
+        this.slowed = true;
+        this.player.animationPace = 0.5;
+        this.enemies.forEach(ele => {
+            ele.animationPace = 0.25;
+            ele.velocity[0] /= 4;
+            ele.velocity[1] /= 4;
+        });
+        this.projectiles.forEach(ele => {
+            ele.velocity[0] /= 4;
+            ele.velocity[1] /= 4;
+        });
+    }
+
+    _restoreSpeed() {
+        this.slowed = false;
+        this.player.animationPace = 2;
+        this.enemies.forEach(ele => {
+            ele.animationPace = 1;
+            ele.velocity[0] *= 4;
+            ele.velocity[1] *= 4;
+        });
+        this.projectiles.forEach(ele => {
+            ele.velocity[0] *= 4;
+            ele.velocity[1] *= 4;
+        });
     }
 }
 

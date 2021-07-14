@@ -7,6 +7,9 @@ class Character extends MovingObject {
         super(params);
         this.status = "idle"
         this.attacking = false;
+        this.rolling = false;
+        this.busy = false;
+        // this.hurt = false;
         this.direction = "right";
         this.step = 0;
         this.target = [];
@@ -18,19 +21,19 @@ class Character extends MovingObject {
         if (validMove) super.move(dt);
 
         // --------- Sets status (used in animation) of character based on velocity ---------
-        // if (!this.attacking) {
-        // }
         if (this.velocity[0] === 0 && this.velocity[1] === 0) this.status = "idle";
         if (this.velocity[0] !== 0 || this.velocity[1] !== 0) this.status = "moving";
 
         // --------- Resets velocity immediately (momentum isn't a thing) ---------
-        this.velocity[0] = 0;
-        this.velocity[1] = 0;
+        // if (!this.rolling) {
+        //     this.velocity[0] = 0;
+        //     this.velocity[1] = 0;
+        // }
     }
 
     draw(ctx) {
         // --------- Figuring out which part of animation to do next ---------
-        let stepXCoord = this._selectFrame(18);
+        let stepXCoord = this._selectFrame(18 / this.animationPace);
 
         // --------- Figuring out which general animation to do ---------
         if (this.status === "moving") {
@@ -52,8 +55,8 @@ class Character extends MovingObject {
 
     _selectFrame(stepFactor) {
         // --------- If past last step of animation, reset to first step ---------
-        if (this.status === "idle" && this.step > 71) this.step = 0;
-        if (this.status === "moving" && this.step > 107) this.step = 0;
+        if (this.status === "idle" && !this.busy && this.step >= 4 * stepFactor) this.step = 0;
+        if (this.status === "moving" && !this.busy && this.step >= 6 * stepFactor) this.step = 0;
 
         // --------- Using step to find correct part of animation ---------
         let selection;
@@ -70,21 +73,7 @@ class Character extends MovingObject {
         } else {
             selection = 240;
         }
-        // let selection;
-        // if (this.step < 18) { // Values are large to slow animation down
-        //     selection = 0;
-        // } else if (this.step < 36) {
-        //     selection = 48;
-        // } else if (this.step < 54) {
-        //     selection = 96;
-        // } else if (this.step < 72) {
-        //     selection = 144;
-        // } else if (this.step < 90) {
-        //     selection = 196;
-        // } else {
-        //     selection = 240;
-        // }
-        
+
         // --------- Correcting x values for left facing animations, incrementing step ---------
         if (this.direction === "left") selection += 10;
         this.step += 1;
@@ -92,8 +81,27 @@ class Character extends MovingObject {
         return selection;
     }
 
+    validMove() {
+        // --------- Checking if moving into an enemy ---------
+        for (let i = 0; i < this.game.enemies.length; i++) {
+            if (!this.rolling && this !== this.game.enemies[i]) {
+                if (this.willCollideWith(this.game.enemies[i])) return false;
+            }
+        }
+        // --------- Checking if moving into a wall ---------
+        const futureXCoord = this.position[0] + this.velocity[0];
+        const futureYCoord = this.position[1] + this.velocity[1];
+        if (futureXCoord < 15 || futureYCoord < 15 || futureXCoord > this.game.canvasSizeX - 85 || futureYCoord > this.game.canvasSizeY - 85) return false;
+
+        // --------- Checking if moving into player ---------
+        if (this !== this.game.player && this.willCollideWith(this.game.player)) return false;
+
+        return true;
+    }
+
     startAttack(target) {
         this.attacking = true;
+        this.busy = true;
         this.step = 0;
         this.target = target;
     }
@@ -101,48 +109,26 @@ class Character extends MovingObject {
     launchProjectile() {
         let z = Math.sqrt((this.target[0] - (this.position[0] + 30)) ** 2 + (this.target[1] - (this.position[1] + 25)) ** 2);
 
+        let speed;
+        (this.game.player === this) ? speed = 10 : speed = 7;
         const p = new Projectile({
             position: [this.position[0] + 30, this.position[1] + 25],
-            velocity: [(this.target[0] - (this.position[0] + 30)) / z * 10, (this.target[1] - (this.position[1] + 25)) / z * 10],
+            velocity: [(this.target[0] - (this.position[0] + 30)) / z * speed, (this.target[1] - (this.position[1] + 25)) / z * speed],
             damage: 10,
             shooter: this,
             game: this.game
         });
-        this.game.projectiles.push(p);
-    }
-
-    shoot(target) {
-        // let angle = Math.atan((target[1] - this.position[1] + 30), (target[0] - this.position[0] + 25));
-        // this.attacking = true;
-        // this.step = 0;
-        // this.status = "idle";
-        let z = Math.sqrt((target[0] - (this.position[0] + 30)) ** 2 + (target[1] - (this.position[1] + 25)) ** 2);
-
-        const p = new Projectile({
-            position: [this.position[0] + 30, this.position[1] + 25],
-            velocity: [(target[0] - (this.position[0] + 30)) / z * 10, (target[1] - (this.position[1] + 25)) / z * 10],
-            shooter: this,
-            game: this.game
-        });
-        this.game.projectiles.push(p);
-    }
-
-    validMove() {
-        // --------- Checking if moving into an enemy ---------
-        for (let i = 0; i < this.game.enemies.length; i++) {
-            if (this !== this.game.enemies[i]) {
-                if (this.willCollideWith(this.game.enemies[i])) return false;
-            }
+        
+        if (this.game.slowed) {
+            p.velocity[0] /= 4;
+            p.velocity[1] /= 4;
         }
-        // --------- Checking if moving into a wall ---------
-        const futureXCoord = this.position[0] + this.velocity[0];
-        const futureYCoord = this.position[1] + this.velocity[1];
-        if (futureXCoord < 0 || futureYCoord < 0 || futureXCoord > 830 || futureYCoord > 510) return false;
+        this.game.projectiles.push(p);
+    }
 
-        // --------- Checking if moving into player ---------
-        if (this !== this.game.player && this.willCollideWith(this.game.player)) return false;
-
-        return true;
+    roll() {
+        this.rolling = true;
+        this.step = 0;
     }
 
     takeDamage(damage) {

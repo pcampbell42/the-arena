@@ -12,7 +12,7 @@ class Projectile extends MovingObject {
 
     move(dt) {
         super.move(dt);
-        if (this.position[0] < 0 || this.position[1] < 0 || this.position[0] > 860 || this.position[1] > 570) this.remove();
+        if (this.position[0] < 0 || this.position[1] < 0 || this.position[0] > this.game.canvasSizeX - 40 || this.position[1] > this.game.canvasSizeY - 40) this.remove();
     }
 
     draw(ctx) {
@@ -25,6 +25,7 @@ class Projectile extends MovingObject {
     }
 
     collidedWith(obj) {
+        if (obj.rolling) return; // Doesn't hit rolling targets
         obj.takeDamage(this.damage);
         this.remove();
     }
