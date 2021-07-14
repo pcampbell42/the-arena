@@ -43,7 +43,7 @@ class GameView {
             // if (!that.game.player.busy) that.game.player.kick();
         });
 
-        key("space", () => {
+        key("space, shift + space", () => {
             if (!that.game.player.busy) that.game.player.roll();
         });
     }
