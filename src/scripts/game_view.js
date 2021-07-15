@@ -15,6 +15,7 @@ class GameView {
         this.endCurrentGame = false;
         
         this.firstGame = true;
+        this.journalist = true;
     }
 
     launch() {
@@ -27,7 +28,7 @@ class GameView {
     }
 
     start() {
-        this.game = new Game();
+        this.game = new Game(this.journalist);
         this.song = new Audio("./dist/assets/music/the_system_has_failed.mp3");
         this.endCurrentGame = false;
 
@@ -235,6 +236,19 @@ class GameView {
                 this.song.pause();
                 muteButton.classList.toggle("on");
                 this.audioMuted = true;
+            }
+        })
+
+        const journalistButton = document.getElementById("menu-difficulty-selector");
+
+        journalistButton.addEventListener("click", (e) => {
+            if (journalistButton.innerHTML === "Journalist") {
+                journalistButton.innerHTML = "Hard";
+                this.journalist = false;
+            } else {
+                journalistButton.innerHTML = "Journalist";
+                this.journalist = true;
+
             }
         })
     }

@@ -6,7 +6,7 @@ const Projectile = require("./projectile.js");
 const Room = require("./room.js");
 
 class Game {
-    constructor() {
+    constructor(journalistDifficulty) {
         this.canvasSizeX = 720;
         this.canvasSizeY = 440;
         this.room = new Room({
@@ -21,24 +21,36 @@ class Game {
         });
         this.projectiles = [];
         this.enemies = [];
-        this.spawnEnemies(6);
-
+        this.spawnEnemies(1);
+        
         this.slowed = false;
         this.paused = false;
-
+        
         this.doorOpened = false;
         this.currentRoom = 1;
+
+        this.journalistDifficulty = journalistDifficulty;
     }
 
     spawnEnemies(num) {
         for (let i = 0; i < num; i++) {
             let randomPos = [(this.canvasSizeX - 100) * Math.random(), (this.canvasSizeY - 100) * Math.random()];
-            let e = new Shooter({
-                position: randomPos,
-                velocity: [0, 0],
-                game: this
-            });
-            this.enemies.push(e);
+
+            let enemy;
+            if (Math.random() * 3 > 1) {
+                enemy = new Shooter({
+                    position: randomPos,
+                    velocity: [0, 0],
+                    game: this
+                });
+            } else {
+                enemy = new Rusher({
+                    position: randomPos,
+                    velocity: [0, 0],
+                    game: this
+                })
+            }
+            this.enemies.push(enemy);
         }
     }
 
@@ -72,9 +84,9 @@ class Game {
                 this.player.position = [this.canvasSizeX / 2 - 50, this.canvasSizeY - 100];
                 this.currentRoom += 1;
 
-                this.spawnEnemies(6);
+                this.spawnEnemies(this.currentRoom);
     
-                this.player.energy += 10;
+                this.player.energy += 20;
                 if (this.player.energy > 100) this.player.energy = 100;
             }
         }

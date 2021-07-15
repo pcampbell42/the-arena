@@ -1,4 +1,5 @@
 const MovingObject = require("./moving_object.js");
+// const Rusher = require("./rusher.js");
 // const Character = require("./character.js");
 // const Enemy = require("./enemy.js");
 
@@ -25,7 +26,7 @@ class Projectile extends MovingObject {
     }
 
     collidedWith(obj) {
-        if (obj.rolling) return; // Doesn't hit rolling targets
+        if (obj.rolling || (obj.maxHealth === 20 && this.shooter !== this.game.player) ) return; // Doesn't hit rolling targets
         obj.takeDamage(this.damage);
         this.remove();
     }

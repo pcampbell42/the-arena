@@ -53,6 +53,31 @@
     background-color: #37446e;
 }
 
+#menu-difficulty-selector-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#menu-difficulty-selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 100px;
+    background-color: #cce2e1;
+    margin-top: 20px;
+    font-family: "8-bit";
+}
+
+/* #menu-difficulty-selector.on {
+    background-color: green;
+}
+
+#menu-difficulty-selector:hover {
+    background-color: #cce2e1;
+} */
+
 #menu-content {
     display: flex;
     flex-direction: column;
@@ -60,7 +85,7 @@
     align-items: center;
     font-family: "8-bit";
     font-size: 25px;
-    height: 250px;
+    height: 170px;
 }
 
 #brief-description {

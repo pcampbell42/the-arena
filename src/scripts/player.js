@@ -3,10 +3,14 @@ const Character = require("./character.js");
 class Player extends Character {
     constructor(params) {
         super(params);
+        
         this.images = "./dist/assets/cyborg";
+        this.idleFrames = 4;
+        this.runningFrames = 6;
+        this.animationPace = 2;
+
         this.health = 100;
         this.energy = 100;
-        this.animationPace = 2;
         this.isDead = false;
     }
 

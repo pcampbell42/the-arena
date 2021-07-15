@@ -21,8 +21,10 @@ class Character extends MovingObject {
         if (validMove) super.move(dt);
 
         // --------- Sets status (used in animation) of character based on velocity ---------
-        if (this.velocity[0] === 0 && this.velocity[1] === 0) this.status = "idle";
-        if (this.velocity[0] !== 0 || this.velocity[1] !== 0) this.status = "moving";
+        if (this.game.player === this) {
+            if (this.velocity[0] === 0 && this.velocity[1] === 0) this.status = "idle";
+            if (this.velocity[0] !== 0 || this.velocity[1] !== 0) this.status = "moving";
+        }
 
         // --------- Resets velocity immediately (momentum isn't a thing) ---------
         // if (!this.rolling) {
@@ -55,8 +57,8 @@ class Character extends MovingObject {
 
     _selectFrame(stepFactor) {
         // --------- If past last step of animation, reset to first step ---------
-        if (this.status === "idle" && !this.busy && this.step >= 4 * stepFactor) this.step = 0;
-        if (this.status === "moving" && !this.busy && this.step >= 6 * stepFactor) this.step = 0;
+        if (this.status === "idle" && !this.busy && this.step >= this.idleFrames * stepFactor) this.step = 0;
+        if (this.status === "moving" && !this.busy && this.step >= this.runningFrames * stepFactor) this.step = 0;
 
         // --------- Using step to find correct part of animation ---------
         let selection;
@@ -91,7 +93,7 @@ class Character extends MovingObject {
         // --------- Checking if moving into a wall ---------
         const futureXCoord = this.position[0] + this.velocity[0];
         const futureYCoord = this.position[1] + this.velocity[1];
-        if (futureXCoord >= (this.game.room.doorPosition - 25) && futureXCoord <= (this.game.room.doorPosition + 10) && 
+        if (this.game.room.doorOpened && futureXCoord >= (this.game.room.doorPosition - 35) && futureXCoord <= (this.game.room.doorPosition + 10) && 
             futureYCoord <= 30) return true;
         if (futureXCoord < 15 || futureYCoord < 15 || futureXCoord > this.game.canvasSizeX - 85 || 
             futureYCoord > this.game.canvasSizeY - 85) return false;
@@ -130,12 +132,17 @@ class Character extends MovingObject {
     }
 
     roll() {
+        if (this.velocity[0] === 0 && this.velocity[1] === 0) return;
         this.rolling = true;
         this.step = 0;
     }
 
     takeDamage(damage) {
-        this.health -= damage;
+        if (this.game.journalistDifficulty && this.game.player === this) {
+            this.health -= 1;
+        } else {
+            this.health -= damage;
+        }
         if (this.health <= 0) this.dead(); 
     }
 }
