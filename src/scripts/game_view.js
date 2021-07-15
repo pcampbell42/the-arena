@@ -89,7 +89,7 @@ class GameView {
     }
 
     drawKillCounter() {
-        this.enemyKillCounter.innerHTML = `Enemies Killed: ${this.game.numEnemiesKilled}`;
+        this.enemyKillCounter.innerHTML = `Current Room: ${this.game.currentRoom}`;
     }
 
     gameOver() {
@@ -100,7 +100,7 @@ class GameView {
         // sadge.play();
 
         const enemiesKilledBanner = document.getElementById("enemies-killed-banner");
-        enemiesKilledBanner.innerHTML = `You Defeated ${this.game.numEnemiesKilled} Enemies`;
+        enemiesKilledBanner.innerHTML = `You were ${this.game.currentRoom} Rooms Deep`;
         enemiesKilledBanner.classList.toggle("on");
         document.getElementById("game-over-banner").classList.toggle("on");
     }

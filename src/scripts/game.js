@@ -20,12 +20,12 @@ class Game {
         this.projectiles = [];
         this.enemies = [];
         this.spawnEnemies(6);
-        this.numEnemiesKilled = 0;
 
         this.slowed = false;
         this.paused = false;
 
         this.doorOpened = false;
+        this.currentRoom = 0;
     }
 
     spawnEnemies(num) {
@@ -61,11 +61,20 @@ class Game {
         this.projectiles.forEach(ele => ele.move(dt));
         this.checkProjectileCollisions();
         if (this.enemies.length === 0) {
-            // this.spawnEnemies(6);
-            // this.player.energy += 30;
-            // if (this.player.energy > 100) this.player.energy = 100;
-
             this.room.doorOpened = true;
+            if (this.player.position[1] <= -10) {
+                this.room = new Room({
+                    canvasSizeX: this.canvasSizeX,
+                    canvasSizeY: this.canvasSizeY
+                });
+                this.player.position = [this.canvasSizeX / 2 - 50, this.canvasSizeY - 100];
+                this.currentRoom += 1;
+
+                this.spawnEnemies(6);
+    
+                this.player.energy += 10;
+                if (this.player.energy > 100) this.player.energy = 100;
+            }
         }
     }
 

@@ -2,9 +2,18 @@ class Room {
     constructor(params) {
         this.tileset = new Image();
         this.tileset.src = "./dist/assets/scifi_tileset.png";
-        this.darkGrayTilePositions = [[0, 288], [32, 288], [64, 288], [128, 288], [160, 288], [190, 288], [222, 288], [190, 320], [128, 355], [222, 320]];
-        this.lightGrayTilePositions = [[0, 320], [32, 320], [64, 320], [96, 320], [128, 320], [160, 320], [96, 355]];
-        this.otherFloorTilePositions = [[96, 288], [160, 355], [190, 355], [222, 355]];
+        
+        // WTB CLASS VARIABLES
+        this.possibleTileSets = [
+            [[0, 288], [32, 288], [64, 288], [128, 288], [160, 288], [190, 288], [222, 288], [190, 320], [128, 355], [222, 320]], 
+            [[0, 320], [32, 320], [64, 320], [96, 320], [128, 320], [160, 320], [96, 355]],
+            [[0, 288], [32, 288], [64, 288], [128, 288], [160, 288], [0, 288], [32, 288], [64, 288], [128, 288], [160, 288], [0, 288], [32, 288], [64, 288], [128, 288], [160, 288], [96, 288]],
+            [[0, 320], [32, 320], [64, 320], [96, 320], [160, 355], [0, 320], [32, 320], [64, 320], [96, 320], [0, 320], [32, 320], [64, 320], [96, 320], [0, 320], [32, 320], [64, 320], [96, 320]],
+            [[64, 320], [96, 320], [128, 320], [160, 320], [96, 355], [190, 355], [64, 320], [96, 320], [128, 320], [160, 320], [64, 320], [96, 320], [128, 320], [160, 320]],
+            [[0, 288], [32, 288], [64, 288], [128, 288], [160, 288], [190, 288], [222, 288], [222, 355], [0, 288], [32, 288], [64, 288], [128, 288], [160, 288], [0, 288], [32, 288], [64, 288], [128, 288], [160, 288]]
+        ];
+
+        this.chosenTileSet = this.possibleTileSets[Math.floor(Math.random() * (this.possibleTileSets.length - 1))];
 
         this.numRows = Math.floor(params["canvasSizeY"] / 40);
         this.numCols = Math.floor(params["canvasSizeX"] / 40);
@@ -39,7 +48,7 @@ class Room {
                 } else if (i === ( this.numRows - 1) ) {
                     row.push([0, 192]);
                 } else {
-                    row.push(this.darkGrayTilePositions[Math.floor(Math.random() * 8)]);
+                    row.push(this.chosenTileSet[Math.floor(Math.random() * (this.chosenTileSet.length))]);
                 }
             }
             roomTilePositions.push(row);
@@ -56,11 +65,6 @@ class Room {
         }
         if (this.doorOpened) ctx.drawImage(this.tileset, 128, 160, 32, 32, 40 * Math.floor(this.numCols / 2), 0, 40, 40);
     }
-
-    // drawOpenDoor(ctx) {
-    //     console.log(Math.floor(this.numCols / 2));
-    //     ctx.drawImage(this.tileset, 128, 160, 32, 32, 40 * Math.floor(this.numCols / 2), 0, 40, 40);
-    // }
 }
 
 module.exports = Room;

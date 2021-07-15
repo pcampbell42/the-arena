@@ -112,7 +112,6 @@ class Enemy extends Character {
     }
 
     dead() {
-        this.game.numEnemiesKilled += 1;
         this.remove();
     }
 }
