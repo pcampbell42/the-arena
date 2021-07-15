@@ -7,6 +7,7 @@ class Player extends Character {
         this.health = 100;
         this.energy = 100;
         this.animationPace = 2;
+        this.isDead = false;
     }
 
     action(dt) {
@@ -81,7 +82,7 @@ class Player extends Character {
     }
 
     dead() {
-        window.alert("you died lol");
+        this.isDead = true;
     }
 }
 

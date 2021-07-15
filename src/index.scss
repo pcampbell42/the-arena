@@ -1,4 +1,53 @@
-canvas {
-  cursor: none;
-  background-color: gray;
+@use "./src/styles/reset.css";
+@use "./src/styles/menu_display.css";
+@use "./src/styles/game_display/top.css";
+@use "./src/styles/game_display/middle.css";
+@use "./src/styles/game_display/bottom.css";
+
+@font-face {
+  font-family: "8-bit";
+  src: url("/dist/assets/fonts/8bit.ttf");
+}
+
+@font-face {
+  font-family: "skirmisher";
+  src: url("/dist/assets/fonts/skirmisher.ttf");
+}
+
+@font-face {
+  font-family: "skirmisher-2";
+  src: url("/dist/assets/fonts/skirmisherlaserital.ttf")
+}
+
+html, body {
+  height: 100%;
+  background-image: url("/dist/assets/background.png");
+  background-color: #cccccc;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+#game-display {
+  display: none;
+}
+
+#game-display.play {
+  display: block;
+}
+
+#menu-display {
+  display: block;
+}
+
+#menu-display.hidden {
+  display: none;
 }

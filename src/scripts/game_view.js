@@ -3,49 +3,55 @@ const Game = require("./game.js");
 class GameView {
     constructor(ctx) {
         this.ctx = ctx;
-        this.game = new Game();
+        this.game;
         this.mousePos = [0, 0];
+
+        this.healthBar = document.getElementById("health");
+        this.energyBar = document.getElementById("energy");
+        this.enemyKillCounter = document.getElementById("counter");
+
+        this.song;
+        this.audioMuted = false;
+        this.endCurrentGame = false;
+        
+        this.firstGame = true;
+    }
+
+    launch() {
+        if (this.firstGame) this.playButtonHandler();
     }
 
     start() {
-        this.lastTime = 0;
-        this.mouseHandler();
+        this.game = new Game();
+        this.song = new Audio("./dist/assets/music/truth_police.mp3");
+        this.endCurrentGame = false;
+
         this.keyBindHandler();
+
+        if (this.firstGame) {
+            this.mouseHandler();
+            this.menuBarButtonHandler();
+        }
+        this.firstGame = false;
+
+        this.lastTime = 0;
         requestAnimationFrame(this.animate.bind(this));
     }
 
     animate(time) {
+        if (this.endCurrentGame) return;
         const dt = time - this.lastTime;
-
-        this.game.step(dt);
-        this.draw();
+        
+        if (!this.audioMuted && !this.game.paused) this.song.play();
+        if (!this.game.paused){
+            this.game.step(dt);
+            this.draw();
+        }
         this.lastTime = time;
 
+        if (this.game.player.isDead) this.gameOver();
+
         requestAnimationFrame(this.animate.bind(this));
-    }
-
-    mouseHandler() {
-        let that = this;
-
-        document.onmousemove = (e) => {
-            that.mousePos = [e.clientX, e.clientY]
-        }
-
-        document.addEventListener("click", (e) => {
-            if (!that.game.player.busy) that.game.player.startAttack(that.mousePos);
-        });
-    }
-
-    keyBindHandler() {
-        let that = this;
-
-        key("f", () => {
-            // if (!that.game.player.busy) that.game.player.kick();
-        });
-
-        key("space, shift + space", () => {
-            if (!that.game.player.busy) that.game.player.roll();
-        });
     }
 
     draw() {
@@ -53,9 +59,12 @@ class GameView {
         this.game.draw(this.ctx);
         this.drawCrosshair();
         this.drawHealthAndEnergy();
+        this.drawKillCounter();
     }
 
     drawCrosshair() {
+        if (!document.getElementById("game-canvas").matches(":hover")) return;
+
         this.ctx.strokeStyle = "green";
         this.ctx.lineWidth = 4;
         this.ctx.beginPath();
@@ -70,21 +79,140 @@ class GameView {
     }
 
     drawHealthAndEnergy() {
-        this.ctx.fillStyle = "white";
-        this.ctx.fillRect(10, this.game.canvasSizeY - 40, 150, 30);
+        this.healthBar.setAttribute("style", `width: ${200 * this.game.player.health / 100}px;`);
+        this.energyBar.setAttribute("style", `width: ${200 * this.game.player.energy / 100}px;`);
+    }
 
-        this.ctx.fillStyle = "#32CD32";
-        this.ctx.fillRect(10, this.game.canvasSizeY - 40, 150 * (this.game.player.health / 100), 30)
+    drawKillCounter() {
+        this.enemyKillCounter.innerHTML = `Enemies Killed: ${this.game.numEnemiesKilled}`;
+    }
 
-        this.ctx.fillStyle = "white";
-        this.ctx.fillRect(170, this.game.canvasSizeY - 40, 150, 30);
+    gameOver() {
+        this.endCurrentGame = true;
 
-        this.ctx.fillStyle = "blue";
-        this.ctx.fillRect(170, this.game.canvasSizeY - 40, 150 * (this.game.player.energy / 100), 30)
+        // this.song.pause();
+        // const sadge = new Audio("./dist/assets/music/sadge.mp3");
+        // sadge.play();
 
-        // this.ctx.fillStyle = "black";
-        // this.ctx.font = '20px sans';
-        // this.ctx.fillText("Health:", 30, this.game.canvasSizeY - 65);
+        const enemiesKilledBanner = document.getElementById("enemies-killed-banner");
+        enemiesKilledBanner.innerHTML = `You Defeated ${this.game.numEnemiesKilled} Enemies`;
+        enemiesKilledBanner.classList.toggle("on");
+        document.getElementById("game-over-banner").classList.toggle("on");
+    }
+
+    keyBindHandler() {
+        let that = this;
+
+        key("f", () => {
+            // if (!that.game.player.busy) that.game.player.kick();
+        });
+
+        key("space, shift + space", () => {
+            if (!that.game.player.busy) that.game.player.roll();
+        });
+    }
+
+    mouseHandler() {
+        let that = this;
+        const canvas = document.getElementById("game-canvas");
+
+        canvas.onmousemove = (e) => {
+            let offsetX = (window.innerWidth - this.game.canvasSizeX) / 2;
+            let offsetY = (window.innerHeight - this.game.canvasSizeY) / 2;
+            that.mousePos = [e.clientX - offsetX, e.clientY - offsetY]
+        }
+
+        canvas.addEventListener("click", (e) => {
+            if (!that.game.player.busy) that.game.player.startAttack(that.mousePos);
+        });
+    }
+
+    menuBarButtonHandler() {
+        const muteButton = document.getElementById("mute");
+
+        muteButton.addEventListener("click", () => {
+            if (this.audioMuted) {
+                this.song.play();
+                muteButton.classList.toggle("on");
+                this.audioMuted = false;
+            } else {
+                this.song.pause();
+                muteButton.classList.toggle("on");
+                this.audioMuted = true;
+            }
+        });
+
+
+        const canvas = document.getElementById("game-canvas");
+        const pauseButton = document.getElementById("pause");
+        const pausedBanner = document.getElementById("paused-banner")
+
+        pauseButton.addEventListener("click", (e) => {
+            if (this.game.paused) {
+                canvas.setAttribute("style", "cursor: none;");
+                pauseButton.classList.toggle("on");
+                pausedBanner.classList.toggle("on");
+                // this.song.play();
+                this.game.paused = false;
+            } else {
+                canvas.setAttribute("style", "cursor: default;");
+                pauseButton.classList.toggle("on");
+                pausedBanner.classList.toggle("on");
+                // this.song.pause();
+                this.game.paused = true;
+            }
+        });
+
+
+        const mainMenuButton = document.getElementById("main-menu")
+        const menuDisplay = document.getElementById("menu-display");
+        const gameDisplay = document.getElementById("game-display");
+
+        mainMenuButton.addEventListener("click", () => {
+            menuDisplay.classList.toggle("hidden");
+            gameDisplay.classList.toggle("play");
+            document.getElementById("enemies-killed-banner").classList.toggle("on");
+            document.getElementById("game-over-banner").classList.toggle("on");
+
+            this.song.pause();
+            this.endCurrentGame = true;
+            this.game = null;
+
+            key.unbind("space");
+            key.unbind("f");
+
+
+            this.launch();
+        });
+
+
+        const controlsButton = document.getElementById("controls");
+        const controlsMenu = document.getElementById("controls-container")
+
+        controlsButton.addEventListener("click", (e) => {
+            if (this.game.paused) {
+                controlsButton.classList.toggle("on");
+                controlsMenu.classList.toggle("show");
+                pauseButton.click();
+            } else {
+                controlsButton.classList.toggle("on");
+                controlsMenu.classList.toggle("show");
+                pauseButton.click();
+            }
+        });
+    }
+
+    playButtonHandler() {
+        const playButton = document.getElementById("menu-play-button");
+        const menuDisplay = document.getElementById("menu-display");
+        const gameDisplay = document.getElementById("game-display");
+
+        playButton.addEventListener("click", (e) => {
+            menuDisplay.classList.toggle("hidden");
+            gameDisplay.classList.toggle("play");
+
+            this.start();
+        });
     }
 }
 

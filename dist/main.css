@@ -1,7 +1,403 @@
 /*!*************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/sass-loader/dist/cjs.js!./src/index.scss ***!
   \*************************************************************************************************************************************/
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+#menu-title-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+#menu-title-container h1 {
+  font-family: "skirmisher";
+  font-size: 100px;
+}
+
+#menu-play-button {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+}
+
+#menu-play-button button {
+  background-color: green;
+  font-family: "8-bit";
+  font-size: 45px;
+  padding: 20px 50px;
+  border: none;
+}
+
+#menu-play-button button:hover {
+  background-color: #37446e;
+}
+
+#menu-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  font-family: "8-bit";
+  font-size: 25px;
+  height: 250px;
+}
+
+#brief-description {
+  font-size: 30px;
+}
+
+#long-description {
+  text-align: center;
+  width: 65%;
+}
+
+#menu-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "8-bit";
+  font-size: 20px;
+}
+
+#menu-links h3 {
+  margin-right: 7px;
+}
+
+#menu-links img {
+  width: 30px;
+  height: 30px;
+}
+
+#top-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #6c7182;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+#top-bar-inner {
+  width: 720px;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#title-container {
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+  padding-right: 25px;
+  padding-top: 13px;
+}
+
+#title-container h1 {
+  font-family: "8-bit";
+  font-size: 35px;
+}
+
+#options-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#options-container div {
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #37446e;
+  border-width: 3px;
+  border-style: solid;
+  border-radius: 5px;
+  margin-right: 3px;
+  margin-top: 4px;
+  font-family: "8-bit";
+}
+
+#options-container div:hover {
+  background-color: #cce2e1;
+  cursor: pointer;
+}
+
+#options-container div.on {
+  background-color: #cce2e1;
+}
+
+#mute {
+  width: 45px;
+  border-right-style: solid;
+}
+
+#pause {
+  width: 45px;
+  border-right-style: solid;
+}
+
+#main-menu {
+  width: 90px;
+  border-right-style: solid;
+}
+
+#controls {
+  width: 90px;
+}
+
+#controls-container {
+  position: absolute;
+  top: 141px;
+  left: 700px;
+  width: 181px;
+  background-color: #37446e;
+  border-style: solid;
+  border-width: 3px;
+  border-radius: 5px;
+  display: none;
+}
+
+#controls-container.show {
+  display: block;
+}
+
+#controls-container ul {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+}
+
+#controls-container ul li {
+  font-family: "8-bit";
+}
+
+#paused-banner {
+  position: absolute;
+  top: 270px;
+  display: none;
+}
+
+#paused-banner.on {
+  display: block;
+}
+
+#game-over-banner {
+  position: absolute;
+  top: 270px;
+  font-family: "skirmisher-2";
+  font-size: 100px;
+  width: 56.5%;
+  display: none;
+}
+
+#game-over-banner.on {
+  display: block;
+}
+
+#enemies-killed-banner {
+  position: absolute;
+  top: 375px;
+  font-family: "skirmisher-2";
+  font-size: 30px;
+  width: 38%;
+  display: none;
+}
+
+#enemies-killed-banner.on {
+  display: block;
+}
+
+#canvas-container {
+  display: flex;
+  justify-content: center;
+}
+
 canvas {
   cursor: none;
   background-color: gray;
+}
+
+#bottom-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #6c7182;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+#bottom-bar-inner {
+  width: 720px;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#health-energy-container {
+  display: flex;
+  align-items: center;
+}
+
+#health-background {
+  background-color: white;
+  position: relative;
+  width: 200px;
+  height: 30px;
+  border-style: solid;
+  border-width: 4px;
+  border-radius: 10px;
+  margin-bottom: 38px;
+  margin-left: 30px;
+}
+
+#health {
+  background-color: lime;
+  width: 200px;
+  height: 30px;
+  border-radius: 5px;
+}
+
+#energy-background {
+  background-color: white;
+  position: relative;
+  width: 200px;
+  height: 30px;
+  border-style: solid;
+  border-width: 4px;
+  border-radius: 10px;
+  margin-bottom: 38px;
+  margin-left: 10px;
+}
+
+#energy {
+  background-color: blue;
+  width: 200px;
+  height: 30px;
+  border-radius: 5px;
+}
+
+#room-count-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 38px;
+  margin-right: 45px;
+  font-family: "8-bit";
+}
+
+#links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "8-bit";
+  font-size: 20px;
+  position: absolute;
+  left: 41.8%;
+  bottom: 21.4px;
+}
+
+#links h3 {
+  margin-right: 7px;
+}
+
+#links img {
+  width: 30px;
+  height: 30px;
+}
+
+@font-face {
+  font-family: "8-bit";
+  src: url("/dist/assets/fonts/8bit.ttf");
+}
+@font-face {
+  font-family: "skirmisher";
+  src: url("/dist/assets/fonts/skirmisher.ttf");
+}
+@font-face {
+  font-family: "skirmisher-2";
+  src: url("/dist/assets/fonts/skirmisherlaserital.ttf");
+}
+html, body {
+  height: 100%;
+  background-image: url("/dist/assets/background.png");
+  background-color: #cccccc;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game-display {
+  display: none;
+}
+
+#game-display.play {
+  display: block;
+}
+
+#menu-display {
+  display: block;
+}
+
+#menu-display.hidden {
+  display: none;
 }

@@ -7,5 +7,5 @@ window.addEventListener('DOMContentLoaded', (event) => {
     const ctx = canvas.getContext("2d");
 
     const gv = new GameView(ctx);
-    gv.start();
+    gv.launch();
 });

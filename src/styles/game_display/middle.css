@@ -1,0 +1,45 @@
+#paused-banner {
+    position: absolute;
+    top: 270px;
+    display: none;
+}
+
+#paused-banner.on {
+    display: block;
+}
+
+#game-over-banner {
+    position: absolute;
+    top: 270px;
+    font-family: "skirmisher-2";
+    font-size: 100px;
+    width: 56.5%;
+    display: none;
+}
+
+#game-over-banner.on {
+    display: block;
+}
+
+#enemies-killed-banner {
+    position: absolute;
+    top: 375px;
+    font-family: "skirmisher-2";
+    font-size: 30px;
+    width: 38%;
+    display: none;
+}
+
+#enemies-killed-banner.on {
+    display: block;
+}
+
+#canvas-container {
+    display: flex;
+    justify-content: center;
+}
+
+canvas {
+  cursor: none;
+  background-color: gray;
+}

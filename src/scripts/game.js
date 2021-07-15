@@ -19,10 +19,11 @@ class Game {
         });
         this.projectiles = [];
         this.enemies = [];
+        this.spawnEnemies(6);
+        this.numEnemiesKilled = 0;
 
         this.slowed = false;
-
-        this.spawnEnemies(6);
+        this.paused = false;
     }
 
     spawnEnemies(num) {
