@@ -81,7 +81,7 @@ class Enemy extends Character {
 
     draw(ctx) {
         // --------- If not full health, display health bar ---------
-        if (this.health !== 30) {
+        if (this.health !== this.maxHealth) {
             ctx.fillStyle = "white";
             ctx.fillRect(this.position[0] + 15, this.position[1], 30, 10);
 
@@ -110,7 +110,6 @@ class Enemy extends Character {
     }
 
     takeDamage(damage) {
-        if (!this.busy) this.startAttack(this.game.player.position); // Enemy shoots in players direction if hit
         super.takeDamage(damage);
     }
 
