@@ -18,12 +18,17 @@ class GameView {
     }
 
     launch() {
-        if (this.firstGame) this.playButtonHandler();
+        this.song = new Audio("./dist/assets/music/truth_police.mp3");
+
+        this.song.play();
+        this.audioMuted = false;
+
+        if (this.firstGame) this.mainMenuButtonHandlers();
     }
 
     start() {
         this.game = new Game();
-        this.song = new Audio("./dist/assets/music/truth_police.mp3");
+        this.song = new Audio("./dist/assets/music/the_system_has_failed.mp3");
         this.endCurrentGame = false;
 
         this.keyBindHandler();
@@ -193,16 +198,16 @@ class GameView {
             if (this.game.paused) {
                 controlsButton.classList.toggle("on");
                 controlsMenu.classList.toggle("show");
-                pauseButton.click();
+                // pauseButton.click();
             } else {
                 controlsButton.classList.toggle("on");
                 controlsMenu.classList.toggle("show");
-                pauseButton.click();
+                // pauseButton.click();
             }
         });
     }
 
-    playButtonHandler() {
+    mainMenuButtonHandlers() {
         const playButton = document.getElementById("menu-play-button");
         const menuDisplay = document.getElementById("menu-display");
         const gameDisplay = document.getElementById("game-display");
@@ -211,8 +216,24 @@ class GameView {
             menuDisplay.classList.toggle("hidden");
             gameDisplay.classList.toggle("play");
 
+            this.song.pause();
             this.start();
         });
+
+        const muteButton = document.getElementById("menu-mute-button");
+
+        muteButton.addEventListener("click", (e) => {
+            console.log(this.song);
+            if (this.audioMuted) {
+                this.song.play();
+                muteButton.classList.toggle("on");
+                this.audioMuted = false;
+            } else {
+                this.song.pause();
+                muteButton.classList.toggle("on");
+                this.audioMuted = true;
+            }
+        })
     }
 }
 

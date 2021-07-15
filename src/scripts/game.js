@@ -24,6 +24,8 @@ class Game {
 
         this.slowed = false;
         this.paused = false;
+
+        this.doorOpened = false;
     }
 
     spawnEnemies(num) {
@@ -58,7 +60,13 @@ class Game {
         this.enemies.forEach(ele => ele.action(dt));
         this.projectiles.forEach(ele => ele.move(dt));
         this.checkProjectileCollisions();
-        if (this.enemies.length === 0) this.spawnEnemies(6);
+        if (this.enemies.length === 0) {
+            // this.spawnEnemies(6);
+            // this.player.energy += 30;
+            // if (this.player.energy > 100) this.player.energy = 100;
+
+            this.room.doorOpened = true;
+        }
     }
 
     checkProjectileCollisions() {

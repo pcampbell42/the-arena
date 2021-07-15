@@ -1,3 +1,28 @@
+#menu-top-bar {
+    display: flex;
+    justify-content: right;
+}
+
+#menu-mute-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 26px;
+    background-color: #37446e;
+    border-width: 2px;
+    border-radius: 5px;
+    border-style: solid;
+    margin: 5px;
+}
+
+#menu-mute-button:hover {
+    background-color: #cce2e1;
+}
+
+#menu-mute-button.on {
+    background-color: #cce2e1;
+}
+
 #menu-title-container {
     display: flex;
     justify-content: center;

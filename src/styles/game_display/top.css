@@ -73,29 +73,3 @@
 #controls {
     width: 90px;
 }
-
-#controls-container {
-    position: absolute;
-    top: 141px;
-    left: 700px;
-    width: 181px;
-    background-color: #37446e;
-    border-style: solid;
-    border-width: 3px;
-    border-radius: 5px;
-    display: none;
-}
-
-#controls-container.show {
-    display: block;
-}
-
-#controls-container ul {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-}
-
-#controls-container ul li {
-    font-family: "8-bit";
-}

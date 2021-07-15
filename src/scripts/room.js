@@ -9,6 +9,9 @@ class Room {
         this.numRows = Math.floor(params["canvasSizeY"] / 40);
         this.numCols = Math.floor(params["canvasSizeX"] / 40);
         this.roomTiles = this.makeRoom();
+
+        this.doorPosition = Math.floor(this.numCols / 2) * 40;
+        this.doorOpened = false;
     }
 
     makeRoom() {
@@ -25,6 +28,8 @@ class Room {
                     row.push([0, 96]);
                 } else if (i === (this.numRows - 1) && j === (this.numCols - 1)) {
                     row.push([128, 96]);
+                } else if (i === 0 && j === Math.floor(this.numCols / 2)) {
+                    row.push([128, 128]);
                 } else if (j === 0) {
                     row.push([0, 56]);
                 } else if (j === ( this.numCols - 1) ) {
@@ -43,12 +48,19 @@ class Room {
     }
 
     draw(ctx) {
+        if (this.doorOpened) this.roomTiles[0][Math.floor(this.numCols / 2)] = this.roomTiles[5][5];
         for (let i = 0; i < this.numRows; i++) {
             for (let j = 0; j < this.numCols; j++) {
                 ctx.drawImage(this.tileset, this.roomTiles[i][j][0], this.roomTiles[i][j][1], 32, 32, 40 * j, 40 * i, 40, 40);
             }
         }
+        if (this.doorOpened) ctx.drawImage(this.tileset, 128, 160, 32, 32, 40 * Math.floor(this.numCols / 2), 0, 40, 40);
     }
+
+    // drawOpenDoor(ctx) {
+    //     console.log(Math.floor(this.numCols / 2));
+    //     ctx.drawImage(this.tileset, 128, 160, 32, 32, 40 * Math.floor(this.numCols / 2), 0, 40, 40);
+    // }
 }
 
 module.exports = Room;

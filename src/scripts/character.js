@@ -91,7 +91,10 @@ class Character extends MovingObject {
         // --------- Checking if moving into a wall ---------
         const futureXCoord = this.position[0] + this.velocity[0];
         const futureYCoord = this.position[1] + this.velocity[1];
-        if (futureXCoord < 15 || futureYCoord < 15 || futureXCoord > this.game.canvasSizeX - 85 || futureYCoord > this.game.canvasSizeY - 85) return false;
+        if (futureXCoord <= (this.game.room.doorPosition - 10) && futureXCoord <= (this.game.room.doorPosition + 50) && 
+            futureYCoord <= 30) return true;
+        if (futureXCoord < 15 || futureYCoord < 15 || futureXCoord > this.game.canvasSizeX - 85 || 
+            futureYCoord > this.game.canvasSizeY - 85) return false;
 
         // --------- Checking if moving into player ---------
         if (this !== this.game.player && this.willCollideWith(this.game.player)) return false;

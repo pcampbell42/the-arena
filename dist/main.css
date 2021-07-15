@@ -55,6 +55,31 @@ table {
   border-spacing: 0;
 }
 
+#menu-top-bar {
+  display: flex;
+  justify-content: right;
+}
+
+#menu-mute-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 26px;
+  background-color: #37446e;
+  border-width: 2px;
+  border-radius: 5px;
+  border-style: solid;
+  margin: 5px;
+}
+
+#menu-mute-button:hover {
+  background-color: #cce2e1;
+}
+
+#menu-mute-button.on {
+  background-color: #cce2e1;
+}
+
 #menu-title-container {
   display: flex;
   justify-content: center;
@@ -198,11 +223,49 @@ table {
   width: 90px;
 }
 
+#canvas-container {
+  display: flex;
+  justify-content: center;
+}
+
+#paused-banner {
+  position: absolute;
+  top: 270px;
+  display: none;
+}
+
+#paused-banner.on {
+  display: block;
+}
+
+#game-over-banner {
+  position: absolute;
+  top: 270px;
+  font-family: "skirmisher-2";
+  font-size: 100px;
+  display: none;
+}
+
+#game-over-banner.on {
+  display: block;
+}
+
+#enemies-killed-banner {
+  position: absolute;
+  top: 375px;
+  font-family: "skirmisher-2";
+  font-size: 30px;
+  display: none;
+}
+
+#enemies-killed-banner.on {
+  display: block;
+}
+
 #controls-container {
   position: absolute;
-  top: 141px;
-  left: 700px;
-  width: 181px;
+  margin-top: 2px;
+  margin-left: 543px;
   background-color: #37446e;
   border-style: solid;
   border-width: 3px;
@@ -222,47 +285,6 @@ table {
 
 #controls-container ul li {
   font-family: "8-bit";
-}
-
-#paused-banner {
-  position: absolute;
-  top: 270px;
-  display: none;
-}
-
-#paused-banner.on {
-  display: block;
-}
-
-#game-over-banner {
-  position: absolute;
-  top: 270px;
-  font-family: "skirmisher-2";
-  font-size: 100px;
-  width: 56.5%;
-  display: none;
-}
-
-#game-over-banner.on {
-  display: block;
-}
-
-#enemies-killed-banner {
-  position: absolute;
-  top: 375px;
-  font-family: "skirmisher-2";
-  font-size: 30px;
-  width: 38%;
-  display: none;
-}
-
-#enemies-killed-banner.on {
-  display: block;
-}
-
-#canvas-container {
-  display: flex;
-  justify-content: center;
 }
 
 canvas {

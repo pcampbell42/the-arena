@@ -14,6 +14,10 @@
 
 <body>
     <div id="menu-display">
+        <div id="menu-top-bar">
+            <div id="menu-mute-button"><img src="./dist/assets/mute.png"></div>
+        </div>
+            
         <div id="menu-title-container">
             <h1>Scuffed Trash</h1>
         </div>
@@ -59,17 +63,19 @@
             <div id="game-over-banner">Game Over</div>
             <div id="enemies-killed-banner">Enemies Killed: </div>
 
+            <div id="controls-container">
+                <ul>
+                    <li>Movement: WASD</li>
+                    <li>Basic Attack: Left Click</li>
+                    <li>Kick: F</li>
+                    <li>Roll: Space</li>
+                    <li>Slow Time: Shift (hold)</li>
+                </ul>
+            </div>
+            
             <canvas id="game-canvas" width="720" height="440"></canvas>
         </div>
-        <div id="controls-container">
-            <ul>
-                <li>Movement: WASD</li>
-                <li>Basic Attack: Left Click</li>
-                <li>Kick: F</li>
-                <li>Roll: Space</li>
-                <li>Slow Time: Shift (hold)</li>
-            </ul>
-        </div>
+        
 
         <div id="bottom-bar">
             <div id="bottom-bar-inner">
