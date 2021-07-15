@@ -43,7 +43,7 @@ class Rusher extends Enemy {
         // Calculating distance between player and enemy        
         let distanceToPlayer = Math.sqrt((this.game.player.position[0] - this.position[0]) ** 2 +
             (this.game.player.position[1] - this.position[1]) ** 2);
-        if (distanceToPlayer <= 55) this.game.player.takeDamage(40);
+        if (distanceToPlayer <= 55 && !this.game.player.rolling) this.game.player.takeDamage(40);
     }
 }
 

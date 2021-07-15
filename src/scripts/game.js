@@ -34,21 +34,30 @@ class Game {
 
     spawnEnemies(num) {
         for (let i = 0; i < num; i++) {
-            let randomPos = [(this.canvasSizeX - 100) * Math.random(), (this.canvasSizeY - 100) * Math.random()];
 
             let enemy;
-            if (Math.random() * 3 > 1) {
-                enemy = new Shooter({
-                    position: randomPos,
-                    velocity: [0, 0],
-                    game: this
-                });
-            } else {
-                enemy = new Rusher({
-                    position: randomPos,
-                    velocity: [0, 0],
-                    game: this
-                })
+            let validPosition = false;
+            while (!validPosition)
+            {
+                let randomPos = [(this.canvasSizeX - 100) * Math.random(), (this.canvasSizeY - 100) * Math.random()];
+                validPosition = true;
+                if (Math.random() * 3 > 1) {
+                    enemy = new Shooter({
+                        position: randomPos,
+                        velocity: [0, 0],
+                        game: this
+                    });
+                } else {
+                    enemy = new Rusher({
+                        position: randomPos,
+                        velocity: [0, 0],
+                        game: this
+                    })
+                }
+
+                for (let i = 0; i < this.enemies.length; i++) {
+                    if (enemy.isCollidedWith(this.enemies[i])) validPosition = false;
+                }
             }
             this.enemies.push(enemy);
         }

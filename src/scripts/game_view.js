@@ -220,6 +220,11 @@ class GameView {
             menuDisplay.classList.toggle("hidden");
             gameDisplay.classList.toggle("play");
 
+            const gameOverDisplay = document.getElementById("game-over-banner");
+            const roomCountDisplay = document.getElementById("enemies-killed-banner");
+            if (gameOverDisplay.classList.length === 1) gameOverDisplay.classList.toggle("on");
+            if (roomCountDisplay.classList.length === 1) roomCountDisplay.classList.toggle("on");
+
             this.song.pause();
             this.start();
         });
