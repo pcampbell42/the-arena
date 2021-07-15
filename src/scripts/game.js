@@ -25,7 +25,7 @@ class Game {
         this.paused = false;
 
         this.doorOpened = false;
-        this.currentRoom = 0;
+        this.currentRoom = 1;
     }
 
     spawnEnemies(num) {
