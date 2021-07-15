@@ -3,8 +3,8 @@ const Character = require("./character.js");
 class Enemy extends Character {
     constructor(params) {
         super(params);
-        this.images = "./dist/assets/shooter";
-        this.health = 30;
+        // this.images = "./dist/assets/shooter";
+        // this.health = 30;
         this.chillCounter = 100; // Adding randomness to AI behavior
         // this.sprintCounter = 50; // Adding more randomness to AI behavior
         this.wanderLeft = 0;
@@ -36,9 +36,12 @@ class Enemy extends Character {
             // --------- Getting the direction the player is in and setting velocity ---------
             let xDir = Math.sign(this.game.player.position[0] - this.position[0]);
             let yDir = Math.sign(this.game.player.position[1] - this.position[1]);
-            this.velocity = [xDir, yDir]; // The AI is very slow
+            this.velocity = [xDir * this.speed, yDir * this.speed]; // The AI is very slow
             (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
-        } else {
+
+        }
+        else
+        {
             // --------- AI decides to chill for a bit ---------
             if (randNum <= 10) this.status = "idle";
 

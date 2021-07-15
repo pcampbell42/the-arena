@@ -1,5 +1,7 @@
-const Enemy = require("./enemy.js");
+// const Enemy = require("./enemy.js");
 const Player = require("./player.js");
+const Shooter = require("./shooter.js");
+const Rusher = require("./rusher.js")
 const Projectile = require("./projectile.js");
 const Room = require("./room.js");
 
@@ -31,7 +33,7 @@ class Game {
     spawnEnemies(num) {
         for (let i = 0; i < num; i++) {
             let randomPos = [(this.canvasSizeX - 100) * Math.random(), (this.canvasSizeY - 100) * Math.random()];
-            let e = new Enemy({
+            let e = new Shooter({
                 position: randomPos,
                 velocity: [0, 0],
                 game: this
@@ -90,7 +92,7 @@ class Game {
     remove(obj) {
         if (obj instanceof Projectile) {
             this.projectiles.splice(this.projectiles.indexOf(obj), 1);
-        } else if (obj instanceof Enemy) {
+        } else if (obj instanceof Shooter || obj instanceof Rusher) {
             this.enemies.splice(this.enemies.indexOf(obj), 1);
         }
     }
