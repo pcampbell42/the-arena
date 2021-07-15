@@ -174,6 +174,9 @@ class GameView {
         const gameDisplay = document.getElementById("game-display");
 
         mainMenuButton.addEventListener("click", () => {
+            if (this.audioMuted) muteButton.click();
+            if (this.game.paused) pauseButton.click();
+            
             menuDisplay.classList.toggle("hidden");
             gameDisplay.classList.toggle("play");
             document.getElementById("enemies-killed-banner").classList.toggle("on");

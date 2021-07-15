@@ -6,22 +6,22 @@
 
 @font-face {
   font-family: "8-bit";
-  src: url("assets/fonts/8bit.ttf");
+  src: url("./assets/fonts/8bit.ttf");
 }
 
 @font-face {
   font-family: "skirmisher";
-  src: url("assets/fonts/skirmisher.ttf");
+  src: url("./assets/fonts/skirmisher.ttf");
 }
 
 @font-face {
   font-family: "skirmisher-2";
-  src: url("assets/fonts/skirmisherlaserital.ttf")
+  src: url("./assets/fonts/skirmisherlaserital.ttf")
 }
 
 html, body {
   height: 100%;
-  background-image: url("assets/background.png");
+  background-image: url("./assets/background.png");
   background-color: #cccccc;
   background-size: cover;
   -webkit-background-size: cover;
