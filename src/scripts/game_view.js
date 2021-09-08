@@ -232,7 +232,6 @@ class GameView {
         const muteButton = document.getElementById("menu-mute-button");
 
         muteButton.addEventListener("click", (e) => {
-            console.log(this.song);
             if (this.audioMuted) {
                 this.song.play();
                 muteButton.classList.toggle("on");
