@@ -39,7 +39,7 @@ class Game {
             let validPosition = false;
             while (!validPosition)
             {
-                let randomPos = [(this.canvasSizeX - 100) * Math.random(), (this.canvasSizeY - 100) * Math.random()];
+                let randomPos = [((this.canvasSizeX - 200) * Math.random()) + 100, ((this.canvasSizeY - 200) * Math.random()) + 100];
                 validPosition = true;
                 if (Math.random() * 3 > 1) {
                     enemy = new Shooter({
@@ -55,9 +55,7 @@ class Game {
                     })
                 }
 
-                for (let i = 0; i < this.enemies.length; i++) {
-                    if (enemy.isCollidedWith(this.enemies[i])) validPosition = false;
-                }
+                if (!enemy.validMove()) validPosition = false;
             }
             this.enemies.push(enemy);
         }
