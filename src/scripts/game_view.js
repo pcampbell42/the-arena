@@ -21,8 +21,11 @@ class GameView {
     launch() {
         this.song = new Audio("./dist/assets/music/truth_police.mp3");
 
-        this.song.play();
-        this.audioMuted = false;
+        // Weird authorization error for playing music on initial launch
+        if (!this.firstGame) {
+            this.song.play();
+            this.audioMuted = false;
+        }
 
         if (this.firstGame) this.mainMenuButtonHandlers();
     }
@@ -44,16 +47,14 @@ class GameView {
         requestAnimationFrame(this.animate.bind(this));
     }
 
-    animate(time) {
+    animate() {
         if (this.endCurrentGame) return;
-        const dt = time - this.lastTime;
         
         if (!this.audioMuted && !this.game.paused) this.song.play();
         if (!this.game.paused){
-            this.game.step(dt);
+            this.game.step();
             this.draw();
         }
-        this.lastTime = time;
 
         if (this.game.player.isDead) this.gameOver();
 
@@ -109,8 +110,8 @@ class GameView {
     keyBindHandler() {
         let that = this;
 
-        key("f", () => {
-            // if (!that.game.player.busy) that.game.player.kick();
+        key("f, shift + f", () => {
+            if (!that.game.player.busy) that.game.player.startKick();
         });
 
         key("space, shift + space", () => {

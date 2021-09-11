@@ -18,13 +18,7 @@ class MovingObject {
         ctx.fill();
     }
 
-    move(dt) {
-        // const velocityScale = dt / (1000 / 60),
-        //     offsetX = this.velocity[0] * velocityScale,
-        //     offsetY = this.velocity[1] * velocityScale;
-
-        // this.position = [this.position[0] + offsetX, this.position[1] + offsetY];
-
+    move() {
         this.position[0] += this.velocity[0];
         this.position[1] += this.velocity[1];
     }

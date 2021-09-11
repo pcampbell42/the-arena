@@ -69,7 +69,7 @@ class Game {
         this.projectiles.forEach(ele => ele.draw(ctx));
     }
 
-    step(dt) {
+    step() {
         if (key.shift && !this.slowed && this.player.energy > 0) {
             this._slowSpeed();
         } else if ( (!key.shift && this.slowed) || (this.player.energy <= 0 && this.slowed) ) {
@@ -77,9 +77,9 @@ class Game {
         }
         if (this.slowed && this.player.energy > 0) this.player.energy -= 0.2;
 
-        this.player.action(dt);
-        this.enemies.forEach(ele => ele.action(dt));
-        this.projectiles.forEach(ele => ele.move(dt));
+        this.player.action();
+        this.enemies.forEach(ele => ele.action());
+        this.projectiles.forEach(ele => ele.move());
         this.checkProjectileCollisions();
         if (this.enemies.length === 0) {
             this.room.doorOpened = true;
