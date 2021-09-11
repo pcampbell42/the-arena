@@ -129,7 +129,7 @@ class Player extends Character {
 
                 // Knocking enemy
                 this.game.enemies[i].startKnockback(knockedDirection);
-                this.game.enemies[i].takeDamage(15);
+                this.game.enemies[i].takeDamage(10);
                 return;
             }
         }

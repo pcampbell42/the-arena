@@ -7,12 +7,27 @@ class Enemy extends Character {
         this.wanderLeft = 0;
         this.wanderRight = 0;
         this.firingRate = 300; // Way to set difficulty, lower the harder
+
         this.knockedBack = false;
         this.knockedBackCounter = 0;
+        this.stunned = false;
+        this.stunnedCounter = 0;
     }
+
 
     action() {
         if (this.busy) return;
+
+        if (this.stunnedCounter >= 55) {
+            this.stunnedCounter = 0;
+            this.stunned = false;
+        }
+
+        if (this.stunned) {
+            this.stunnedCounter += 1;
+            return;
+        }
+
         if (this.knockedBack) {
             this.move();
 
@@ -29,6 +44,7 @@ class Enemy extends Character {
             }
         }
     }
+
 
     move(distanceToPlayer) {
         // Basically, every time this move() is called, knockBackCounter gets incremented, once it's 15,
@@ -60,8 +76,16 @@ class Enemy extends Character {
         }
     }
 
+
     draw(ctx) {
-        // --------- If not full health, display health bar ---------
+        // For some bizarro reason, I have to do this here instead of in startKnockback, which would make way more sense
+        // Basically, if an enemy is knockedBack, attacking is canceled and they're no longer busy
+        if (this.knockedBack || this.stunned) {
+            this.attacking = false;
+            this.busy = false;
+        }
+
+        // Display health bar
         if (this.health !== this.maxHealth) {
             ctx.fillStyle = "white";
             ctx.fillRect(this.position[0] + 15, this.position[1], this.maxHealth, 10);
@@ -70,8 +94,34 @@ class Enemy extends Character {
             ctx.fillRect(this.position[0] + 15, this.position[1], this.maxHealth * (this.health / this.maxHealth), 10)
         }
 
-        // Only 1 frame, so no need to call super (also player cant be knocked back)
-        if (this.knockedBack) {
+        // Display stun gif
+        if (this.stunned) {
+            let stunnedImage = new Image();
+            stunnedImage.src = "./dist/assets/stunned.png";
+            ctx.filter = "invert(1)";
+            ctx.drawImage(stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
+            ctx.filter = "invert(0)";
+        }
+
+        // Animate if attacking
+        if (this.attacking) {
+            let stepXCoord = this._selectFrame(18 / this.animationPace);
+            if (this.direction === "right") {
+                this.drawing.src = `${this.images}/attack_r.png`;
+            } else {
+                this.drawing.src = `${this.images}/attack_l.png`;
+            }
+            if (!this.game.slowed && this.step % 9 === 0) this.constructor.name === "Shooter" ? this.launchProjectile() : this.swing();
+            if (this.game.slowed && this.step % 36 === 0) this.constructor.name === "Shooter" ? this.launchProjectile() : this.swing();
+            if (stepXCoord >= 144) {
+                this.attacking = false;
+                this.busy = false;
+            }
+            ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
+        }
+
+        // Animate if knocked back
+        else if (this.knockedBack) {
             if (this.direction === "right") {
                 this.drawing.src = `${this.images}/hurt_r.png`;
                 ctx.drawImage(this.drawing, (this.knockedBackCounter < 5 ? 42 : 0), 0, 40, 80, this.position[0], this.position[1], 75, 90);
@@ -80,13 +130,23 @@ class Enemy extends Character {
                 this.drawing.src = `${this.images}/hurt_l.png`;
                 ctx.drawImage(this.drawing, (this.knockedBackCounter > 5 ? 15 : 0), 0, 40, 80, this.position[0], this.position[1], 75, 90);
             }
+        }
 
-        } else if (!this.attacking) super.draw(ctx);
+        // Animate if stunned
+        else if (this.stunned) {
+            let stepXCoord = this._selectFrame(18 / this.animationPace);
+            if (this.direction === "right") {
+                this.drawing.src = `${this.images}/idle_r.png`;
+            } else {
+                this.drawing.src = `${this.images}/idle_l.png`;
+            }
+            ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
+        }
+
+        // Animate if idle / moving
+        else if (!this.attacking) super.draw(ctx);
     }
 
-    takeDamage(damage) {
-        super.takeDamage(damage);
-    }
 
     startKnockback(knockedDirection) {
         this.knockedBack = true;
@@ -95,21 +155,21 @@ class Enemy extends Character {
         switch (knockedDirection) {
             case "up":
                 this.velocity[0] = 0;
-                this.velocity[1] = -6;
+                this.velocity[1] = -8;
                 break;
 
             case "down":
                 this.velocity[0] = 0;
-                this.velocity[1] = 6;
+                this.velocity[1] = 8;
                 break;
 
             case "right":
-                this.velocity[0] = 6;
+                this.velocity[0] = 8;
                 this.velocity[1] = 0;
                 break;
 
             case "left":
-                this.velocity[0] = -6;
+                this.velocity[0] = -8;
                 this.velocity[1] = 0;
                 break;
         
@@ -121,6 +181,12 @@ class Enemy extends Character {
             this.velocity[0] === 0 ? this.velocity[1] /= 4 : this.velocity[0] /= 4;
         }
     }
+
+
+    takeDamage(damage) {
+        super.takeDamage(damage);
+    }
+
 
     dead() {
         this.remove();

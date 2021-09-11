@@ -1,4 +1,4 @@
-class Room {
+class Floor {
     constructor(params) {
         this.tileset = new Image();
         this.tileset.src = "./dist/assets/scifi_tileset.png";
@@ -17,15 +17,15 @@ class Room {
 
         this.numRows = Math.floor(params["canvasSizeY"] / 40);
         this.numCols = Math.floor(params["canvasSizeX"] / 40);
-        this.roomTiles = this.makeRoom();
+        this.floorTiles = this.makeFloor();
 
         this.doorPosition = Math.floor(this.numCols / 2) * 40;
         this.doorOpened = false;
     }
 
-    makeRoom() {
+    makeFloor() {
         // 8 tiles per row in image
-        let roomTilePositions = [];
+        let floorTilePositions = [];
         for (let i = 0; i < this.numRows; i++) {
             let row = [];
             for (let j = 0; j < this.numCols; j++) {
@@ -51,20 +51,20 @@ class Room {
                     row.push(this.chosenTileSet[Math.floor(Math.random() * (this.chosenTileSet.length))]);
                 }
             }
-            roomTilePositions.push(row);
+            floorTilePositions.push(row);
         }
-        return roomTilePositions;
+        return floorTilePositions;
     }
 
     draw(ctx) {
-        if (this.doorOpened) this.roomTiles[0][Math.floor(this.numCols / 2)] = this.roomTiles[5][5];
+        if (this.doorOpened) this.floorTiles[0][Math.floor(this.numCols / 2)] = this.floorTiles[5][5];
         for (let i = 0; i < this.numRows; i++) {
             for (let j = 0; j < this.numCols; j++) {
-                ctx.drawImage(this.tileset, this.roomTiles[i][j][0], this.roomTiles[i][j][1], 32, 32, 40 * j, 40 * i, 40, 40);
+                ctx.drawImage(this.tileset, this.floorTiles[i][j][0], this.floorTiles[i][j][1], 32, 32, 40 * j, 40 * i, 40, 40);
             }
         }
         if (this.doorOpened) ctx.drawImage(this.tileset, 128, 160, 32, 32, 40 * Math.floor(this.numCols / 2), 0, 40, 40);
     }
 }
 
-module.exports = Room;
+module.exports = Floor;
