@@ -9,28 +9,21 @@ class Character extends MovingObject {
         this.attacking = false;
         this.rolling = false;
         this.busy = false;
-        // this.hurt = false;
         this.direction = "right";
         this.step = 0;
         this.target = [];
     }
 
-    move(dt) {
+    move() {
         // --------- Moves character if future position is valid ---------
         let validMove = this.validMove();
-        if (validMove) super.move(dt);
+        if (validMove) super.move();
 
         // --------- Sets status (used in animation) of character based on velocity ---------
         if (this.game.player === this) {
             if (this.velocity[0] === 0 && this.velocity[1] === 0) this.status = "idle";
             if (this.velocity[0] !== 0 || this.velocity[1] !== 0) this.status = "moving";
         }
-
-        // --------- Resets velocity immediately (momentum isn't a thing) ---------
-        // if (!this.rolling) {
-        //     this.velocity[0] = 0;
-        //     this.velocity[1] = 0;
-        // }
     }
 
     draw(ctx) {
@@ -87,7 +80,14 @@ class Character extends MovingObject {
         // --------- Checking if moving into an enemy ---------
         for (let i = 0; i < this.game.enemies.length; i++) {
             if (!this.rolling && this !== this.game.enemies[i]) {
-                if (this.willCollideWith(this.game.enemies[i])) return false;
+                if (this.willCollideWith(this.game.enemies[i])) {
+                    if (this.knockedBack) {
+                        this.takeDamage(15);
+                        this.game.enemies[i] ? this.game.enemies[i].takeDamage(10) : null;
+                        this.knockedBack = false;
+                    }
+                    return false;
+                }
             }
         }
         // --------- Checking if moving into a wall ---------
@@ -96,7 +96,13 @@ class Character extends MovingObject {
         if (this.game.room.doorOpened && futureXCoord >= (this.game.room.doorPosition - 35) && futureXCoord <= (this.game.room.doorPosition + 10) && 
             futureYCoord <= 30) return true;
         if (futureXCoord < 15 || futureYCoord < 15 || futureXCoord > this.game.canvasSizeX - 85 || 
-            futureYCoord > this.game.canvasSizeY - 85) return false;
+            futureYCoord > this.game.canvasSizeY - 93) {
+                if (this.knockedBack) {
+                    this.takeDamage(15);
+                    this.knockedBack = false;
+                }
+                return false;
+            }
 
         // --------- Checking if moving into player ---------
         if (this !== this.game.player && this.willCollideWith(this.game.player)) return false;

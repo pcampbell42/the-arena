@@ -11,8 +11,8 @@ class Projectile extends MovingObject {
         this.drawing.src = "./dist/assets/bullets.png";
     }
 
-    move(dt) {
-        super.move(dt);
+    move() {
+        super.move();
         if (this.position[0] < 0 || this.position[1] < 0 || this.position[0] > this.game.canvasSizeX - 40 || this.position[1] > this.game.canvasSizeY - 40) this.remove();
     }
 

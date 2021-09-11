@@ -12,25 +12,24 @@ class Player extends Character {
         this.health = 100;
         this.energy = 100;
         this.isDead = false;
+        this.kicking = false;
     }
 
-    action(dt) {
-        if (false) {
-
-        } else {
-            this.move(dt);
-        }
+    action() {
+        this.move();
     }
 
-    move(dt) {
+    move() {
         // --------- Resets velocity immediately (momentum isn't a thing) ---------
-        if (!this.rolling) {
+        // If kicking, velocity is 0
+        if (!this.rolling || this.kicking) {
             this.velocity[0] = 0;
             this.velocity[1] = 0;
         }
 
         // --------- Setting velocity based on key input ---------
-        if (!this.rolling) {
+        // If kicking, can't add velocity
+        if (!this.rolling && !this.kicking) {
             if (key.isPressed("w")) this.velocity[1] -= (2.5 * this.animationPace);
             if (key.isPressed("s")) this.velocity[1] += (2.5 * this.animationPace);
             if (key.isPressed("a")) {
@@ -43,7 +42,7 @@ class Player extends Character {
             }
         }
         // // --------- Call bulk of move function ---------
-        super.move(dt);
+        super.move();
     }
 
     draw(ctx) {
@@ -62,7 +61,7 @@ class Player extends Character {
             ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
 
         } else if (this.rolling) {
-            let stepXCoord = this._selectFrame(9/ this.animationPace);
+            let stepXCoord = this._selectFrame(9 / this.animationPace);
             if (this.direction === "right") {
                 this.drawing.src = `${this.images}/roll_r.png`;
             } else {
@@ -73,6 +72,20 @@ class Player extends Character {
             }
             ctx.drawImage(this.drawing, stepXCoord - 5, 0, 35, 80, this.position[0], this.position[1] + 10, 75, 90);
 
+        } else if (this.kicking) {
+            let stepXCoord = this._selectFrame(9 / this.animationPace);
+            if (this.direction === "right") {
+                this.drawing.src = `${this.images}/kick_r.png`;
+            } else {
+                this.drawing.src = `${this.images}/kick_l.png`;
+            }
+            if (stepXCoord >= 240) {
+                this.kicking = false;
+                this.busy = false;
+                this.kick();
+            }
+            ctx.drawImage(this.drawing, stepXCoord, 7, 35, 80, this.position[0], this.position[1] + 10, 75, 90);
+
         } else {
             super.draw(ctx);
         }
@@ -82,6 +95,43 @@ class Player extends Character {
         if (this.energy > 0) {
             this.energy -= 1;
             super.launchProjectile();
+        }
+    }
+
+    startKick() {
+        this.kicking = true;
+        this.busy = true;
+        this.step = 5;
+        this.target = [];
+    }
+
+    kick() {
+        for (let i = 0; i < this.game.enemies.length; i++) {
+            let distanceToEnemy = Math.sqrt((this.game.enemies[i].position[0] - this.position[0]) ** 2 +
+                (this.game.enemies[i].position[1] - this.position[1]) ** 2);
+            let enemyDirection = this.game.enemies[i].position[0] - this.position[0];
+
+            if (distanceToEnemy <= 55 && ((this.direction === "right" && enemyDirection >= -18) || 
+                                           this.direction === "left" && enemyDirection <= 18)) {
+
+                // Figuring out what direction to knock enemy in
+                let knockedDirection;
+                let knockedEnemy = this.game.enemies[i];
+                if (knockedEnemy.position[1] - this.position[1] > 30) {
+                    knockedDirection = "down";
+                } else if (knockedEnemy.position[1] - this.position[1] < -30) {
+                    knockedDirection = "up";
+                } else if (this.direction === "right" && enemyDirection >= 0) {
+                    knockedDirection = "right";
+                } else {
+                    knockedDirection = "left";
+                }
+
+                // Knocking enemy
+                this.game.enemies[i].startKnockback(knockedDirection);
+                this.game.enemies[i].takeDamage(15);
+                return;
+            }
         }
     }
 

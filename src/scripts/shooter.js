@@ -15,7 +15,7 @@ class Shooter extends Enemy {
         this.speed = 1;
     }
 
-    move(dt, distanceToPlayer) {
+    move(distanceToPlayer) {
         let randNum = Math.floor(Math.random() * 200); // For later use
 
         if (distanceToPlayer > 300) {
@@ -48,10 +48,17 @@ class Shooter extends Enemy {
                 (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
             }
         }
-        super.move(dt, distanceToPlayer);
+        super.move(distanceToPlayer);
     }
 
     draw(ctx) {
+        // For some bizarro reason, I have to do this here instead of in startKnockback, which would make way more sense
+        // Basically, if an enemy is knockedBack, attacking is canceled and they are no longer busy
+        if (this.knockedBack) {
+            this.attacking = false;
+            this.busy = false;
+        }
+        
         if (this.attacking) {
             let stepXCoord = this._selectFrame(18 / this.animationPace);
             if (this.direction === "right") {
