@@ -11,6 +11,7 @@ class GameView {
         this.enemyKillCounter = document.getElementById("counter");
 
         this.song;
+        this.song.volume = 0.1;
         this.audioMuted = false;
         this.endCurrentGame = false;
         
