@@ -91,18 +91,14 @@ class GameView {
     }
 
     drawKillCounter() {
-        this.enemyKillCounter.innerHTML = `Current Room: ${this.game.currentRoom}`;
+        this.enemyKillCounter.innerHTML = `Floor: ${this.game.currentFloor}`;
     }
 
     gameOver() {
         this.endCurrentGame = true;
 
-        // this.song.pause();
-        // const sadge = new Audio("./dist/assets/music/sadge.mp3");
-        // sadge.play();
-
         const enemiesKilledBanner = document.getElementById("enemies-killed-banner");
-        enemiesKilledBanner.innerHTML = `You were ${this.game.currentRoom} Rooms Deep`;
+        enemiesKilledBanner.innerHTML = `You were on the floor ${this.game.currentFloor}`;
         enemiesKilledBanner.classList.toggle("on");
         document.getElementById("game-over-banner").classList.toggle("on");
     }
@@ -222,9 +218,9 @@ class GameView {
             gameDisplay.classList.toggle("play");
 
             const gameOverDisplay = document.getElementById("game-over-banner");
-            const roomCountDisplay = document.getElementById("enemies-killed-banner");
+            const floor = document.getElementById("enemies-killed-banner");
             if (gameOverDisplay.classList.length === 1) gameOverDisplay.classList.toggle("on");
-            if (roomCountDisplay.classList.length === 1) roomCountDisplay.classList.toggle("on");
+            if (floor.classList.length === 1) floor.classList.toggle("on");
 
             this.song.pause();
             this.start();

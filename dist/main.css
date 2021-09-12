@@ -375,7 +375,7 @@ canvas {
   border-radius: 5px;
 }
 
-#room-count-container {
+#floor-count-container {
   display: flex;
   align-items: center;
   position: relative;
@@ -403,6 +403,10 @@ canvas {
 #links img {
   width: 30px;
   height: 30px;
+}
+
+.github-link:hover {
+  opacity: 0.5;
 }
 
 @font-face {

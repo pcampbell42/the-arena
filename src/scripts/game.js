@@ -3,13 +3,13 @@ const Player = require("./player.js");
 const Shooter = require("./shooter.js");
 const Rusher = require("./rusher.js")
 const Projectile = require("./projectile.js");
-const Room = require("./room.js");
+const Floor = require("./floor.js");
 
 class Game {
     constructor(journalistDifficulty) {
         this.canvasSizeX = 720;
         this.canvasSizeY = 440;
-        this.room = new Room({
+        this.floor = new Floor({
             canvasSizeX: this.canvasSizeX,
             canvasSizeY: this.canvasSizeY
         });
@@ -27,7 +27,7 @@ class Game {
         this.paused = false;
         
         this.doorOpened = false;
-        this.currentRoom = 1;
+        this.currentFloor = 1;
 
         this.journalistDifficulty = journalistDifficulty;
     }
@@ -63,11 +63,12 @@ class Game {
 
     draw(ctx) {
         ctx.clearRect(0, 0, this.canvasSizeX, this.canvasSizeY);
-        this.room.draw(ctx);
+        this.floor.draw(ctx);
         this.player.draw(ctx);
         this.enemies.forEach(ele => ele.draw(ctx));
         this.projectiles.forEach(ele => ele.draw(ctx));
     }
+
 
     step() {
         if (key.shift && !this.slowed && this.player.energy > 0) {
@@ -75,23 +76,24 @@ class Game {
         } else if ( (!key.shift && this.slowed) || (this.player.energy <= 0 && this.slowed) ) {
             this._restoreSpeed();
         }
-        if (this.slowed && this.player.energy > 0) this.player.energy -= 0.2;
+        if (this.slowed && this.player.energy > 0) this.player.energy -= 0.05;
 
         this.player.action();
         this.enemies.forEach(ele => ele.action());
         this.projectiles.forEach(ele => ele.move());
         this.checkProjectileCollisions();
+
         if (this.enemies.length === 0) {
-            this.room.doorOpened = true;
+            this.floor.doorOpened = true;
             if (this.player.position[1] <= -10) {
-                this.room = new Room({
+                this.floor = new Floor({
                     canvasSizeX: this.canvasSizeX,
                     canvasSizeY: this.canvasSizeY
                 });
                 this.player.position = [this.canvasSizeX / 2 - 50, this.canvasSizeY - 100];
-                this.currentRoom += 1;
+                this.currentFloor += 1;
 
-                this.spawnEnemies(this.currentRoom);
+                this.spawnEnemies(this.currentFloor);
     
                 this.player.energy += 20;
                 if (this.player.energy > 100) this.player.energy = 100;

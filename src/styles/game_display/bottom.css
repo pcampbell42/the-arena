@@ -57,7 +57,7 @@
   border-radius: 5px;
 }
 
-#room-count-container {
+#floor-count-container {
   display: flex;
   align-items: center;
   position: relative;
@@ -85,4 +85,8 @@
 #links img {
     width: 30px;
     height: 30px;
+}
+
+.github-link:hover {
+    opacity: 0.5;
 }

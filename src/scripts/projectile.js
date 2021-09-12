@@ -1,7 +1,4 @@
 const MovingObject = require("./moving_object.js");
-// const Rusher = require("./rusher.js");
-// const Character = require("./character.js");
-// const Enemy = require("./enemy.js");
 
 class Projectile extends MovingObject {
     constructor(params) {
@@ -21,7 +18,6 @@ class Projectile extends MovingObject {
             ctx.drawImage(this.drawing, 123, 295, 19, 19, this.position[0], this.position[1], 15, 15);
         } else {
             super.draw(ctx);
-            // ctx.drawImage(this.drawing, 262, 155, 14, 14, this.position[0], this.position[1], 15, 15);
         }
     }
 

@@ -19,33 +19,7 @@ class Rusher extends Enemy {
         if (distanceToPlayer > 300) this.status = "idle";
         super.move(distanceToPlayer);
     }
-
-    draw(ctx) {
-        // For some bizarro reason, I have to do this here instead of in startKnockback, which would make way more sense
-        // Basically, if an enemy is knockedBack, attacking is canceled and they are no longer busy
-        if (this.knockedBack) {
-            this.attacking = false;
-            this.busy = false;
-        }
-        
-        if (this.attacking) {
-            let stepXCoord = this._selectFrame(18 / this.animationPace);
-            if (this.direction === "right") {
-                this.drawing.src = `${this.images}/attack_r.png`;
-            } else {
-                this.drawing.src = `${this.images}/attack_l.png`;
-            }
-            if (!this.game.slowed && this.step % 9 === 0) this.swing();
-            if (this.game.slowed && this.step % 36 === 0) this.swing();
-            if (stepXCoord >= 144) {
-                this.attacking = false;
-                this.busy = false;
-            }
-            ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
-        }
-        super.draw(ctx);
-    }
-
+    
     swing() {
         // Calculating distance between player and enemy        
         let distanceToPlayer = Math.sqrt((this.game.player.position[0] - this.position[0]) ** 2 +

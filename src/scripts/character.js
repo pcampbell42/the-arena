@@ -82,9 +82,16 @@ class Character extends MovingObject {
             if (!this.rolling && this !== this.game.enemies[i]) {
                 if (this.willCollideWith(this.game.enemies[i])) {
                     if (this.knockedBack) {
-                        this.takeDamage(15);
-                        this.game.enemies[i] ? this.game.enemies[i].takeDamage(10) : null;
+                        this.takeDamage(5);
                         this.knockedBack = false;
+                        this.stunned = true;
+                        this.stunnedCounter = 0;
+
+                        if (this.game.enemies[i]) {
+                            this.game.enemies[i].takeDamage(5);
+                            this.game.enemies[i].stunned = true;
+                            this.game.enemies[i].stunnedCounter = 0;
+                        }
                     }
                     return false;
                 }
@@ -93,13 +100,15 @@ class Character extends MovingObject {
         // --------- Checking if moving into a wall ---------
         const futureXCoord = this.position[0] + this.velocity[0];
         const futureYCoord = this.position[1] + this.velocity[1];
-        if (this.game.room.doorOpened && futureXCoord >= (this.game.room.doorPosition - 35) && futureXCoord <= (this.game.room.doorPosition + 10) && 
+        if (this.game.floor.doorOpened && futureXCoord >= (this.game.floor.doorPosition - 35) && futureXCoord <= (this.game.floor.doorPosition + 10) && 
             futureYCoord <= 30) return true;
         if (futureXCoord < 15 || futureYCoord < 15 || futureXCoord > this.game.canvasSizeX - 85 || 
             futureYCoord > this.game.canvasSizeY - 93) {
                 if (this.knockedBack) {
-                    this.takeDamage(15);
+                    this.takeDamage(5);
                     this.knockedBack = false;
+                    this.stunned = true;
+                    this.stunnedCounter = 0;
                 }
                 return false;
             }
