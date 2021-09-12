@@ -86,3 +86,7 @@
     width: 30px;
     height: 30px;
 }
+
+.github-link:hover {
+    opacity: 0.5;
+}

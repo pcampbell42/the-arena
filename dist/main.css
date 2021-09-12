@@ -268,7 +268,6 @@ table {
   font-family: "skirmisher-2";
   font-size: 100px;
   display: none;
-  color: white;
 }
 
 #game-over-banner.on {
@@ -281,7 +280,6 @@ table {
   font-family: "skirmisher-2";
   font-size: 30px;
   display: none;
-  color: white;
 }
 
 #enemies-killed-banner.on {
@@ -405,6 +403,10 @@ canvas {
 #links img {
   width: 30px;
   height: 30px;
+}
+
+.github-link:hover {
+  opacity: 0.5;
 }
 
 @font-face {
