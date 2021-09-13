@@ -1,5 +1,6 @@
 const MovingObject = require("./moving_object");
 const Projectile = require("./projectile.js");
+const SpecialTile = require("./special_tile.js");
 
 
 class Character extends MovingObject {
@@ -14,6 +15,10 @@ class Character extends MovingObject {
         this.target = [];
     }
 
+
+    /**
+     * 
+     */
     move() {
         // --------- Moves character if future position is valid ---------
         let validMove = this.validMove();
@@ -26,6 +31,11 @@ class Character extends MovingObject {
         }
     }
 
+
+    /**
+     * 
+     * @param {*} ctx 
+     */
     draw(ctx) {
         // --------- Figuring out which part of animation to do next ---------
         let stepXCoord = this._selectFrame(18 / this.animationPace);
@@ -48,6 +58,12 @@ class Character extends MovingObject {
         ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
     }
 
+
+    /**
+     * 
+     * @param {*} stepFactor 
+     * @returns 
+     */
     _selectFrame(stepFactor) {
         // --------- If past last step of animation, reset to first step ---------
         if (this.status === "idle" && !this.busy && this.step >= this.idleFrames * stepFactor) this.step = 0;
@@ -76,11 +92,23 @@ class Character extends MovingObject {
         return selection;
     }
 
+
+    /**
+     * Important helper method that's used to check if a Character's move is going to be valid.
+     * Checks if moving into the player, an enemy, a wall, or a pit.
+     * @returns - A boolean (true for valid move, false for not)
+     */
     validMove() {
+        // --------- Checking if moving into player ---------
+        if (this !== this.game.player && this.willCollideWith(this.game.player)) return false;
+
         // --------- Checking if moving into an enemy ---------
         for (let i = 0; i < this.game.enemies.length; i++) {
             if (!this.rolling && this !== this.game.enemies[i]) {
                 if (this.willCollideWith(this.game.enemies[i])) {
+
+                    // If a character was knocked into another character, the knockback is 
+                    // halted, they both get stunned, and they both take small damage
                     if (this.knockedBack) {
                         this.takeDamage(5);
                         this.knockedBack = false;
@@ -97,13 +125,18 @@ class Character extends MovingObject {
                 }
             }
         }
-        // --------- Checking if moving into a wall ---------
-        const futureXCoord = this.position[0] + this.velocity[0];
-        const futureYCoord = this.position[1] + this.velocity[1];
-        if (this.game.floor.doorOpened && futureXCoord >= (this.game.floor.doorPosition - 35) && futureXCoord <= (this.game.floor.doorPosition + 10) && 
-            futureYCoord <= 30) return true;
-        if (futureXCoord < 15 || futureYCoord < 15 || futureXCoord > this.game.canvasSizeX - 85 || 
-            futureYCoord > this.game.canvasSizeY - 93) {
+
+        // --------- Checking if moving into a wall / pit ---------
+        let futureXCoord = this.position[0] + this.velocity[0];
+        let futureYCoord = this.position[1] + this.velocity[1];
+        // Using future position to find what kind of Tile the character is moving into
+        let nextTile = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
+        
+        if (nextTile instanceof SpecialTile) {
+            if (nextTile.type === "wall") {
+
+                // If a character is knocked into a wall, the knockback is halted,
+                // the character is stunned, and the character takes small damage
                 if (this.knockedBack) {
                     this.takeDamage(5);
                     this.knockedBack = false;
@@ -112,13 +145,17 @@ class Character extends MovingObject {
                 }
                 return false;
             }
-
-        // --------- Checking if moving into player ---------
-        if (this !== this.game.player && this.willCollideWith(this.game.player)) return false;
+            if (nextTile.type === "pit") this.dead();
+        }
 
         return true;
     }
 
+
+    /**
+     * 
+     * @param {*} target 
+     */
     startAttack(target) {
         this.attacking = true;
         this.busy = true;
@@ -126,6 +163,10 @@ class Character extends MovingObject {
         this.target = target;
     }
 
+
+    /**
+     * 
+     */
     launchProjectile() {
         let z = Math.sqrt((this.target[0] - (this.position[0] + 30)) ** 2 + (this.target[1] - (this.position[1] + 25)) ** 2);
 
@@ -146,6 +187,11 @@ class Character extends MovingObject {
         this.game.projectiles.push(p);
     }
 
+
+    /**
+     * 
+     * @returns 
+     */
     roll() {
         if (this.velocity[0] === 0 && this.velocity[1] === 0) return;
         this.rolling = true;
@@ -153,6 +199,11 @@ class Character extends MovingObject {
         this.step = 0;
     }
 
+
+    /**
+     * 
+     * @param {*} damage 
+     */
     takeDamage(damage) {
         if (this.game.journalistDifficulty && this.game.player === this) {
             this.health -= 1;
