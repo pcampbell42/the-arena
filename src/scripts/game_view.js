@@ -11,7 +11,6 @@ class GameView {
         this.enemyKillCounter = document.getElementById("counter");
 
         this.song;
-        this.song.volume = 0.1;
         this.audioMuted = false;
         this.endCurrentGame = false;
         
@@ -20,7 +19,8 @@ class GameView {
     }
 
     launch() {
-        this.song = new Audio("./dist/assets/music/truth_police.mp3");
+        this.song = new Audio("./dist/assets/music/star_eater.mp3");
+        this.song.volume = 0.125;
 
         // Weird authorization error for playing music on initial launch
         if (!this.firstGame) {
@@ -33,7 +33,8 @@ class GameView {
 
     start() {
         this.game = new Game(this.journalist);
-        this.song = new Audio("./dist/assets/music/the_system_has_failed.mp3");
+        this.song = new Audio("./dist/assets/music/AEON.mp3");
+        this.song.volume = 0.125;
         this.endCurrentGame = false;
 
         this.keyBindHandler();

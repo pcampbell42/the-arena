@@ -70,6 +70,7 @@ table {
   border-radius: 5px;
   border-style: solid;
   margin: 5px;
+  margin-bottom: 6vh;
 }
 
 #menu-mute-button:hover {
@@ -84,7 +85,7 @@ table {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px;
+  height: 250px;
 }
 
 #menu-title-container h1 {
@@ -125,6 +126,10 @@ table {
   background-color: #cce2e1;
   margin-top: 20px;
   font-family: "8-bit";
+}
+
+#menu-difficulty-selector {
+  cursor: default;
 }
 
 /* #menu-difficulty-selector.on {
