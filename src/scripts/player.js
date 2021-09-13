@@ -69,6 +69,7 @@ class Player extends Character {
             }
             if (stepXCoord >= 240) {
                 this.rolling = false;
+                this.busy = false;
             }
             ctx.drawImage(this.drawing, stepXCoord - 5, 0, 35, 80, this.position[0], this.position[1] + 10, 75, 90);
 

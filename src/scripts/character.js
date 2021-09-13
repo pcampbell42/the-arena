@@ -1,6 +1,6 @@
 const MovingObject = require("./moving_object");
 const Projectile = require("./projectile.js");
-// const Game = require("./game.js");
+
 
 class Character extends MovingObject {
     constructor(params) {
@@ -149,6 +149,7 @@ class Character extends MovingObject {
     roll() {
         if (this.velocity[0] === 0 && this.velocity[1] === 0) return;
         this.rolling = true;
+        this.busy = true;
         this.step = 0;
     }
 
@@ -161,5 +162,6 @@ class Character extends MovingObject {
         if (this.health <= 0) this.dead(); 
     }
 }
+
 
 module.exports = Character;

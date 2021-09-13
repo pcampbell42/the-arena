@@ -7,6 +7,7 @@
     position: absolute;
     top: 270px;
     display: none;
+    filter: invert(1);
 }
 
 #paused-banner.on {
@@ -19,6 +20,7 @@
     font-family: "skirmisher-2";
     font-size: 100px;
     display: none;
+    color: white;
 }
 
 #game-over-banner.on {
@@ -31,6 +33,7 @@
     font-family: "skirmisher-2";
     font-size: 30px;
     display: none;
+    color: white;
 }
 
 #enemies-killed-banner.on {
