@@ -54,7 +54,7 @@ class Projectile extends MovingObject {
     projectilesCollided(proj) {
         let xDiff = this.position[0] - proj.position[0];
         let yDiff = this.position[1] - proj.position[1]
-        return (xDiff > 0) && (xDiff < 10) && (yDiff > 0) && (yDiff < 10);
+        return (xDiff > 0) && (xDiff < 5) && (yDiff > 0) && (yDiff < 5);
     }
 
 
