@@ -15,6 +15,7 @@ class Enemy extends Character {
         this.stunned = false;
         this.stunnedCounter = 0;
 
+        // Eventually should clean aggroing up and put all into one method to call to check if aggroed
         // this.aggroed;
         // this.spawnPosition = params["spawnPosition"];
     }
