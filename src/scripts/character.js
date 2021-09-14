@@ -132,8 +132,10 @@ class Character extends MovingObject {
         // Using future position to find what kind of Tile the character is moving into
         let nextTile = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
         
-        if (nextTile instanceof SpecialTile) {
-            if (nextTile.type === "wall") {
+        if (nextTile instanceof SpecialTile || (nextTile.length === 2 && nextTile[0] instanceof Array)) {
+            if (nextTile.type === "pit") {
+                this.dead();
+            } else if (nextTile.type === "wall" || nextTile[1].type === "wall") {
 
                 // If a character is knocked into a wall, the knockback is halted,
                 // the character is stunned, and the character takes small damage
@@ -145,7 +147,6 @@ class Character extends MovingObject {
                 }
                 return false;
             }
-            if (nextTile.type === "pit") this.dead();
         }
 
         return true;

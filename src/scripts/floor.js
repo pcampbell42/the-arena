@@ -1,3 +1,5 @@
+// The file of despair, enter at your own risk
+
 const SpecialTile = require("./special_tile.js");
 
 
@@ -5,6 +7,9 @@ class Floor {
     constructor(params) {
         this.tileset = new Image();
         this.tileset.src = "./dist/assets/scifi_tileset.png";
+
+        this.altTilset = new Image();
+        this.altTilset.src = "./dist/assets/tileset.png";
         
         // Positions of possible ground tiles in the tileset image. They're grouped 
         // into sets so that the ground doesn't look super weird (aka, red, blue, yellow, 
@@ -32,11 +37,13 @@ class Floor {
 
         // Creates template, picks which floor to use
         this.floorTiles = this.makeFloorTemplate();
-        params["floorNum"] === 1 ? this.floorTiles = this.makeStartingFloor() : null;
+        params["floorNum"] === 1 ? this.floorTiles = this.makeFloorV2() : null;
 
         // Door related variables
         this.doorPosition = Math.floor(this.numCols / 2) * 40;
         this.doorOpened = false;
+        this.extraDoorIndex = [];
+        this.extraDoorOpen = false;
     }
 
 
@@ -46,19 +53,32 @@ class Floor {
      */
     draw(ctx) {
         // If door is opened, replace the wall tile with a "random" ground tile
-        if (this.doorOpened) this.floorTiles[0][Math.floor(this.numCols / 2)] = this.floorTiles[5][5];
+        if (this.doorOpened) this.floorTiles[0][Math.floor(this.numCols / 2)] = this.floorTiles[this.numRows - 2][0].position;
 
         // Draw each tile
         for (let i = 0; i < this.numRows; i++) {
             for (let j = 0; j < this.numCols; j++) {
-                // ctx.drawImage(this.tileset, this.floorTiles[i][j][0], this.floorTiles[i][j][1], 32, 32, 40 * j, 40 * i, 40, 40);
                 let currentTile = this.floorTiles[i][j];
 
-                ctx.drawImage(this.tileset, 
-                    currentTile instanceof SpecialTile ? currentTile.position[0] : currentTile[0], 
-                    currentTile instanceof SpecialTile ? currentTile.position[1] : currentTile[1],
-                    32, 32, 40 * j, 40 * i, 40, 40
-                );
+                if (currentTile instanceof SpecialTile) {
+                    // Pit images come from different tileset
+                    if (currentTile.type === "pit") {
+                        ctx.drawImage(this.altTilset, currentTile.position[0], currentTile.position[1], 32, 32, 40 * j, 40 * i, 40, 40 );
+                    } else {
+                        ctx.drawImage(this.tileset, currentTile.position[0], currentTile.position[1], 32, 32, 40 * j, 40 * i, 40, 40);
+                    }
+                } 
+                // Some tiles require background tiles, and thus are arrays of 2 tiles to be drawn on top of each other
+                else if (currentTile.length === 2 && currentTile[0] instanceof Array) {
+                    // First tile is always a normal ground tile
+                    ctx.drawImage(this.tileset, currentTile[0][0], currentTile[0][1], 32, 32, 40 * j, 40 * i, 40, 40);
+                    // Second tile is always a SpecialTile
+                    ctx.drawImage(this.tileset, currentTile[1].position[0], currentTile[1].position[1], 32, 32, 40 * j, 40 * i, 40, 40);
+
+
+                } else {
+                    ctx.drawImage(this.tileset, currentTile[0], currentTile[1], 32, 32, 40 * j, 40 * i, 40, 40);
+                }
 
             }
         }
@@ -130,7 +150,7 @@ class Floor {
                 }
                 // Adds the top walls
                 else if (i === 0) {
-                    row.push(new SpecialTile({ position: [Math.floor(Math.random() * 7) * 32, 256], type: "wall" }));
+                    row.push(this._selectRandomTopWallTile());
                 }
                 // Adds the bottom walls
                 else if (i === ( this.numRows - 1) ) {
@@ -148,10 +168,26 @@ class Floor {
 
 
     /**
+     * Method that finalizes the tiles for the floor. Version 2.
+     * @returns New array of tiles for a floor
+     */
+    makeFloorV1() {
+        let newFloorTiles = this.floorTiles;
+
+        for (let i = 0; i < this.floorTiles.length; i++) {
+            for (let j = 0; j < this.floorTiles[0].length; j++) {
+
+            }
+        }
+
+        return newFloorTiles;
+    }
+
+    /**
      * Method that finalizes the tiles for the first floor.
      * @returns - New Array of tiles for a floor
      */
-    makeStartingFloor() {
+    makeFloorV2() {
         let newFloorTiles = this.floorTiles;
         for (let i = 0; i < this.floorTiles.length; i++) {
             for (let j = 0; j < this.floorTiles[0].length; j++) {
@@ -159,12 +195,15 @@ class Floor {
                 // -------------- Adding bottom left wall segment --------------
                 // Bottom row of wall
                 if (i === this.floorTiles.length - 3 && j < Math.floor(this.floorTiles[0].length / 2) + 1) {
-                    this.floorTiles[i][j] = new SpecialTile({ position: [Math.floor(Math.random() * 7) * 32, 256], type: "wall" });
+                    this.floorTiles[i][j] = this._selectRandomTopWallTile();
 
                 }
                 // Bottom right corner of wall
                 else if (i === this.floorTiles.length - 3 && j === Math.floor(this.floorTiles[0].length / 2) + 1) {
-                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 32], type: "wall" });
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 32], type: "wall" })
+                    ];
                 }
                 // Middle row of wall
                 else if (i === this.floorTiles.length - 4 && j < Math.floor(this.floorTiles[0].length / 2) + 1) {
@@ -184,49 +223,126 @@ class Floor {
                 }
                 // Top right corner of wall
                 else if (i === this.floorTiles.length - 5 && j === Math.floor(this.floorTiles[0].length / 2) + 1) {
-                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 96], type: "wall" });
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 96], type: "wall" })
+                    ];
                 }
 
-                // -------------- Adding top wall segment --------------
-                // Bottom row of wall
-                else if (i === this.floorTiles.length - 3 && j < Math.floor(this.floorTiles[0].length / 2) + 1) {
-                    this.floorTiles[i][j] = [Math.floor(Math.random() * 7) * 32, 256];
+                // -------------- Adding pit segment --------------
+                // Completely black pit
+                else if ((i === 5 && j > 2 && j < 6) || (i === 4 && j > 2 && j < 6) || (i === 3 && j > 2 && j < 6)) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 128], type: "pit" });
+                }
+                // Top of pit
+                else if (i === 2 && j > 2 && j < 6) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [192, 96], type: "pit" });
+                }
+                // Top left corner of pit
+                else if (i === 2 && j === 2) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [160, 96], type: "pit" });
+                }
+                // Top right corner of pit
+                else if (i === 2 && j === 6) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [224, 96], type: "pit" });
+                }
+                // Right side of pit
+                else if (i > 2 && i < 6 && j === 6) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [224, 128], type: "pit" });
+                }
+                // Left side of pit
+                else if (i > 2 && i < 6 && j === 2) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [160, 128], type: "pit" });
+                }
+
+                // -------------- Adding top right wall segment --------------
+                // Right top wall
+                else if (i === 3 && j < this.numCols - 1 && j > this.numCols - 7) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [0, 192], type: "wall" });
+                }
+                // Right bottom wall
+                else if (i === 4 && j < this.numCols - 2 && j > this.numCols - 7) {
+                    this.floorTiles[i][j] = this._selectRandomTopWallTile();
+                }
+                // Right top corner
+                else if (i === 3 && j === this.numCols - 1) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [128, 96], type: "wall" });
+                }
+                // Right bottom corner
+                else if (i === 4 && j === this.numCols - 2) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [102, 32], type: "wall" });
+                }
+                else if (i === 4 && j === this.numCols - 1) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [0, 0], type: "wall" })
+                }
+                // Door right top corner
+                else if (i === 3 && j === this.numCols - 7) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 96], type: "wall" })
+                    ];
+                }
+                // Door right bottom corner
+                else if (i === 4 && j === this.numCols - 7) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 32], type: "wall" })
+                    ];
+                }
+                // Door left top corner
+                else if (i === 3 && j === this.numCols - 9) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 96], type: "wall" })
+                    ];
+                }
+                // Door left bottom corner
+                else if (i === 4 && j === this.numCols - 9) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 32], type: "wall" })
+                    ];
+                }
+                // Top left top corner
+                else if (i === 3 && j === this.numCols - 10) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 96], type: "wall" })
+                    ];
+                }
+                // Top left bottom corner
+                else if (i === 4 && j === this.numCols - 10) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 32], type: "wall" })
+                    ];
+                }
+                // Top left single wall top
+                else if (i === 1 && j === this.numCols - 10) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                }
+                // Top left single wall bottom
+                else if (i === 2 && j === this.numCols - 10) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+                // Extra door
+                else if (i === 3 && j === this.numCols - 8) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 128], type:"wall" })
+                    ];
+                    this.extraDoorIndex = [3, this.numCols - 8];
                 }
             }
-        }
-
-        return newFloorTiles;
-    }
-    
-
-    /**
-     * Method that finalizes the tiles for the floor. Version 1.
-     * @returns New array of tiles for a floor
-     */
-    makeFloorV1() {
-        let newFloorTiles = this.floorTiles;
-
-        for (let i = 0; i < this.floorTiles.length; i++) {
-            for (let j = 0; j < this.floorTiles[0].length; j++) {
-
-            }
-        }
-
-        return newFloorTiles;
-    }
 
 
-    /**
-     * Method that finalizes the tiles for the floor. Version 2.
-     * @returns New array of tiles for a floor
-     */
-    makeFloorV2() {
-        let newFloorTiles = this.floorTiles;
 
-        for (let i = 0; i < this.floorTiles.length; i++) {
-            for (let j = 0; j < this.floorTiles[0].length; j++) {
-
-            }
         }
 
         return newFloorTiles;
@@ -281,6 +397,24 @@ class Floor {
         }
 
         return newFloorTiles;
+    }
+
+
+    /**
+     * Helper method that selects a random top wall tile. Need this so that we can use
+     * 1 tile that requires a background tile.
+     */
+    _selectRandomTopWallTile() {
+        let topWallTileXPosition = Math.floor(Math.random() * 7) * 32;
+        if (topWallTileXPosition !== 32) {
+            return new SpecialTile({ position: [topWallTileXPosition, 256], type: "wall" })
+        } else {
+            let randFloorTilePos = this.chosenTileSet[Math.floor(Math.random() * (this.chosenTileSet.length))];
+            return [
+                randFloorTilePos,
+                new SpecialTile({ position: [topWallTileXPosition, 256], type: "wall" })
+            ];
+        }
     }
 }
 

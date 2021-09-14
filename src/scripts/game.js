@@ -44,7 +44,7 @@ class Game {
 
         // Draw everything. Delegates to draw(ctx) methods of each class
         this.floor.draw(ctx);
-        this.player.draw(ctx);
+        this.player.isDead ? null : this.player.draw(ctx);
         this.enemies.forEach(ele => ele.draw(ctx));
         this.projectiles.forEach(ele => ele.draw(ctx));
     }

@@ -17,9 +17,17 @@ class Projectile extends MovingObject {
     move() {
         super.move(); // Moves projectile
 
-        // Checking if the projectiles has collided with a wall
+        // Bug fix for if someone shoots a perfectly aligned projectile out of an already opened door
+        if (this.position[1] <= -10) {
+            this.remove();
+            return;
+        }
+
+        // ---------------- Checking if the projectile has collided with a wall ----------------
+
         let xCoord = this.position[0];
         let yCoord = this.position[1];
+
         // Using position to find what kind of Tile the projectile is on. Have to
         // adjust the xCoord & yCoord differently for the Player's Projectiles and the
         // Shooter's Projectiles.
@@ -28,8 +36,12 @@ class Projectile extends MovingObject {
             nextTile = this.game.floor.floorTiles[Math.floor((yCoord - 20) / 40) + 1][Math.floor((xCoord - 25) / 40) + 1] :
             nextTile = this.game.floor.floorTiles[Math.floor((yCoord - 30) / 40) + 1][Math.floor((xCoord - 40) / 40) + 1];
 
-        if (nextTile instanceof SpecialTile) {
-            if (nextTile.type === "wall") this.remove();
+        if (nextTile instanceof SpecialTile || (nextTile.length === 2 && nextTile[0] instanceof Array)) {
+            if (nextTile.type === "wall") {
+                this.remove();
+            } else if (nextTile[1] instanceof SpecialTile) {
+                nextTile[1].type === "wall" ? this.remove() : null;
+            }
         }
     }
 
