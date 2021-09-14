@@ -133,7 +133,7 @@ class Character extends MovingObject {
         let nextTile = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
         
         if (nextTile instanceof SpecialTile || (nextTile.length === 2 && nextTile[0] instanceof Array)) {
-            if (nextTile.type === "pit") {
+            if (nextTile.type === "pit") { ////////////// REFACTOR TO USE CURRENT POSITION INSTEAD OF FUTURE
                 this.dead();
             } else if (nextTile.type === "wall" || nextTile[1].type === "wall") {
 

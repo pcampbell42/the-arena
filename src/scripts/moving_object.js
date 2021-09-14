@@ -4,7 +4,7 @@ class MovingObject {
         this.position = params["position"];
         this.velocity = params["velocity"];
         this.game = params["game"];
-        this.animationPace = 1;
+        this.animationPace = 1; // Used to slow down animations when the player slows down time
         this.drawing = new Image();
     }
 
@@ -19,9 +19,10 @@ class MovingObject {
 
     
     /**
-     * 
-     * @param {*} obj 
-     * @returns 
+     * A basic collision checking method. Used to check if projectiles have collided
+     * with characters.
+     * @param {MovingObject} obj - Should be a Character
+     * @returns - A boolean, true if collided, false if not
      */
     isCollidedWith(obj) {
         let xDiff = this.position[0] - obj.position[0];
@@ -31,9 +32,13 @@ class MovingObject {
 
 
     /**
-     * 
-     * @param {*} obj 
-     * @returns 
+     * An alternate collision checking method. Used to check if a character is going
+     * to collide with another character. Instead of using the current position, as in
+     * isCollidedWith, uses the future position (position + velocity). This is because
+     * if the current position were used to detect collision between characters, the 
+     * two characters would be stuck together once they collide.
+     * @param {MovingObject} obj - Should be a Character
+     * @returns - A boolean, true if collided, false if not
      */
     willCollideWith(obj) {
         return Math.abs(this.position[0] + this.velocity[0] - obj.position[0]) < 25 && 

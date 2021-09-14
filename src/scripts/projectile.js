@@ -66,7 +66,8 @@ class Projectile extends MovingObject {
 
     
     /**
-     * Checks if two projectiles have collided. Same as MovingObject isCollidedWith, 
+     * An third collision checking method (the other two are in MovingObject). This 
+     * method checks if two projectiles have collided. Same as MovingObject isCollidedWith, 
      * but for smaller objects.
      * @param {Projectile} proj 
      */
