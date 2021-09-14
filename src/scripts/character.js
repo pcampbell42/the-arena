@@ -129,12 +129,16 @@ class Character extends MovingObject {
             }
         }
 
-        // --------- Checking if moving into a wall ---------
+        // --------- Checking if moving into a wall (and preventing enemies from walking into a pit) ---------
         let futureXCoord = this.position[0] + this.velocity[0];
         let futureYCoord = this.position[1] + this.velocity[1];
         // Using future position to find what kind of Tile the character is moving into
         let nextTile = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
         
+        // Enemies shouldn't just randomly walk into a pit
+        if (this !== this.game.player && !this.knockedBack && 
+            nextTile instanceof SpecialTile && nextTile.type === "pit") return false; 
+
         if ((nextTile instanceof SpecialTile && nextTile.type === "wall") || 
             (nextTile[0] instanceof Array && nextTile[1].type === "wall")) {
             // If a character is knocked into a wall, the knockback is halted,

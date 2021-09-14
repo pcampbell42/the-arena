@@ -25,7 +25,7 @@ class Game {
         });
         this.projectiles = [];
         this.enemies = [];
-        this.spawnEnemies(0);
+        this.spawnEnemies(1);
         
         this.slowed = false;
         this.paused = false;
