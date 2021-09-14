@@ -14,6 +14,9 @@ class Enemy extends Character {
         this.knockedBackCounter = 0;
         this.stunned = false;
         this.stunnedCounter = 0;
+
+        // this.aggroed;
+        // this.spawnPosition = params["spawnPosition"];
     }
 
 
