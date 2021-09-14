@@ -12,19 +12,20 @@ class Game {
 
         this.floor = new Floor({
             canvasSizeX: this.canvasSizeX,
-            canvasSizeY: this.canvasSizeY
+            canvasSizeY: this.canvasSizeY,
+            floorNum: 1
         });
         this.doorOpened = false;
         this.currentFloor = 1;
 
         this.player = new Player({
-            position: [this.canvasSizeX / 2 - 50, this.canvasSizeY - 100],
+            position: [35, this.canvasSizeY - 100],
             velocity: [0, 0],
             game: this
         });
         this.projectiles = [];
         this.enemies = [];
-        this.spawnEnemies(0);
+        this.spawnEnemies(1);
         
         this.slowed = false;
         this.paused = false;
@@ -43,7 +44,7 @@ class Game {
 
         // Draw everything. Delegates to draw(ctx) methods of each class
         this.floor.draw(ctx);
-        this.player.draw(ctx);
+        this.player.isDead ? null : this.player.draw(ctx);
         this.enemies.forEach(ele => ele.draw(ctx));
         this.projectiles.forEach(ele => ele.draw(ctx));
     }
@@ -79,7 +80,7 @@ class Game {
                     canvasSizeX: this.canvasSizeX,
                     canvasSizeY: this.canvasSizeY
                 });
-                this.player.position = [this.canvasSizeX / 2 - 50, this.canvasSizeY - 100];
+                this.player.position = [35, this.canvasSizeY - 100];
                 this.currentFloor += 1;
 
                 let numEnemiesToSpawn = this.currentFloor <= 5 ? this.currentFloor :

@@ -1,4 +1,6 @@
 const Character = require("./character.js");
+const SpecialTile = require("./special_tile");
+
 
 class Enemy extends Character {
     constructor(params) {
@@ -15,6 +17,10 @@ class Enemy extends Character {
     }
 
 
+    /**
+     * 
+     * @returns 
+     */
     action() {
         if (this.busy) return;
 
@@ -37,7 +43,9 @@ class Enemy extends Character {
                 (this.game.player.position[1] - this.position[1]) ** 2);
     
             let randNum = Math.floor(Math.random() * this.firingRate);
-            if (randNum <= 5 && distanceToPlayer < this.attackRange) { // 1 in firingRate chance to fire at player
+            let facingPlayer = ((this.position[0] - this.game.player.position[0]) >= 0 && this.direction === "left" ||
+                (this.position[0] - this.game.player.position[0]) <= 0 && this.direction === "right");
+            if (randNum <= 5 && distanceToPlayer < this.attackRange && this.playerInLOS() && facingPlayer) { // 1 in firingRate chance to fire at player
                 this.startAttack(this.game.player.position);
             } else { // Else moves towards player - enemies can't move and shoot at same time - 1 or the other
                 this.move(distanceToPlayer);
@@ -46,6 +54,10 @@ class Enemy extends Character {
     }
 
 
+    /**
+     * 
+     * @param {*} distanceToPlayer 
+     */
     move(distanceToPlayer) {
         // Basically, every time this move() is called, knockBackCounter gets incremented, once it's 15,
         // the knockback is over
@@ -58,14 +70,19 @@ class Enemy extends Character {
             super.move();
 
         } else {
-            // --------- If enemy is close to player, enemy will chase player down ---------
+            // --------- If enemy is close to player and in LOS, enemy will chase player down ---------
             if (distanceToPlayer < 300) {
-                // --------- Getting the direction the player is in and setting velocity ---------
-                let xDir = Math.sign(this.game.player.position[0] - this.position[0]);
-                let yDir = Math.sign(this.game.player.position[1] - this.position[1]);
-                this.velocity = [xDir * this.speed, yDir * this.speed];
-                (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
-                this.status = "moving";
+                // Add logic so that you can sneak up on enemies whose backs are turned to you
+                let facingPlayer = ((this.position[0] - this.game.player.position[0]) >= 0 && this.direction === "left" ||
+                                    (this.position[0] - this.game.player.position[0]) <= 0 && this.direction === "right");
+                if (this.playerInLOS() && facingPlayer) {
+                    // --------- Getting the direction the player is in and setting velocity ---------
+                    let xDir = Math.sign(this.game.player.position[0] - this.position[0]);
+                    let yDir = Math.sign(this.game.player.position[1] - this.position[1]);
+                    this.velocity = [xDir * this.speed, yDir * this.speed];
+                    (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
+                    this.status = "moving";
+                }
             }
     
             if (this.game.slowed) {
@@ -77,6 +94,10 @@ class Enemy extends Character {
     }
 
 
+    /**
+     * 
+     * @param {*} ctx 
+     */
     draw(ctx) {
         // For some bizarro reason, I have to do this here instead of in startKnockback, which would make way more sense
         // Basically, if an enemy is knockedBack, attacking is canceled and they're no longer busy
@@ -148,6 +169,51 @@ class Enemy extends Character {
     }
 
 
+    /**
+     * A helper method that's called in a couple move()'s to check if the player 
+     * is in LOS of the enemy. Affects AI behavior. The basic logic is to draw a 
+     * line from one character to the other, find the mx + b, and then iterate 
+     * through the x values, checking if any tile along the way is a wall.
+     * @returns - A boolean, true if player is in LOS of the enemy, false if not.
+     */
+    playerInLOS() {
+        // EDGE CASES what if x is the same...? what if y is the same...?
+
+        let playerPos = this.game.player.position;
+        let enemyPos = this.position;
+        let x1;
+        let x2;
+        let y1;
+        let m;
+        if (enemyPos[0] < playerPos[0]) {
+            x1 = enemyPos[0];
+            y1 = enemyPos[1];
+            x2 = playerPos[0];
+            m = (playerPos[1] - enemyPos[1]) / (playerPos[0] - enemyPos[0]);
+        } else {
+            x1 = playerPos[0];
+            y1 = playerPos[1];
+            x2 = enemyPos[0];
+            m = (enemyPos[1] - playerPos[1]) / (enemyPos[0] - playerPos[0])
+        }
+        let b = y1 - (m * x1);
+
+        while (x1 < x2) {
+            let currY = (m * x1) + b
+
+            let currentTile = this.game.floor.floorTiles[Math.floor(currY / 40) + 1][Math.floor(x1 / 40) + 1];
+            if ((currentTile instanceof SpecialTile && currentTile.type === "wall") ||
+                currentTile[0] instanceof Array && currentTile[1].type === "wall") return false;
+            x1++;
+        }
+        return true;
+    }
+
+
+    /**
+     * 
+     * @param {*} knockedDirection 
+     */
     startKnockback(knockedDirection) {
         this.knockedBack = true;
         this.knockedBackCounter = 0;
@@ -183,14 +249,22 @@ class Enemy extends Character {
     }
 
 
+    /**
+     * Takes a specified amount of damage
+     * @param {Number} damage 
+     */
     takeDamage(damage) {
         super.takeDamage(damage);
     }
 
 
+    /**
+     * Removes the enemy from Game.
+     */
     dead() {
         this.remove();
     }
 }
+
 
 module.exports = Enemy;

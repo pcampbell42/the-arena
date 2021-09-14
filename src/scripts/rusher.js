@@ -16,7 +16,7 @@ class Rusher extends Enemy {
     }
 
     move(distanceToPlayer) {
-        if (distanceToPlayer > 300) this.status = "idle";
+        if (distanceToPlayer > 300 || !this.playerInLOS()) this.status = "idle";
         super.move(distanceToPlayer);
     }
     

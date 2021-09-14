@@ -18,7 +18,7 @@ class Shooter extends Enemy {
     move(distanceToPlayer) {
         let randNum = Math.floor(Math.random() * 200); // For later use
 
-        if (distanceToPlayer > 300) {
+        if (distanceToPlayer > 300 || !this.playerInLOS()) {
             // --------- AI decides to chill for a bit ---------
             if (randNum <= 10) this.status = "idle";
 
