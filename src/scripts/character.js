@@ -6,18 +6,21 @@ const SpecialTile = require("./special_tile.js");
 class Character extends MovingObject {
     constructor(params) {
         super(params);
+
         this.status = "idle"
+        this.direction = "right";
         this.attacking = false;
         this.rolling = false;
         this.busy = false;
-        this.direction = "right";
+
         this.step = 0;
         this.target = [];
     }
 
 
     /**
-     * 
+     * Basic move method that handles the movement logic for Characters. Called in the
+     * Enemy and Player move() methods.
      */
     move() {
         // --------- Moves character if future position is valid ---------
@@ -34,7 +37,7 @@ class Character extends MovingObject {
 
     /**
      * 
-     * @param {*} ctx 
+     * @param {CanvasRenderingContext2D} ctx - 2D Canvas context to draw the game
      */
     draw(ctx) {
         // --------- Figuring out which part of animation to do next ---------
@@ -126,47 +129,51 @@ class Character extends MovingObject {
             }
         }
 
-        // --------- Checking if moving into a wall / pit ---------
+        // --------- Checking if moving into a wall ---------
         let futureXCoord = this.position[0] + this.velocity[0];
         let futureYCoord = this.position[1] + this.velocity[1];
         // Using future position to find what kind of Tile the character is moving into
         let nextTile = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
         
-        if (nextTile instanceof SpecialTile || (nextTile.length === 2 && nextTile[0] instanceof Array)) {
-            if (nextTile.type === "pit") { ////////////// REFACTOR TO USE CURRENT POSITION INSTEAD OF FUTURE
-                this.dead();
-            } else if (nextTile.type === "wall" || nextTile[1].type === "wall") {
-
-                // If a character is knocked into a wall, the knockback is halted,
-                // the character is stunned, and the character takes small damage
-                if (this.knockedBack) {
-                    this.takeDamage(5);
-                    this.knockedBack = false;
-                    this.stunned = true;
-                    this.stunnedCounter = 0;
-                }
-                return false;
+        if ((nextTile instanceof SpecialTile && nextTile.type === "wall") || 
+            (nextTile[0] instanceof Array && nextTile[1].type === "wall")) {
+            // If a character is knocked into a wall, the knockback is halted,
+            // the character is stunned, and the character takes small damage
+            if (this.knockedBack) {
+                this.takeDamage(5);
+                this.knockedBack = false;
+                this.stunned = true;
+                this.stunnedCounter = 0;
             }
+            return false;
         }
+
+        // --------- Checking if currently in a pit ---------
+        let currentTile = this.game.floor.floorTiles[Math.floor((this.position[1] + 5) / 40) + 1][Math.floor((this.position[0] - 5) / 40) + 1];
+        if (currentTile instanceof SpecialTile && currentTile.type === "pit") this.dead();
 
         return true;
     }
 
 
     /**
-     * 
-     * @param {*} target 
+     * This method is called when an attack is initiated. The actual attack is 
+     * launched from the draw methods of Enemy and Player (so as to line up
+     * with the animation).
+     * @param {Array} target - [x, y] coords. Either the position of the player 
+     * or the player's mouse position
      */
     startAttack(target) {
-        this.attacking = true;
-        this.busy = true;
-        this.step = 0;
+        this.attacking = true; // The draw() method sees this and animates / fires off attacks
+        this.busy = true; // Prevents the character from doing anything else
+        this.step = 0; // Sets the animation step to 0 to begin attack animation
         this.target = target;
     }
 
 
     /**
-     * 
+     * Simple method that launches a projectile at this.target. Called from the draw() 
+     * methods of Enemy and Player.
      */
     launchProjectile() {
         let z = Math.sqrt((this.target[0] - (this.position[0] + 30)) ** 2 + (this.target[1] - (this.position[1] + 25)) ** 2);
@@ -181,6 +188,7 @@ class Character extends MovingObject {
             game: this.game
         });
         
+        // If the game is slowed, the projectile's velocity is lowered appropriately
         if (this.game.slowed) {
             p.velocity[0] /= 4;
             p.velocity[1] /= 4;
@@ -190,22 +198,23 @@ class Character extends MovingObject {
 
 
     /**
-     * 
-     * @returns 
+     * This method is called to initiate a roll. 
+     * @returns - null if not moving
      */
     roll() {
-        if (this.velocity[0] === 0 && this.velocity[1] === 0) return;
-        this.rolling = true;
-        this.busy = true;
-        this.step = 0;
+        if (this.velocity[0] === 0 && this.velocity[1] === 0) return; // If not moving, can't roll
+        this.rolling = true; // Used in many places (such as collision check, draw())
+        this.busy = true; // Prevents character from doing other things while rolling
+        this.step = 0; // Sets the animation step to 0 to begin roll animation
     }
 
 
     /**
-     * 
-     * @param {*} damage 
+     * When a Character is hit by an attack, this method is called on them.
+     * @param {Number} damage - Amount of damage for Character to take
      */
     takeDamage(damage) {
+        // If journalistDifficulty is on, player only ever takes 1 damage from attacks
         if (this.game.journalistDifficulty && this.game.player === this) {
             this.health -= 1;
         } else {

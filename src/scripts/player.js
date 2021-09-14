@@ -1,13 +1,14 @@
 const Character = require("./character.js");
 
+
 class Player extends Character {
     constructor(params) {
         super(params);
         
         this.images = "./dist/assets/cyborg";
-        this.idleFrames = 4;
-        this.runningFrames = 6;
-        this.animationPace = 2;
+        this.idleFrames = 4; // How many frames this Character has in the idle animation
+        this.runningFrames = 6; // How many frames this Character has in the running animation
+        this.animationPace = 2; // Personalized animation pace
 
         this.health = 100;
         this.energy = 100;
@@ -15,10 +16,28 @@ class Player extends Character {
         this.kicking = false;
     }
 
+
+    /**
+     * Method that is called instead of move() in Game. Does some extra logic then
+     * calls move().
+     */
     action() {
+        // Checking if on top of switch (if on the same tile, turn the switch on)
+        if (this.game.floor.hasExtraDoor) {
+            let currentTilePosition = [Math.floor((this.position[0]) / 40) + 1, Math.floor((this.position[1]) / 40) + 1];
+            // console.log(`${currentTilePosition} ----- ${this.game.floor.switchPosition}`)
+            if (currentTilePosition[0] === this.game.floor.switchPosition[0] && 
+                currentTilePosition[1] === this.game.floor.switchPosition[1]) {
+                this.game.floor.extraDoorOpen = true;
+            }
+        } 
         this.move();
     }
 
+
+    /**
+     * Movement method for the player character. Handles keybinds.
+     */
     move() {
         // --------- Resets velocity immediately (momentum isn't a thing) ---------
         // If kicking, velocity is 0
@@ -41,10 +60,15 @@ class Player extends Character {
                 this.direction = "right"
             }
         }
-        // // --------- Call bulk of move function ---------
+        // --------- Call bulk of move function ---------
         super.move();
     }
 
+
+    /**
+     * 
+     * @param {*} ctx 
+     */
     draw(ctx) {
         if (this.attacking) {
             let stepXCoord = this._selectFrame(2 / this.animationPace);
@@ -92,6 +116,10 @@ class Player extends Character {
         }
     }
 
+
+    /**
+     * 
+     */
     launchProjectile() {
         if (this.energy > 0) {
             this.energy -= 1;
@@ -99,6 +127,10 @@ class Player extends Character {
         }
     }
 
+
+    /**
+     * 
+     */
     startKick() {
         this.kicking = true;
         this.busy = true;
@@ -106,6 +138,11 @@ class Player extends Character {
         this.target = [];
     }
 
+
+    /**
+     * 
+     * @returns 
+     */
     kick() {
         for (let i = 0; i < this.game.enemies.length; i++) {
             let distanceToEnemy = Math.sqrt((this.game.enemies[i].position[0] - this.position[0]) ** 2 +
@@ -136,9 +173,14 @@ class Player extends Character {
         }
     }
 
+
+    /**
+     * U died lol
+     */
     dead() {
         this.isDead = true;
     }
 }
+
 
 module.exports = Player;

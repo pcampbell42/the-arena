@@ -10,6 +10,12 @@ class Floor {
 
         this.altTilset = new Image();
         this.altTilset.src = "./dist/assets/tileset.png";
+
+        this.switchOn = new Image();
+        this.switchOn.src = "./dist/assets/switch2.png"
+
+        this.switchOff = new Image();
+        this.switchOff.src = "./dist/assets/switch0.png"
         
         // Positions of possible ground tiles in the tileset image. They're grouped 
         // into sets so that the ground doesn't look super weird (aka, red, blue, yellow, 
@@ -35,15 +41,19 @@ class Floor {
         this.numRows = Math.floor(params["canvasSizeY"] / 40);
         this.numCols = Math.floor(params["canvasSizeX"] / 40);
 
+        // Next room door related variables
+        this.doorPosition = Math.floor(this.numCols / 2) * 40;
+        this.doorOpened = false;
+
+        // Extra door related variables
+        this.hasExtraDoor = false;
+        this.extraDoorPosition = [];
+        this.extraDoorOpen = false;
+        this.switchPosition = [];
+
         // Creates template, picks which floor to use
         this.floorTiles = this.makeFloorTemplate();
         params["floorNum"] === 1 ? this.floorTiles = this.makeFloorV2() : null;
-
-        // Door related variables
-        this.doorPosition = Math.floor(this.numCols / 2) * 40;
-        this.doorOpened = false;
-        this.extraDoorIndex = [];
-        this.extraDoorOpen = false;
     }
 
 
@@ -52,14 +62,16 @@ class Floor {
      * @param {CanvasRenderingContext2D} ctx - 2D Canvas to draw on
      */
     draw(ctx) {
-        // If door is opened, replace the wall tile with a "random" ground tile
+        // If a door is opened, replace the door tile with a "random" ground tile
         if (this.doorOpened) this.floorTiles[0][Math.floor(this.numCols / 2)] = this.floorTiles[this.numRows - 2][0].position;
+        if (this.extraDoorOpen) this.floorTiles[this.extraDoorPosition[0]][this.extraDoorPosition[1]][1] = [128, 160];
 
-        // Draw each tile
+        // Drawing each tile
         for (let i = 0; i < this.numRows; i++) {
             for (let j = 0; j < this.numCols; j++) {
                 let currentTile = this.floorTiles[i][j];
 
+                // Wall or pit tile
                 if (currentTile instanceof SpecialTile) {
                     // Pit images come from different tileset
                     if (currentTile.type === "pit") {
@@ -68,26 +80,40 @@ class Floor {
                         ctx.drawImage(this.tileset, currentTile.position[0], currentTile.position[1], 32, 32, 40 * j, 40 * i, 40, 40);
                     }
                 } 
-                // Some tiles require background tiles, and thus are arrays of 2 tiles to be drawn on top of each other
-                else if (currentTile.length === 2 && currentTile[0] instanceof Array) {
+                // Some wall tiles require background tiles, and thus are arrays of 2 tiles to be drawn on top of each other
+                else if (currentTile[1] instanceof SpecialTile) {
                     // First tile is always a normal ground tile
                     ctx.drawImage(this.tileset, currentTile[0][0], currentTile[0][1], 32, 32, 40 * j, 40 * i, 40, 40);
                     // Second tile is always a SpecialTile
                     ctx.drawImage(this.tileset, currentTile[1].position[0], currentTile[1].position[1], 32, 32, 40 * j, 40 * i, 40, 40);
+                }
+                // In some cases, non-wall tiles require background tiles, and must be handled differently from above
+                else if (currentTile[1] instanceof Array) {
+                    ctx.drawImage(this.tileset, currentTile[0][0], currentTile[0][1], 32, 32, 40 * j, 40 * i, 40, 40);
+                    ctx.drawImage(this.tileset, currentTile[1][0], currentTile[1][1], 32, 32, 40 * j, 40 * i, 40, 40);
 
-
-                } else {
+                }
+                // Normal ground tiles
+                else {
                     ctx.drawImage(this.tileset, currentTile[0], currentTile[1], 32, 32, 40 * j, 40 * i, 40, 40);
                 }
-
             }
         }
 
-        // Draw opened door (to previous room) on top of ground tile
+        // Draw closed door (to previous room) on top of ground tile
         ctx.drawImage(this.tileset, 160, 128, 32, 64, 0, 40 * Math.floor(this.numRows) - 120, 40, 80)
 
-        // If door is opened, draw the opened door on top of the random ground tile picked above
+        // If next floor door is opened, draw the opened door on top of the random ground tile picked above
         if (this.doorOpened) ctx.drawImage(this.tileset, 128, 160, 32, 32, 40 * Math.floor(this.numCols / 2), 0, 40, 40);
+
+        // Drawing extra door switch
+        if (this.hasExtraDoor) {
+            if (this.extraDoorOpen) {
+                ctx.drawImage(this.switchOn, 0, 0, 32, 64, this.switchPosition[0] * 40 + 3, this.switchPosition[1] * 40 - 5, 40, 80);
+            } else {
+                ctx.drawImage(this.switchOff, 0, 0, 32, 64, this.switchPosition[0] * 40 + 3, this.switchPosition[1] * 40 - 5, 40, 80);
+            }
+        }
     }
 
 
@@ -337,14 +363,12 @@ class Floor {
                         this.floorTiles[this.numRows - 2][0].position,
                         new SpecialTile({ position: [128, 128], type:"wall" })
                     ];
-                    this.extraDoorIndex = [3, this.numCols - 8];
+                    this.hasExtraDoor = true;
+                    this.extraDoorPosition = [3, this.numCols - 8];
+                    this.switchPosition = [1, this.numRows - 6];
                 }
             }
-
-
-
         }
-
         return newFloorTiles;
     }
 
@@ -402,7 +426,7 @@ class Floor {
 
     /**
      * Helper method that selects a random top wall tile. Need this so that we can use
-     * 1 tile that requires a background tile.
+     * 1 top wall tile that requires a background tile.
      */
     _selectRandomTopWallTile() {
         let topWallTileXPosition = Math.floor(Math.random() * 7) * 32;
