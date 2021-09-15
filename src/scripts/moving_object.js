@@ -3,9 +3,9 @@ class MovingObject {
     constructor(params) {
         this.position = params["position"];
         this.velocity = params["velocity"];
-        this.game = params["game"];
+        this.game = params["game"]; // Every MovingObject has access to its Game
         this.animationPace = 1; // Used to slow down animations when the player slows down time
-        this.drawing = new Image();
+        this.drawing = new Image(); // The src of this is changed when animating
     }
 
 

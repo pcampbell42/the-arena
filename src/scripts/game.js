@@ -25,7 +25,7 @@ class Game {
         });
         this.projectiles = [];
         this.enemies = [];
-        this.spawnEnemies(1);
+        this.spawnEnemies(0);
         
         this.slowed = false;
         this.paused = false;
@@ -84,7 +84,7 @@ class Game {
                 this.currentFloor += 1;
 
                 let numEnemiesToSpawn = this.currentFloor <= 5 ? this.currentFloor :
-                        Math.floor((Math.random() * 6)) + 3; // Number enemies to spawn is random after floor 5
+                        Math.floor((Math.random() * 10)) + 5; // Number enemies to spawn is random after floor 5
                 this.spawnEnemies(numEnemiesToSpawn);
     
                 this.player.energy += 20; // Player receives 20 energy on moving to next floor
