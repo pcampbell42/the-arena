@@ -8,13 +8,13 @@ class Character extends MovingObject {
         super(params);
 
         this.status = "idle"
-        this.direction = "right";
+        this.direction = Math.random() > 0.5 ? "right" : "left"; // Randomly set direction on spawn
         this.attacking = false;
         this.rolling = false;
         this.busy = false;
 
-        this.step = 0;
-        this.target = [];
+        this.step = 0; // Used for animation
+        this.target = []; // Used when firing an attack (kind of an unnecessary instance variable)
     }
 
 
@@ -27,7 +27,7 @@ class Character extends MovingObject {
         let validMove = this.validMove();
         if (validMove) super.move();
 
-        // --------- Sets status (used in animation) of character based on velocity ---------
+        // --------- Sets status (used in animation) of Player based on velocity ---------
         if (this.game.player === this) {
             if (this.velocity[0] === 0 && this.velocity[1] === 0) this.status = "idle";
             if (this.velocity[0] !== 0 || this.velocity[1] !== 0) this.status = "moving";
@@ -36,7 +36,8 @@ class Character extends MovingObject {
 
 
     /**
-     * 
+     * Bottom level draw method. For animations that are shared by all Characters 
+     * (moving and idle).
      * @param {CanvasRenderingContext2D} ctx - 2D Canvas context to draw the game
      */
     draw(ctx) {
@@ -63,9 +64,18 @@ class Character extends MovingObject {
 
 
     /**
+     * Very important helper method. Called in draw(), determines which frame of an 
+     * animation to use from an animation sheet.
      * 
-     * @param {*} stepFactor 
-     * @returns 
+     * @param {Number} stepFactor - Basically, this number determines how fast to animate. 
+     * At each iteration of the game loop, this.step is incremented by 1. I determine 
+     * which frame of the animation sheet to use based on this.step and stepFactor. For 
+     * example, if stepFactor is 1, the first frame is used when this.step is 0, the second
+     * when this.step is 1, etc. This is problematic because then the animation is really 
+     * fast. Therefore, stepFactor is generally a larger number, that can then be lessened
+     * by some factor when time slows down.
+     * 
+     * @returns - Number. The x-position of the frame to draw in the animation sheet.
      */
     _selectFrame(stepFactor) {
         // --------- If past last step of animation, reset to first step ---------
@@ -98,14 +108,15 @@ class Character extends MovingObject {
 
     /**
      * Important helper method that's used to check if a Character's move is going to be valid.
-     * Checks if moving into the player, an enemy, a wall, or a pit.
+     * Checks if the Character is moving into the player, an enemy, or a pit. Note that
+     * this method is used to check for valid spawns in spawnEnemies in Game.
      * @returns - A boolean (true for valid move, false for not)
      */
     validMove() {
-        // --------- Checking if moving into player ---------
+        // ------------------ Checking if moving into player ------------------
         if (this !== this.game.player && this.willCollideWith(this.game.player)) return false;
 
-        // --------- Checking if moving into an enemy ---------
+        // ------------------ Checking if moving into an enemy ------------------
         for (let i = 0; i < this.game.enemies.length; i++) {
             if (!this.rolling && this !== this.game.enemies[i]) {
                 if (this.willCollideWith(this.game.enemies[i])) {
@@ -113,15 +124,17 @@ class Character extends MovingObject {
                     // If a character was knocked into another character, the knockback is 
                     // halted, they both get stunned, and they both take small damage
                     if (this.knockedBack) {
-                        this.takeDamage(5);
                         this.knockedBack = false;
                         this.stunned = true;
                         this.stunnedCounter = 0;
+                        this.velocity = [0, 0];
+                        this.takeDamage(5);
 
                         if (this.game.enemies[i]) {
-                            this.game.enemies[i].takeDamage(5);
                             this.game.enemies[i].stunned = true;
                             this.game.enemies[i].stunnedCounter = 0;
+                            this.velocity = [0, 0];
+                            this.game.enemies[i].takeDamage(5);
                         }
                     }
                     return false;
@@ -129,30 +142,16 @@ class Character extends MovingObject {
             }
         }
 
-        // --------- Checking if moving into a wall (and preventing enemies from walking into a pit) ---------
+        // ------------------ Checking Pit Collision ------------------
+
+        // Enemies pit collision (they shouldn't just walk into a pit for no reason)
         let futureXCoord = this.position[0] + this.velocity[0];
         let futureYCoord = this.position[1] + this.velocity[1];
-        // Using future position to find what kind of Tile the character is moving into
         let nextTile = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
-        
-        // Enemies shouldn't just randomly walk into a pit
-        if (this !== this.game.player && !this.knockedBack && 
-            nextTile instanceof SpecialTile && nextTile.type === "pit") return false; 
+        if (this !== this.game.player && !this.knockedBack &&
+            nextTile instanceof SpecialTile && nextTile.type === "pit") return false;
 
-        if ((nextTile instanceof SpecialTile && nextTile.type === "wall") || 
-            (nextTile[0] instanceof Array && nextTile[1].type === "wall")) {
-            // If a character is knocked into a wall, the knockback is halted,
-            // the character is stunned, and the character takes small damage
-            if (this.knockedBack) {
-                this.takeDamage(5);
-                this.knockedBack = false;
-                this.stunned = true;
-                this.stunnedCounter = 0;
-            }
-            return false;
-        }
-
-        // --------- Checking if currently in a pit ---------
+        // Player pit collision (uses currentTile instead of nextTile - aka, position instead of position + velocity)
         let currentTile = this.game.floor.floorTiles[Math.floor((this.position[1] + 5) / 40) + 1][Math.floor((this.position[0] - 5) / 40) + 1];
         if (currentTile instanceof SpecialTile && currentTile.type === "pit") this.dead();
 
@@ -218,7 +217,7 @@ class Character extends MovingObject {
      * @param {Number} damage - Amount of damage for Character to take
      */
     takeDamage(damage) {
-        // If journalistDifficulty is on, player only ever takes 1 damage from attacks
+        // If journalistDifficulty is on, the player only ever takes 1 damage from attacks
         if (this.game.journalistDifficulty && this.game.player === this) {
             this.health -= 1;
         } else {

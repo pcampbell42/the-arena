@@ -17,31 +17,50 @@ class Projectile extends MovingObject {
     move() {
         super.move(); // Moves projectile
 
-        // Bug fix for if someone shoots a perfectly aligned projectile out of an already opened door
-        if (this.position[1] <= -10) {
+        // Bug fix for if someone shoots a perfectly aligned projectile out of an 
+        // already opened door. Also fix visual bug where projectile looks like its 
+        // moving through wall on right side of floor.
+        if (this.position[1] <= 0 || this.position[1] >= this.game.canvasSizeX) {
             this.remove();
             return;
         }
 
+        this.hitWall() ? this.remove() : null; // If projectile has hit a wall, remove it
+    }
+
+
+    /**
+     * Same logic as the custom validMove() functions in Player and Enemy, but with
+     * adjustments made for projectiles (they're small). Called in move() above.
+     * @returns - Boolean, true if the projectile has hit a wall, false if not
+     */
+    hitWall() {
         // ---------------- Checking if the projectile has collided with a wall ----------------
 
         let xCoord = this.position[0];
         let yCoord = this.position[1];
+        
+        // Using position to find what kind of Tile the projectile is on.
+        let xAdjustedTileNegative = this.game.floor.floorTiles[Math.floor((yCoord - 30) / 40) + 1][Math.floor((xCoord - 50) / 40) + 1];
+        let xAdjustedTilePositive = this.game.floor.floorTiles[Math.floor((yCoord - 30) / 40) + 1][Math.floor((xCoord - 30) / 40) + 1];
+        let yAdjustedTileNegative = this.game.floor.floorTiles[Math.floor((yCoord - 40) / 40) + 1][Math.floor((xCoord - 40) / 40) + 1];
+        let yAdjustedTilePositive = this.game.floor.floorTiles[Math.floor((yCoord - 20) / 40) + 1][Math.floor((xCoord - 40) / 40) + 1];
 
-        // Using position to find what kind of Tile the projectile is on. Have to
-        // adjust the xCoord & yCoord differently for the Player's Projectiles and the
-        // Shooter's Projectiles.
-        let nextTile;
-        this.shooter === this.game.player ? 
-            nextTile = this.game.floor.floorTiles[Math.floor((yCoord - 20) / 40) + 1][Math.floor((xCoord - 25) / 40) + 1] :
-            nextTile = this.game.floor.floorTiles[Math.floor((yCoord - 30) / 40) + 1][Math.floor((xCoord - 40) / 40) + 1];
+        // Make sure none of them are undefined (will throw nasty error)
+        if (xAdjustedTileNegative !== undefined && xAdjustedTilePositive !== undefined &&
+            yAdjustedTileNegative !== undefined && yAdjustedTilePositive !== undefined) {
 
-        if (nextTile instanceof SpecialTile || (nextTile.length === 2 && nextTile[0] instanceof Array)) {
-            if (nextTile.type === "wall") {
-                this.remove();
-            } else if (nextTile[1] instanceof SpecialTile) {
-                nextTile[1].type === "wall" ? this.remove() : null;
-            }
+            // If all of the tiles are a wall, the projectile has hit a wall. The reason they all have
+            // to be true is so that projectile wall collision is very forgiving (it feels better to play).
+            if (((xAdjustedTileNegative instanceof SpecialTile && xAdjustedTileNegative.type === "wall") ||
+                (xAdjustedTileNegative[0] instanceof Array && xAdjustedTileNegative[1].type === "wall")) &&
+                ((xAdjustedTilePositive instanceof SpecialTile && xAdjustedTilePositive.type === "wall") ||
+                (xAdjustedTilePositive[0] instanceof Array && xAdjustedTilePositive[1].type === "wall")) &&
+                ((yAdjustedTileNegative instanceof SpecialTile && yAdjustedTileNegative.type === "wall") ||
+                (yAdjustedTileNegative[0] instanceof Array && yAdjustedTileNegative[1].type === "wall")) &&
+                ((yAdjustedTilePositive instanceof SpecialTile && yAdjustedTilePositive.type === "wall") ||
+                (yAdjustedTilePositive[0] instanceof Array && yAdjustedTilePositive[1].type === "wall")))
+                return true;
         }
     }
 

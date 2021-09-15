@@ -53,7 +53,7 @@ class Floor {
 
         // Creates template, picks which floor to use
         this.floorTiles = this.makeFloorTemplate();
-        params["floorNum"] === 1 ? this.floorTiles = this.makeFloorV2() : null;
+        params["floorNum"] === 1 ? null : this.pickFloor(); // Floor 1 is empty room
     }
 
 
@@ -113,6 +113,32 @@ class Floor {
             } else {
                 ctx.drawImage(this.switchOff, 0, 0, 32, 64, this.switchPosition[0] * 40 + 3, this.switchPosition[1] * 40 - 5, 40, 80);
             }
+        }
+    }
+
+    /**
+     * Simple helper method that picks and calls one of the floor versions.
+     */
+    pickFloor() {
+        let num = Math.floor(Math.random() * 5 + 1);
+        switch(num) {
+            case 1:
+                this.makeFloorV1();
+                break;
+            case 2:
+                this.makeFloorV2();
+                break;
+            case 3:
+                this.makeFloorV3();
+                break;
+            case 4:
+                this.makeFloorV4();
+                break;
+            case 5:
+                this.makeFloorV5();
+                break;
+            default:
+                break;
         }
     }
 
@@ -194,7 +220,7 @@ class Floor {
 
 
     /**
-     * Method that finalizes the tiles for the floor. Version 2.
+     * Method that finalizes the tiles for the floor. Version 1. Lots of pipes.
      * @returns New array of tiles for a floor
      */
     makeFloorV1() {
@@ -203,6 +229,289 @@ class Floor {
         for (let i = 0; i < this.floorTiles.length; i++) {
             for (let j = 0; j < this.floorTiles[0].length; j++) {
 
+                // -------------- Bottom pipes --------------
+                // 1 pipe
+                if (i <= this.numRows - 2 && i >= this.numRows - 4 && j === 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 5 && j === 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                }
+                // 1 pipe
+                if (i <= this.numRows - 2 && i >= this.numRows - 4 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 5 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                }
+                // 1 pipe
+                if (i <= this.numRows - 2 && i >= this.numRows - 4 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 5 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                }
+                // 1 pipe
+                if (i <= this.numRows - 2 && i >= this.numRows - 4 && j === 10) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 5 && j === 10) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                }
+                // 1 pipe
+                if (i <= this.numRows - 2 && i >= this.numRows - 4 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 5 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                }
+                // 1 pipe
+                if (i <= this.numRows - 2 && i >= this.numRows - 4 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 5 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                }
+
+                // -------------- Circle pipes --------------
+                // Top
+                else if (i === 2 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 512], type: "wall" })
+                    ];
+                } else if (i === 2 && j === this.numCols - 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 512], type: "wall" })
+                    ];
+                } else if (i === 3 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 544], type: "wall" })
+                    ];
+                } else if (i === 3 && j === this.numCols - 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 544], type: "wall" })
+                    ];
+                }
+                // Middle
+                else if (i === 5 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 512], type: "wall" })
+                    ];
+                } else if (i === 5 && j === this.numCols - 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 512], type: "wall" })
+                    ];
+                } else if (i === 6 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 544], type: "wall" })
+                    ];
+                } else if (i === 6 && j === this.numCols - 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 544], type: "wall" })
+                    ];
+                }
+                // Bottom
+                else if (i === 8 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 512], type: "wall" })
+                    ];
+                } else if (i === 8 && j === this.numCols - 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 512], type: "wall" })
+                    ];
+                } else if (i === 9 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 544], type: "wall" })
+                    ];
+                } else if (i === 9 && j === this.numCols - 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 544], type: "wall" })
+                    ];
+                }
+
+                // -------------- Long pipes --------------
+                // Left 1
+                else if (i === 2 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [0, 512], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 512], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 512], type: "wall" })
+                    ];
+                }
+                // Left 2
+                else if (i === 3 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [0, 512], type: "wall" })
+                    ];
+                } else if (i === 3 && j === 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 512], type: "wall" })
+                    ];
+                } else if (i === 3 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 512], type: "wall" })
+                    ];
+                }
+                // Left 3
+                else if (i === 4 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [0, 512], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 512], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 512], type: "wall" })
+                    ];
+                }
+                // Right 1
+                else if (i === 2 && j === 9) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [0, 512], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 10) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 512], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 512], type: "wall" })
+                    ];
+                }
+                // Right 2
+                else if (i === 3 && j === 9) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [0, 512], type: "wall" })
+                    ];
+                } else if (i === 3 && j === 10) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 512], type: "wall" })
+                    ];
+                } else if (i === 3 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 512], type: "wall" })
+                    ];
+                }
+                // Right 3
+                else if (i === 4 && j === 9) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [0, 512], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 10) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 512], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 512], type: "wall" })
+                    ];
+                }
+
+                // -------------- Walls --------------
+                // Left trio
+                else if (i === 2 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 3 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+                // Right trio
+                else if (i === 2 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 3 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+
+
             }
         }
 
@@ -210,7 +519,7 @@ class Floor {
     }
 
     /**
-     * Method that finalizes the tiles for the first floor.
+     * Method that finalizes the tiles for the floor. Version 2. Pit, extra door, lots of walls.
      * @returns - New Array of tiles for a floor
      */
     makeFloorV2() {
@@ -222,7 +531,6 @@ class Floor {
                 // Bottom row of wall
                 if (i === this.floorTiles.length - 3 && j < Math.floor(this.floorTiles[0].length / 2) + 1) {
                     this.floorTiles[i][j] = this._selectRandomTopWallTile();
-
                 }
                 // Bottom right corner of wall
                 else if (i === this.floorTiles.length - 3 && j === Math.floor(this.floorTiles[0].length / 2) + 1) {
@@ -374,7 +682,7 @@ class Floor {
 
 
     /**
-     * Method that finalizes the tiles for the floor. Version 3.
+     * Method that finalizes the tiles for the floor. Version 3. Paintball style (lots of cover, but open)
      * @returns New array of tiles for a floor
      */
     makeFloorV3() {
@@ -383,6 +691,114 @@ class Floor {
         for (let i = 0; i < this.floorTiles.length; i++) {
             for (let j = 0; j < this.floorTiles[0].length; j++) {
 
+                // -------------- Adding random wall segments --------------
+                if (i === 2 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 0], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [192, 0], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 0], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 5 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 6 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                } else if (i === 5 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 64], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 4 && j === 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 3 && j === 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 3 && j === 10) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 64], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 5 && j === 8) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 0], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 5 && j >= 9 && j <= 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [192, 0], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 5 && j === 13) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 0], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 8) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 64], type: "wall" })
+                    ];
+                } else if (i === 2 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 3 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 4 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+                
+                // -------------- Adding pit segment --------------
+                else if (i === 2 && j === 9) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [0, 96], type: "pit" });
+                } else if (i === 2 && j === 10) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 96], type: "pit" });
+                } else if (i === 2 && j === 11) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [64, 96], type: "pit" });
+                } else if (i === 3 && j === 9) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [0, 128], type: "pit" });
+                } else if (i === 3 && j === 10) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 128], type: "pit" });
+                } else if (i === 3 && j === 11) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [64, 128], type: "pit" });
+                } else if (i === 4 && j === 9) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [0, 160], type: "pit" });
+                } else if (i === 4 && j === 10) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 160], type: "pit" });
+                } else if (i === 4 && j === 11) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [64, 160], type: "pit" });
+                }
             }
         }
 
@@ -391,7 +807,7 @@ class Floor {
 
 
     /**
-     * Method that finalizes the tiles for the floor. Version 4.
+     * Method that finalizes the tiles for the floor. Version 4. Massive pit.
      * @returns New array of tiles for a floor
      */
     makeFloorV4() {
@@ -400,6 +816,152 @@ class Floor {
         for (let i = 0; i < this.floorTiles.length; i++) {
             for (let j = 0; j < this.floorTiles[0].length; j++) {
 
+                // -------------- Adding big pit --------------
+                // Top left corner
+                if (i === 2 && j === 4) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [160, 96], type: "pit" });
+                }
+                // Top right corner
+                else if (i === 2 && j === this.numCols - 5) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [224, 96], type: "pit" });
+                }
+                // Bottom left corner
+                else if (i === this.numRows - 3 && j === 4) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [160, 160], type: "pit" });
+                }
+                // Bottom right corner
+                else if (i === this.numRows - 3 && j === this.numCols - 5) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [224, 160], type: "pit" });
+                }
+                // Top row
+                else if (i === 2 && j > 4 && j < this.numCols - 5) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [192, 96], type: "pit" });
+                }
+                // Bottom row
+                else if (i === this.numRows - 3 && j > 4 && j < this.numCols - 5) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [192, 160], type: "pit" });
+                }
+                // Left side
+                else if (i > 2 && i < this.numRows - 3 && j === 4) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [160, 128], type: "pit" });
+                }
+                // Right side
+                else if (i > 2 && i < this.numRows - 3 && j === this.numCols - 5) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [224, 128], type: "pit" });
+                }
+                // Left Pyramid
+                else if (i === 4 && j === 6) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [256, 96], type: "pit" });
+                } else if (i === 4 && j === 7) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [288, 96], type: "pit" });
+                } else if (i === 5 && j === 6) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [256, 128], type: "pit" });
+                } else if (i === 5 && j === 7) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [288, 128], type: "pit" });
+                }
+                // Middle Pyramid
+                else if (i === this.numRows - 5 && j === 7) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [256, 96], type: "pit" });
+                } else if (i === this.numRows - 5 && j === 8) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [288, 96], type: "pit" });
+                } else if (i === this.numRows - 4 && j === 7) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [256, 128], type: "pit" });
+                } else if (i === this.numRows - 4 && j === 8) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [288, 128], type: "pit" });
+                }
+                // Right Pyramid
+                else if (i === 3 && j === this.numCols - 7) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [256, 96], type: "pit" });
+                } else if (i === 3 && j === this.numCols - 6) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [288, 96], type: "pit" });
+                } else if (i === 4 && j === this.numCols - 7) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [256, 128], type: "pit" });
+                } else if (i === 4 && j === this.numCols - 6) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [288, 128], type: "pit" });
+                }
+                // Above Ground Pyramid
+                else if (i === 4 && j === 9) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [256, 96], type: "pit" });
+                } else if (i === 4 && j === 10) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [288, 96], type: "pit" });
+                } else if (i === 5 && j === 9) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [256, 128], type: "pit" });
+                } else if (i === 5 && j === 10) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [288, 128], type: "pit" });
+                }
+                // Black pit
+                else if (i >= 3 && i <= 7 && j === 5) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 128], type: "pit" });
+                } else if ((i === 3 || i === 6 || i === 7) && j === 6) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 128], type: "pit" });
+                } else if ((i === this.numRows - 5 || i === this.numRows - 4 || i === 7) && j >= this.numCols - 9 && j <= this.numCols - 6) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 128], type: "pit" });
+                } else if (i === 3 && j >= 7 && j <= 10) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 128], type: "pit" });
+                } 
+                else if (i === 5 && (j === this.numCols - 7 || j === this.numCols - 6)) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 128], type: "pit" });
+                } else if ((i === 4 || i === 5) && j === 8) {
+                    this.floorTiles[i][j] = new SpecialTile({ position: [32, 128], type: "pit" });
+                }
+
+                // -------------- Adding random walls --------------
+                else if (i === 3 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 5 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                } else if (i === 7 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 0], type: "wall" })
+                    ];
+                } else if (i === 7 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 0], type: "wall" })
+                    ];
+                } else if (i === 8 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 64], type: "wall" })
+                    ];
+                } else if (i === 2 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 3 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 4 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 5 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 4 && j === this.numCols - 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 64], type: "wall" })
+                    ];
+                }
             }
         }
 
@@ -408,7 +970,7 @@ class Floor {
 
 
     /**
-     * Method that finalizes the tiles for the floor. Version 5.
+     * Method that finalizes the tiles for the floor. Version 5. Wall protrusions + pipes.
      * @returns New array of tiles for a floor
      */
     makeFloorV5() {
@@ -417,6 +979,418 @@ class Floor {
         for (let i = 0; i < this.floorTiles.length; i++) {
             for (let j = 0; j < this.floorTiles[0].length; j++) {
 
+                // -------------- Top wall protrusions --------------
+                // Initial top wall hump
+                if (i === 0 && j === 1) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 0], type: "wall" })
+                    ];
+                } 
+                // Row 1
+                else if (i === 0 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 0], type: "wall" })
+                    ];
+                } else if (i === 1 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 64], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 32], type: "wall" })
+                    ];
+                }
+                // Row 2
+                else if (i === 0 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 0], type: "wall" })
+                    ];
+                } else if (i === 1 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [0, 64], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 32], type: "wall" })
+                    ];
+                }
+
+
+                // Initial top wall hump
+                else if (i === 0 && j === 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 0], type: "wall" })
+                    ];
+                }
+                // Row 1
+                else if (i === 0 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 0], type: "wall" })
+                    ];
+                } else if (i === 1 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 64], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 32], type: "wall" })
+                    ];
+                }
+                // Row 2
+                else if (i === 0 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 0], type: "wall" })
+                    ];
+                } else if (i === 1 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [0, 64], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 32], type: "wall" })
+                    ];
+                }
+
+                // Extra top wall hump
+                else if (i === 0 && j === 7) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 0], type: "wall" })
+                    ];
+                }
+
+                // Initial top wall hump
+                else if (i === 0 && j === 10) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 0], type: "wall" })
+                    ];
+                }
+                // Row 1
+                else if (i === 0 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 0], type: "wall" })
+                    ];
+                } else if (i === 1 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 64], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 32], type: "wall" })
+                    ];
+                }
+                // Row 2
+                else if (i === 0 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 0], type: "wall" })
+                    ];
+                } else if (i === 1 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [0, 64], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 32], type: "wall" })
+                    ];
+                }
+
+
+                // Initial top wall hump
+                else if (i === 0 && j === 13) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 0], type: "wall" })
+                    ];
+                }
+                // Row 1
+                else if (i === 0 && j === 14) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 0], type: "wall" })
+                    ];
+                } else if (i === 1 && j === 14) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 64], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 14) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 32], type: "wall" })
+                    ];
+                }
+                // Row 2
+                else if (i === 0 && j === 15) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 0], type: "wall" })
+                    ];
+                } else if (i === 1 && j === 15) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [0, 64], type: "wall" })
+                    ];
+                } else if (i === 2 && j === 15) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 32], type: "wall" })
+                    ];
+                }
+                // Extra top wall hump
+                else if (i === 0 && j === 16) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 0], type: "wall" })
+                    ];
+                }
+
+                // -------------- Top wall protrusion extra walls --------------
+                // Triple wall
+                else if (i === 3 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 5 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+                // Triple wall
+                else if (i === 3 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 5 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+                // Triple wall
+                else if (i === 3 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 5 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+                // Triple wall
+                else if (i === 3 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 5 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+                // Triple wall
+                else if (i === 3 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 5 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+                // Triple wall
+                else if (i === 3 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 5 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+                // Triple wall
+                else if (i === 3 && j === 14) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 14) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 5 && j === 14) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+                // Triple wall
+                else if (i === 3 && j === 15) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 32], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 15) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 64], type: "wall" })
+                    ];
+                } else if (i === 5 && j === 15) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 96], type: "wall" })
+                    ];
+                }
+
+                // -------------- Bottom pipes --------------
+                else if (i === this.numRows - 2 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 2 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 2 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 2 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 2 && j === 11) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 2 && j === 12) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 2 && j === 14) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                } else if (i === this.numRows - 2 && j === 15) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [224, 512], type: "wall" })
+                    ];
+                } 
+
+                // -------------- Spiral pipes --------------
+                // Top
+                else if (i === 3 && j === 8) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 512], type: "wall" })
+                    ];
+                } else if (i === 3 && j === 9) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 512], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 8) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 544], type: "wall" })
+                    ];
+                } else if (i === 4 && j === 9) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 544], type: "wall" })
+                    ];
+                }
+                // Bottom
+                else if (i === 7 && j === 8) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 512], type: "wall" })
+                    ];
+                } else if (i === 7 && j === 9) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 512], type: "wall" })
+                    ];
+                } else if (i === 8 && j === 8) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 544], type: "wall" })
+                    ];
+                } else if (i === 8 && j === 9) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [128, 544], type: "wall" })
+                    ];
+                }
             }
         }
 
