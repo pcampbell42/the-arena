@@ -249,7 +249,7 @@ class GameView {
             menuDisplay.classList.toggle("hidden");
             gameDisplay.classList.toggle("play");
 
-            // 
+            // What was this for ??????
             // document.getElementById("enemies-killed-banner").classList.toggle("on");
             // document.getElementById("game-over-banner").classList.toggle("on");
 
