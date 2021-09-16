@@ -3,13 +3,13 @@
   justify-content: center;
   align-items: center;
   background-color: #6c7182;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 0.7vh;
+  border-bottom-right-radius: 0.7vh;
 }
 
 #bottom-bar-inner {
-  width: 720px;
-  height: 50px;
+  width: 50vw;
+  height: 5vh;
   display: flex;
   justify-content: space-between;
 }
@@ -22,49 +22,49 @@
 #health-background {
   background-color: white;
   position: relative;
-  width: 200px;
-  height: 30px;
+  width: 14vw;
+  height: 4vh;
   border-style: solid;
-  border-width: 4px;
-  border-radius: 10px;
-  margin-bottom: 38px;
-  margin-left: 30px;
+  border-width: 0.6vh;
+  border-radius: 1.5vh;
+  margin-bottom: 5vh;
+  margin-left: 2vw;
 }
 
 #health {
   background-color: lime;
-  width: 200px;
-  height: 30px;
-  border-radius: 5px;
+  width: 14vw;
+  height: 4vh;
+  border-radius: 1vh;
 }
 
 #energy-background {
   background-color: white;
   position: relative;
-  width: 200px;
-  height: 30px;
+  width: 14vw;
+  height: 4vh;
   border-style: solid;
-  border-width: 4px;
-  border-radius: 10px;
-  margin-bottom: 38px;
-  margin-left: 10px;
+  border-width: 0.6vh;
+  border-radius: 1.5vh;
+  margin-bottom: 5vh;
+  margin-left: 1vw;
 }
 
 #energy {
   background-color: blue;
-  width: 200px;
-  height: 30px;
-  border-radius: 5px;
+  width: 14vw;
+  height: 4vh;
+  border-radius: 1vh;
 }
 
 #floor-count-container {
   display: flex;
   align-items: center;
   position: relative;
-  margin-bottom: 38px;
-  margin-right: 45px;
+  margin-bottom: 5.5vh;
+  margin-right: 2.5vw;
   font-family: "8-bit";
-  font-size: 21px;
+  font-size: 3vh;
 }
 
 #links {
@@ -72,19 +72,19 @@
   justify-content: center;
   align-items: center;
   font-family: "8-bit";
-  font-size: 20px;
+  font-size: 3vh;
   position: absolute;
-  left: 41.8%;
-  bottom: 21.4px;
+  left: 44vw;
+  bottom: 4.5vh;
 }
 
 #links h3 {
-    margin-right: 7px;
+    margin-right: 0.6vw;
 }
 
 #links img {
-    width: 30px;
-    height: 30px;
+    width: 4vh;
+    height: 4vh;
 }
 
 .github-link:hover {

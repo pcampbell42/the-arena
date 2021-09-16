@@ -5,7 +5,7 @@
 
 #paused-banner {
     position: absolute;
-    top: 270px;
+    top: 40vh;
     display: none;
     filter: invert(1);
 }
@@ -14,40 +14,64 @@
     display: block;
 }
 
-#game-over-banner {
-    position: absolute;
-    top: 270px;
-    font-family: "skirmisher-2";
-    font-size: 100px;
+#game-over-container {
     display: none;
-    color: white;
+    position: absolute;
+    top: 30vh;
+    width: 38vw;
+    height: 30vh;
+    background-color: #37446e;
+
+    border-style: solid;
+    border-color: black;
+    border-width: 1vh;
+    border-radius: 2vh;
+
+    font-family: "skirmisher-2";
+    color: #ed4245;
 }
 
-#game-over-banner.on {
-    display: block;
+#game-over-container.on {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#game-over-banner {
+    font-size: 12vh;
 }
 
 #enemies-killed-banner {
-    position: absolute;
-    top: 375px;
-    font-family: "skirmisher-2";
-    font-size: 30px;
-    display: none;
-    color: white;
+    font-size: 4vh;
 }
 
-#enemies-killed-banner.on {
-    display: block;
+#retry-button {
+    background-color: #ed4245;
+    width: 8vw;
+    height: 8vh;
+    margin-top: 3vh;
+
+    border: none;
+
+    font-family: "8-bit";
+    font-size: 4vh;
+}
+
+#retry-button:hover {
+    background-color: green;
+    cursor: pointer;
 }
 
 #controls-container {
     position: absolute;
-    margin-top: 2px;
-    margin-left: 543px;
+    top: 20.7%;
+    left: 62.39%;
+    width: 12vw;
+
     background-color: #37446e;
     border-style: solid;
-    border-width: 3px;
-    border-radius: 5px;
+    border-width: 0.4vh;
+    border-radius: 0.6vh;
     display: none;
 }
 
@@ -56,9 +80,9 @@
 }
 
 #controls-container ul {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 0.6vw;
 }
 
 #controls-container ul li {

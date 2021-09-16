@@ -55,26 +55,24 @@ table {
   border-spacing: 0;
 }
 
-#menu-top-bar {
-  display: flex;
-  justify-content: right;
-}
-
 #menu-mute-button {
+  position: absolute;
+  right: 1vw;
+  top: 1vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 26px;
+  height: 4vh;
+  width: 4vh;
   background-color: #37446e;
-  border-width: 2px;
-  border-radius: 5px;
+  border-width: 0.3vh;
+  border-radius: 0.8vh;
   border-style: solid;
-  margin: 5px;
-  margin-bottom: 6vh;
 }
 
 #menu-mute-button:hover {
-  background-color: #cce2e1;
+  filter: opacity(0.5);
+  cursor: pointer;
 }
 
 #menu-mute-button.on {
@@ -85,12 +83,12 @@ table {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 250px;
+  height: 40vh;
 }
 
 #menu-title-container h1 {
   font-family: "skirmisher";
-  font-size: 100px;
+  font-size: 14vh;
 }
 
 #menu-play-button {
@@ -101,10 +99,11 @@ table {
 
 #menu-play-button button {
   background-color: green;
-  font-family: "8-bit";
-  font-size: 45px;
-  padding: 20px 50px;
+  width: 11vw;
+  height: 12vh;
   border: none;
+  font-family: "8-bit";
+  font-size: 6vh;
 }
 
 #menu-play-button button:hover {
@@ -121,10 +120,10 @@ table {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 40px;
-  width: 100px;
+  height: 6vh;
+  width: 7vw;
   background-color: #cce2e1;
-  margin-top: 20px;
+  margin-top: 4vh;
   font-family: "8-bit";
 }
 
@@ -132,25 +131,18 @@ table {
   cursor: default;
 }
 
-/* #menu-difficulty-selector.on {
-    background-color: green;
-}
-
-#menu-difficulty-selector:hover {
-    background-color: #cce2e1;
-} */
 #menu-content {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
   font-family: "8-bit";
-  font-size: 25px;
-  height: 170px;
+  font-size: 3.5vh;
+  height: 20vh;
 }
 
 #brief-description {
-  font-size: 30px;
+  font-size: 4vh;
 }
 
 #long-description {
@@ -163,16 +155,16 @@ table {
   justify-content: center;
   align-items: center;
   font-family: "8-bit";
-  font-size: 20px;
+  font-size: 2.5vh;
 }
 
 #menu-links h3 {
-  margin-right: 7px;
+  margin-right: 0.6vw;
 }
 
 #menu-links img {
-  width: 30px;
-  height: 30px;
+  width: 4vh;
+  height: 4vh;
 }
 
 #top-bar {
@@ -180,13 +172,13 @@ table {
   justify-content: center;
   align-items: center;
   background-color: #6c7182;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  border-top-left-radius: 0.7vh;
+  border-top-right-radius: 0.7vh;
 }
 
 #top-bar-inner {
-  width: 720px;
-  height: 50px;
+  width: 50vw;
+  height: 7vh;
   display: flex;
   justify-content: space-between;
 }
@@ -194,14 +186,13 @@ table {
 #title-container {
   display: flex;
   align-items: center;
-  padding-left: 30px;
-  padding-right: 25px;
-  padding-top: 13px;
+  padding-left: 2.2vw;
+  padding-top: 1.6vh;
 }
 
 #title-container h1 {
   font-family: "8-bit";
-  font-size: 35px;
+  font-size: 5vh;
 }
 
 #options-container {
@@ -216,11 +207,11 @@ table {
   justify-content: center;
   align-items: center;
   background-color: #37446e;
-  border-width: 3px;
+  border-width: 0.4vh;
   border-style: solid;
-  border-radius: 5px;
-  margin-right: 3px;
-  margin-top: 4px;
+  border-radius: 0.6vh;
+  margin-right: 0.3vw;
+  margin-top: 0.6vh;
   font-family: "8-bit";
 }
 
@@ -234,22 +225,22 @@ table {
 }
 
 #mute {
-  width: 45px;
+  width: 3vw;
   border-right-style: solid;
 }
 
 #pause {
-  width: 45px;
+  width: 3vw;
   border-right-style: solid;
 }
 
 #main-menu {
-  width: 90px;
+  width: 6vw;
   border-right-style: solid;
 }
 
 #controls {
-  width: 90px;
+  width: 6vw;
 }
 
 #canvas-container {
@@ -259,7 +250,7 @@ table {
 
 #paused-banner {
   position: absolute;
-  top: 270px;
+  top: 40vh;
   display: none;
   filter: invert(1);
 }
@@ -268,40 +259,59 @@ table {
   display: block;
 }
 
-#game-over-banner {
-  position: absolute;
-  top: 270px;
-  font-family: "skirmisher-2";
-  font-size: 100px;
+#game-over-container {
   display: none;
-  color: white;
+  position: absolute;
+  top: 30vh;
+  width: 38vw;
+  height: 30vh;
+  background-color: #37446e;
+  border-style: solid;
+  border-color: black;
+  border-width: 1vh;
+  border-radius: 2vh;
+  font-family: "skirmisher-2";
+  color: #ed4245;
 }
 
-#game-over-banner.on {
-  display: block;
+#game-over-container.on {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#game-over-banner {
+  font-size: 12vh;
 }
 
 #enemies-killed-banner {
-  position: absolute;
-  top: 375px;
-  font-family: "skirmisher-2";
-  font-size: 30px;
-  display: none;
-  color: white;
+  font-size: 4vh;
 }
 
-#enemies-killed-banner.on {
-  display: block;
+#retry-button {
+  background-color: #ed4245;
+  width: 8vw;
+  height: 8vh;
+  margin-top: 3vh;
+  border: none;
+  font-family: "8-bit";
+  font-size: 4vh;
+}
+
+#retry-button:hover {
+  background-color: green;
+  cursor: pointer;
 }
 
 #controls-container {
   position: absolute;
-  margin-top: 2px;
-  margin-left: 543px;
+  top: 20.7%;
+  left: 62.39%;
+  width: 12vw;
   background-color: #37446e;
   border-style: solid;
-  border-width: 3px;
-  border-radius: 5px;
+  border-width: 0.4vh;
+  border-radius: 0.6vh;
   display: none;
 }
 
@@ -310,9 +320,9 @@ table {
 }
 
 #controls-container ul {
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: 10px;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  padding-left: 0.6vw;
 }
 
 #controls-container ul li {
@@ -329,13 +339,13 @@ canvas {
   justify-content: center;
   align-items: center;
   background-color: #6c7182;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 0.7vh;
+  border-bottom-right-radius: 0.7vh;
 }
 
 #bottom-bar-inner {
-  width: 720px;
-  height: 50px;
+  width: 50vw;
+  height: 5vh;
   display: flex;
   justify-content: space-between;
 }
@@ -348,49 +358,49 @@ canvas {
 #health-background {
   background-color: white;
   position: relative;
-  width: 200px;
-  height: 30px;
+  width: 14vw;
+  height: 4vh;
   border-style: solid;
-  border-width: 4px;
-  border-radius: 10px;
-  margin-bottom: 38px;
-  margin-left: 30px;
+  border-width: 0.6vh;
+  border-radius: 1.5vh;
+  margin-bottom: 5vh;
+  margin-left: 2vw;
 }
 
 #health {
   background-color: lime;
-  width: 200px;
-  height: 30px;
-  border-radius: 5px;
+  width: 14vw;
+  height: 4vh;
+  border-radius: 1vh;
 }
 
 #energy-background {
   background-color: white;
   position: relative;
-  width: 200px;
-  height: 30px;
+  width: 14vw;
+  height: 4vh;
   border-style: solid;
-  border-width: 4px;
-  border-radius: 10px;
-  margin-bottom: 38px;
-  margin-left: 10px;
+  border-width: 0.6vh;
+  border-radius: 1.5vh;
+  margin-bottom: 5vh;
+  margin-left: 1vw;
 }
 
 #energy {
   background-color: blue;
-  width: 200px;
-  height: 30px;
-  border-radius: 5px;
+  width: 14vw;
+  height: 4vh;
+  border-radius: 1vh;
 }
 
 #floor-count-container {
   display: flex;
   align-items: center;
   position: relative;
-  margin-bottom: 38px;
-  margin-right: 45px;
+  margin-bottom: 5.5vh;
+  margin-right: 2.5vw;
   font-family: "8-bit";
-  font-size: 21px;
+  font-size: 3vh;
 }
 
 #links {
@@ -398,19 +408,19 @@ canvas {
   justify-content: center;
   align-items: center;
   font-family: "8-bit";
-  font-size: 20px;
+  font-size: 3vh;
   position: absolute;
-  left: 41.8%;
-  bottom: 21.4px;
+  left: 44vw;
+  bottom: 4.5vh;
 }
 
 #links h3 {
-  margin-right: 7px;
+  margin-right: 0.6vw;
 }
 
 #links img {
-  width: 30px;
-  height: 30px;
+  width: 4vh;
+  height: 4vh;
 }
 
 .github-link:hover {
@@ -435,7 +445,6 @@ html, body {
   background-color: #cccccc;
   background-size: cover;
   -webkit-background-size: cover;
-  -moz-background-size: cover;
   -o-background-size: cover;
 }
 
