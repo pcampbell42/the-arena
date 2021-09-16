@@ -28,7 +28,7 @@ class Shooter extends Enemy {
         let randNum = Math.floor(Math.random() * 200); // Random # to decide idle behavior
 
         // Idle behavior
-        if (distanceToPlayer > 300 || !this.playerInLOS()) {
+        if (!this.aggroed) {
             // --------- AI decides to chill for a bit ---------
             if (randNum <= 10) this.status = "idle";
 

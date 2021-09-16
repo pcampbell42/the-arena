@@ -5,19 +5,26 @@ const SpecialTile = require("./special_tile");
 class Enemy extends Character {
     constructor(params) {
         super(params);
-        this.chillCounter = 100; // Adding randomness to AI behavior
-        this.wanderLeft = 0;
-        this.wanderRight = 0;
         this.firingRate = 300; // Way to set difficulty, lower the harder
 
+        // AI behavior & aggro
+        this.aggroed = false;
+        this.losingAggroCounter = 0; // Allows for Enemies to lose aggro slowly
+        this.loseAggroThreshold = 125; // When counter hits this #, Enemy loses aggro
+
+        // Currently, only Shooter uses these 3 variables, but they are in the
+        // Enemy class because future Enemies may use them as well. These are
+        // used to add randomness to the AI idle behavior
+        this.chillCounter = 100;
+        this.wanderLeft = 0;
+        this.wanderRight = 0;
+
+        // Knockback / stun
         this.knockedBack = false;
         this.knockedBackCounter = 0;
         this.stunned = false;
         this.stunnedCounter = 0;
-
-        // Eventually should clean aggroing up and put all into one method to call to check if aggroed
-        // this.aggroed;
-        // this.spawnPosition = params["spawnPosition"];
+        
     }
 
 
@@ -41,27 +48,31 @@ class Enemy extends Character {
         }
         // If knocked back, just do move logic
         if (this.knockedBack) {
-            this.move();
+            this.move(); // Takes us up a level to Shooter / Rusher move()
 
         } 
         // Under normal circumstances...
         else {
             // Calculating distance between player and enemy        
             let distanceToPlayer = Math.sqrt((this.game.player.position[0] - this.position[0]) ** 2 +
-                (this.game.player.position[1] - this.position[1]) ** 2);
+            (this.game.player.position[1] - this.position[1]) ** 2);
+            
+            this.pullAggro(distanceToPlayer); // Check if player has pulled aggro
+
             // Random num to determine Enemy behavior
             let randNum = Math.floor(Math.random() * this.firingRate);
-            // Boolean - true if Enemy is facing player. Used to determine whether Enemy aggros or not.
+
+            // Boolean - true if Enemy is facing player. Enemies only attack player when they are facing them
             let facingPlayer = ((this.position[0] - this.game.player.position[0]) >= 0 && this.direction === "left" ||
                 (this.position[0] - this.game.player.position[0]) <= 0 && this.direction === "right");
 
             // If everything aligns, attack the Player
-            if (randNum <= 5 && distanceToPlayer < this.attackRange && this.playerInLOS() && facingPlayer) {
+            if (randNum <= 5 && distanceToPlayer < this.attackRange && this.aggroed && facingPlayer && this.playerInLOS()) {
                 this.startAttack(this.game.player.position);
             }
             // Else moves towards player - enemies can't move and shoot at same time - 1 or the other
             else {
-                this.move(distanceToPlayer);
+                this.move(distanceToPlayer); // Takes us up a level to Shooter / Rusher move()
             }
         }
     }
@@ -86,18 +97,18 @@ class Enemy extends Character {
         // Under normal circumstances...
         else {
             // --------- If enemy is close to player and in LOS, enemy will chase player down ---------
-            if (distanceToPlayer < 300) {
-                // Add logic so that you can sneak up on enemies whose backs are turned to you
-                let facingPlayer = ((this.position[0] - this.game.player.position[0]) >= 0 && this.direction === "left" ||
-                                    (this.position[0] - this.game.player.position[0]) <= 0 && this.direction === "right");
-                if (this.playerInLOS()) {
-                    // --------- Getting the direction the player is in and setting velocity ---------
-                    let xDir = Math.sign(this.game.player.position[0] - this.position[0]);
-                    let yDir = Math.sign(this.game.player.position[1] - this.position[1]);
-                    this.velocity = [xDir * this.speed, yDir * this.speed];
-                    (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
-                    this.status = "moving";
-                }
+            if (this.aggroed) {
+
+                /////////////////////////////////////////////
+                // THIS IS WHERE PATHFINDING ALGO WOULD GO //
+                /////////////////////////////////////////////
+
+                // --------- Getting the direction the player is in and setting velocity ---------
+                let xDir = Math.sign(this.game.player.position[0] - this.position[0]);
+                let yDir = Math.sign(this.game.player.position[1] - this.position[1]);
+                this.velocity = [xDir * this.speed, yDir * this.speed];
+                (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
+                this.status = "moving";
             }
             // If time is slowed, slow velocity
             if (this.game.slowed) {
@@ -182,6 +193,41 @@ class Enemy extends Character {
 
         // Animate if idle / moving
         else if (!this.attacking) super.draw(ctx);
+    }
+
+
+    /**
+     * This method is called at the beginning of each step for each Enemy (near the
+     * top of the action() method). It checks if the Enemy meets all the conditions
+     * to be aggroed by the Player. If it does, this.aggroed is set to true and the 
+     * Enemy starts chasing / attacking the Player. If it doesn't, rather then immediately
+     * lose aggro, the Enemy slowly loses aggro. This allows for behavior such as LOSing
+     * and Enemy until it deaggros.
+     * 
+     * @param {Number} distanceToPlayer - Length of line drawn between Enemy and 
+     * Player. Only passed in because we happen to have distanceToPlayer where we 
+     * call this, so we can just pass it in and avoid doing the calculation again.
+     */
+    pullAggro(distanceToPlayer) {    
+        console.log(this.losingAggroCounter)    
+        let facingPlayer = ((this.position[0] - this.game.player.position[0]) >= 0 && this.direction === "left" ||
+            (this.position[0] - this.game.player.position[0]) <= 0 && this.direction === "right");
+
+        // To aggro, Enemy must be facing the Player and within LOS / 300px of the Player
+        if (facingPlayer && this.playerInLOS() && distanceToPlayer < 300) {
+            this.aggroed = true;
+            this.losingAggroCounter = 0; // Reset losing aggro counter
+        } else if (this.aggroed) {
+            // If Enemy doesn't meet all 3 of these conditions, they start to lose
+            // aggro - once losingAggroCounter reaches a certain number, they deaggro
+            this.losingAggroCounter++;
+        }
+
+        if (this.losingAggroCounter >= this.loseAggroThreshold) {
+            this.aggroed = false;
+            this.loseAggroThreshold = 125; // Reset threshold
+            this.losingAggroCounter = 0; // Reset losing aggro counter
+        }
     }
 
 
@@ -334,6 +380,12 @@ class Enemy extends Character {
      * @param {Number} damage 
      */
     takeDamage(damage) {
+        // When an Enemy takes damage, you aggro them. Additionally, the Enemy
+        // is extra determined to kill you, and thus it takes longer to deaggro them
+        // (the threshold is set to 45 instead of 15).
+        this.aggroed = true;
+        this.loseAggroThreshold = 275;
+
         // Turns enemy in the direction of the player
         this.position[0] - this.game.player.position[0] >= 0 ? this.direction = "left" : this.direction = "right";
         super.takeDamage(damage);
