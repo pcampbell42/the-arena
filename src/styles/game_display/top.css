@@ -3,13 +3,13 @@
     justify-content: center;
     align-items: center;
     background-color: #6c7182;
-    border-top-left-radius: 0.7vh;
-    border-top-right-radius: 0.7vh;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 #top-bar-inner {
-    width: 50vw;
-    height: 7vh;
+    width: 720px;
+    height: 50px;
     display: flex;
     justify-content: space-between;
 }
@@ -17,13 +17,13 @@
 #title-container {
     display: flex;
     align-items: center;
-    padding-left: 2.2vw;
-    padding-top: 1.6vh;
+    padding-left: 30px;
+    padding-top: 25px;
 }
 
 #title-container h1 {
     font-family: "8-bit";
-    font-size: 5vh;
+    font-size: 35px;
 }
 
 #options-container {
@@ -38,11 +38,11 @@
     justify-content: center;
     align-items: center;
     background-color: #37446e;
-    border-width: 0.4vh;
+    border-width: 3px;
     border-style: solid;
-    border-radius: 0.6vh;
-    margin-right: 0.3vw;
-    margin-top: 0.6vh;
+    border-radius: 5px;
+    margin-right: 3px;
+    margin-top: 4px;
     font-family: "8-bit";
 }
 
@@ -55,20 +55,20 @@
 }
 
 #mute {
-    width: 3vw;
+    width: 45px;
     border-right-style: solid;
 }
 
 #pause {
-    width: 3vw;
+    width: 45px;
     border-right-style: solid;
 }
 
 #main-menu {
-    width: 6vw;
+    width: 90px;
     border-right-style: solid;
 }
 
 #controls {
-    width: 6vw;
+    width: 90px;
 }

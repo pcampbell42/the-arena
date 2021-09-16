@@ -172,13 +172,13 @@ table {
   justify-content: center;
   align-items: center;
   background-color: #6c7182;
-  border-top-left-radius: 0.7vh;
-  border-top-right-radius: 0.7vh;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 #top-bar-inner {
-  width: 50vw;
-  height: 7vh;
+  width: 720px;
+  height: 50px;
   display: flex;
   justify-content: space-between;
 }
@@ -186,13 +186,13 @@ table {
 #title-container {
   display: flex;
   align-items: center;
-  padding-left: 2.2vw;
-  padding-top: 1.6vh;
+  padding-left: 30px;
+  padding-top: 25px;
 }
 
 #title-container h1 {
   font-family: "8-bit";
-  font-size: 5vh;
+  font-size: 35px;
 }
 
 #options-container {
@@ -207,11 +207,11 @@ table {
   justify-content: center;
   align-items: center;
   background-color: #37446e;
-  border-width: 0.4vh;
+  border-width: 3px;
   border-style: solid;
-  border-radius: 0.6vh;
-  margin-right: 0.3vw;
-  margin-top: 0.6vh;
+  border-radius: 5px;
+  margin-right: 3px;
+  margin-top: 4px;
   font-family: "8-bit";
 }
 
@@ -225,22 +225,22 @@ table {
 }
 
 #mute {
-  width: 3vw;
+  width: 45px;
   border-right-style: solid;
 }
 
 #pause {
-  width: 3vw;
+  width: 45px;
   border-right-style: solid;
 }
 
 #main-menu {
-  width: 6vw;
+  width: 90px;
   border-right-style: solid;
 }
 
 #controls {
-  width: 6vw;
+  width: 90px;
 }
 
 #canvas-container {
@@ -263,13 +263,13 @@ table {
   display: none;
   position: absolute;
   top: 30vh;
-  width: 38vw;
-  height: 30vh;
+  width: 600px;
+  height: 210px;
   background-color: #37446e;
   border-style: solid;
   border-color: black;
-  border-width: 1vh;
-  border-radius: 2vh;
+  border-width: 6px;
+  border-radius: 10px;
   font-family: "skirmisher-2";
   color: #ed4245;
 }
@@ -281,21 +281,21 @@ table {
 }
 
 #game-over-banner {
-  font-size: 12vh;
+  font-size: 90px;
 }
 
 #enemies-killed-banner {
-  font-size: 4vh;
+  font-size: 30px;
 }
 
 #retry-button {
   background-color: #ed4245;
-  width: 8vw;
-  height: 8vh;
-  margin-top: 3vh;
+  width: 125px;
+  height: 60px;
+  margin-top: 15px;
   border: none;
   font-family: "8-bit";
-  font-size: 4vh;
+  font-size: 30px;
 }
 
 #retry-button:hover {
@@ -305,13 +305,13 @@ table {
 
 #controls-container {
   position: absolute;
-  top: 20.7%;
+  top: 19.6%;
   left: 62.39%;
-  width: 12vw;
+  width: 12%;
   background-color: #37446e;
   border-style: solid;
-  border-width: 0.4vh;
-  border-radius: 0.6vh;
+  border-width: 3px;
+  border-radius: 5px;
   display: none;
 }
 
@@ -320,9 +320,9 @@ table {
 }
 
 #controls-container ul {
-  padding-top: 1vh;
-  padding-bottom: 1vh;
-  padding-left: 0.6vw;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
 }
 
 #controls-container ul li {
@@ -339,13 +339,13 @@ canvas {
   justify-content: center;
   align-items: center;
   background-color: #6c7182;
-  border-bottom-left-radius: 0.7vh;
-  border-bottom-right-radius: 0.7vh;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 #bottom-bar-inner {
-  width: 50vw;
-  height: 5vh;
+  width: 720px;
+  height: 50px;
   display: flex;
   justify-content: space-between;
 }
@@ -358,49 +358,49 @@ canvas {
 #health-background {
   background-color: white;
   position: relative;
-  width: 14vw;
-  height: 4vh;
+  width: 200px;
+  height: 30px;
   border-style: solid;
-  border-width: 0.6vh;
-  border-radius: 1.5vh;
-  margin-bottom: 5vh;
-  margin-left: 2vw;
+  border-width: 4px;
+  border-radius: 10px;
+  margin-bottom: 38px;
+  margin-left: 30px;
 }
 
 #health {
   background-color: lime;
-  width: 14vw;
-  height: 4vh;
-  border-radius: 1vh;
+  width: 200px;
+  height: 30px;
+  border-radius: 5px;
 }
 
 #energy-background {
   background-color: white;
   position: relative;
-  width: 14vw;
-  height: 4vh;
+  width: 200px;
+  height: 30px;
   border-style: solid;
-  border-width: 0.6vh;
-  border-radius: 1.5vh;
-  margin-bottom: 5vh;
-  margin-left: 1vw;
+  border-width: 4px;
+  border-radius: 10px;
+  margin-bottom: 38px;
+  margin-left: 10px;
 }
 
 #energy {
   background-color: blue;
-  width: 14vw;
-  height: 4vh;
-  border-radius: 1vh;
+  width: 200px;
+  height: 30px;
+  border-radius: 5px;
 }
 
 #floor-count-container {
   display: flex;
   align-items: center;
   position: relative;
-  margin-bottom: 5.5vh;
-  margin-right: 2.5vw;
+  margin-bottom: 38px;
+  margin-right: 45px;
   font-family: "8-bit";
-  font-size: 3vh;
+  font-size: 21px;
 }
 
 #links {
@@ -408,7 +408,7 @@ canvas {
   justify-content: center;
   align-items: center;
   font-family: "8-bit";
-  font-size: 3vh;
+  font-size: 20px;
   position: absolute;
   left: 44vw;
   bottom: 4.5vh;
@@ -419,8 +419,8 @@ canvas {
 }
 
 #links img {
-  width: 4vh;
-  height: 4vh;
+  width: 30px;
+  height: 30px;
 }
 
 .github-link:hover {

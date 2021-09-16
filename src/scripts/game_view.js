@@ -124,8 +124,8 @@ class GameView {
      * Draws the health and energy bars.
      */
     drawHealthAndEnergy() {
-        this.healthBar.setAttribute("style", `width: ${14 * this.game.player.health / 100}vw;`);
-        this.energyBar.setAttribute("style", `width: ${14 * this.game.player.energy / 100}vw;`);
+        this.healthBar.setAttribute("style", `width: ${200 * this.game.player.health / 100}px;`);
+        this.energyBar.setAttribute("style", `width: ${200 * this.game.player.energy / 100}px;`);
     }
 
 
