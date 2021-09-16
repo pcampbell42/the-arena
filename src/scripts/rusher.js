@@ -24,7 +24,7 @@ class Rusher extends Enemy {
      * @param {Number} distanceToPlayer - Length of line drawn between Player and Rusher
      */
     move(distanceToPlayer) {
-        if (distanceToPlayer > 300 || !this.playerInLOS()) this.status = "idle";
+        if (!this.aggroed) this.status = "idle";
         super.move(distanceToPlayer);
     }
     
