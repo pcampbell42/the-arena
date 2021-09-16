@@ -186,8 +186,8 @@ table {
 #title-container {
   display: flex;
   align-items: center;
-  padding-left: 30px;
-  padding-top: 25px;
+  padding-left: 20px;
+  padding-top: 4px;
 }
 
 #title-container h1 {
