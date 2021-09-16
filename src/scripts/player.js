@@ -147,8 +147,8 @@ class Player extends Character {
         let futureXCoord = this.position[0] + this.velocity[0];
         let futureYCoord = this.position[1] + this.velocity[1];
         // let a = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
-        let xAdjustedTileNegative = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 20) / 40) + 1];
-        let xAdjustedTilePositive = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord + 4) / 40) + 1];
+        let xAdjustedTileNegative = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 15) / 40) + 1];
+        let xAdjustedTilePositive = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord + 2) / 40) + 1];
         let yAdjustedTileNegative = this.game.floor.floorTiles[Math.floor((futureYCoord + 12) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
         let yAdjustedTilePositive = this.game.floor.floorTiles[Math.floor((futureYCoord - 4) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
 

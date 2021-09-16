@@ -44,7 +44,7 @@
             </span>
 
             <span id="long-description">
-                Aim and shoot enemies with the mouse. Roll to avoid attacks with spacebar.
+                Aim and shoot enemies with the mouse. Kick with f. Roll to avoid attacks with spacebar.
                 Slow down time by holding shift, but don't slow down time too much...
             </span>
         </div>
@@ -72,8 +72,11 @@
 
         <div id="canvas-container">
             <div id="paused-banner"><img id="big-pause" src="./dist/assets/big_pause.png"></div>
-            <div id="game-over-banner">Game Over</div>
-            <div id="enemies-killed-banner"></div>
+            <div id="game-over-container">
+                <div id="game-over-banner">Game Over</div>
+                <div id="enemies-killed-banner"></div>
+                <button id="retry-button">Retry</button>
+            </div>
 
             <div id="controls-container">
                 <ul>

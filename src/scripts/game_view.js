@@ -45,16 +45,21 @@ class GameView {
      */
     start() {
         this.game = new Game(this.journalist);
-        this.song = new Audio("./dist/assets/music/AEON.mp3");
-        this.song.volume = 0.125;
         this.endCurrentGame = false;
-
         this.keyBindHandler();
 
-        // If it's not the first game, the mouse and menu bar already have event listeners
+        // Adding some variety to music
+        this.firstGame ? this.song = new Audio("./dist/assets/music/song1.mp3") :
+            this.song = new Audio(`./dist/assets/music/song${Math.floor(Math.random() * 4 + 1)}.mp3`);
+        this.song.volume = 0.125;
+        
+
+        // If it's not the first game, the mouse, menu bar, and retry button already have event listeners
         if (this.firstGame) {
             this.mouseHandler();
             this.menuBarButtonHandler();
+            this.retryButtonHandler();
+
         }
         this.firstGame = false;
 
@@ -119,8 +124,8 @@ class GameView {
      * Draws the health and energy bars.
      */
     drawHealthAndEnergy() {
-        this.healthBar.setAttribute("style", `width: ${200 * this.game.player.health / 100}px;`);
-        this.energyBar.setAttribute("style", `width: ${200 * this.game.player.energy / 100}px;`);
+        this.healthBar.setAttribute("style", `width: ${14 * this.game.player.health / 100}vw;`);
+        this.energyBar.setAttribute("style", `width: ${14 * this.game.player.energy / 100}vw;`);
     }
 
 
@@ -136,12 +141,16 @@ class GameView {
      * Ends the current game and displays the game over banner.
      */
     gameOver() {
-        this.endCurrentGame = true;
+        this.endCurrentGame = true; // End game
 
+        // Give user their cursor back
+        const canvas = document.getElementById("game-canvas");
+        canvas.setAttribute("style", "cursor: default;");
+
+        // Show game over banner
         const enemiesKilledBanner = document.getElementById("enemies-killed-banner");
-        enemiesKilledBanner.innerHTML = `You were on floor ${this.game.currentFloor}`;
-        enemiesKilledBanner.classList.toggle("on");
-        document.getElementById("game-over-banner").classList.toggle("on");
+        enemiesKilledBanner.innerHTML = `You made it to floor ${this.game.currentFloor}`;
+        document.getElementById("game-over-container").classList.toggle("on");
     }
 
 
@@ -179,6 +188,36 @@ class GameView {
 
         canvas.addEventListener("click", (e) => {
             if (!that.game.player.busy) that.game.player.startAttack(that.mousePos);
+        });
+    }
+
+
+    /**
+     * Method that adds an event listener for the retry button in the game over banner.
+     */
+    retryButtonHandler() {
+        const retryButton = document.getElementById("retry-button");
+        const gameOverContainer = document.getElementById("game-over-container");
+
+        retryButton.addEventListener("click", () => {
+            // Reset mute and pause so that if user plays another game, it doesn't
+            // open as muted or open as paused.
+            if (this.audioMuted) muteButton.click();
+            if (this.game.paused) pauseButton.click();
+
+            // Pause song, reset game object
+            this.song.pause();
+            this.game = null;
+
+            // Unbind key handlers
+            key.unbind("space");
+            key.unbind("f");
+
+            // Turn off game over banner
+            gameOverContainer.classList.toggle("on");
+            
+            // Start new game
+            this.start();
         });
     }
 
@@ -300,10 +339,8 @@ class GameView {
             gameDisplay.classList.toggle("play");
 
             // Making sure the game over and enemies-killed banners are off 
-            const gameOverDisplay = document.getElementById("game-over-banner");
-            const floor = document.getElementById("enemies-killed-banner");
-            if (gameOverDisplay.classList.length === 1) gameOverDisplay.classList.toggle("on");
-            if (floor.classList.length === 1) floor.classList.toggle("on");
+            const gameOverContainer = document.getElementById("game-over-container");
+            if (gameOverContainer.classList.length === 1) gameOverContainer.classList.toggle("on");
 
             // Start music
             this.song.pause();
@@ -334,7 +371,7 @@ class GameView {
 
         journalistButton.addEventListener("click", (e) => {
             if (journalistButton.innerHTML === "Journalist") {
-                journalistButton.innerHTML = "Hard";
+                journalistButton.innerHTML = "Normal";
                 this.journalist = false;
             } else {
                 journalistButton.innerHTML = "Journalist";
