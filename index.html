@@ -56,7 +56,7 @@
     </div>
 
     <div id="game-display">
-        <div id="controls-container-relative-pos-anchor">
+        <div id="controls-container-anchor">
             <div id="controls-container">
                 <ul>
                     <li>Movement: WASD</li>
@@ -67,7 +67,26 @@
                 </ul>
             </div>
         </div>
-        
+
+        <div id="paused-banner-anchor">
+            <div id="paused-banner"><img id="big-pause" src="./dist/assets/big_pause.png"></div>
+        </div>
+
+        <div id="game-over-container-anchor">
+            <div id="game-over-container">
+                <div id="game-over-banner">Game Over</div>
+                <div id="enemies-killed-banner"></div>
+                <button id="retry-button">Retry</button>
+            </div>
+        </div>
+
+        <div id="instructions-container-anchor">
+            <div id="instructions-container">
+
+            </div>
+        </div>
+
+
         <div id="top-bar">
             <div id="top-bar-inner">
                 <div id="title-container">
@@ -83,13 +102,6 @@
         </div>
 
         <div id="canvas-container">
-            <div id="paused-banner"><img id="big-pause" src="./dist/assets/big_pause.png"></div>
-            <div id="game-over-container">
-                <div id="game-over-banner">Game Over</div>
-                <div id="enemies-killed-banner"></div>
-                <button id="retry-button">Retry</button>
-            </div>
-            
             <canvas id="game-canvas" width="720" height="440"></canvas>
         </div>
         
@@ -109,7 +121,7 @@
                 </div>
             </div>
 
-            <div id="links-relative-pos-anchor">
+            <div id="links-anchor">
                 <div id="links">
                     <h3>Patrick Campbell</h3>
                     <a href="https://github.com/pcampbell42/the-factory"><img class="github-link" src="./dist/assets/github.png"></a>
@@ -122,4 +134,3 @@
 </body>
 
 </html>
-<!-- ``` -->

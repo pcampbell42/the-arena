@@ -3,9 +3,16 @@
     justify-content: center;
 }
 
+#paused-banner-anchor {
+    position: relative;
+    height: 0;
+    width: 0;
+}
+
 #paused-banner {
     position: absolute;
-    top: 40vh;
+    top: 210px;
+    left: 320px;
     display: none;
     filter: invert(1);
 }
@@ -14,10 +21,17 @@
     display: block;
 }
 
+#game-over-container-anchor {
+    position: relative;
+    height: 0;
+    width: 0;
+}
+
 #game-over-container {
     display: none;
     position: absolute;
-    top: 30vh;
+    top: 150px;
+    left: 55px;
     width: 600px;
     height: 210px;
     background-color: #37446e;

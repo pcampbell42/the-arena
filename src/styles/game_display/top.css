@@ -73,7 +73,7 @@
     width: 90px;
 }
 
-#controls-container-relative-pos-anchor {
+#controls-container-anchor {
     position: relative;
     height: 0;
     width: 0;
@@ -81,7 +81,7 @@
 
 #controls-container {
     position: absolute;
-    top: 51px;
+    top: 68px;
     left: 531px;
     width: 180px;
 

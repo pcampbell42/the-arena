@@ -243,7 +243,7 @@ table {
   width: 90px;
 }
 
-#controls-container-relative-pos-anchor {
+#controls-container-anchor {
   position: relative;
   height: 0;
   width: 0;
@@ -251,7 +251,7 @@ table {
 
 #controls-container {
   position: absolute;
-  top: 51px;
+  top: 68px;
   left: 531px;
   width: 180px;
   background-color: #37446e;
@@ -280,9 +280,16 @@ table {
   justify-content: center;
 }
 
+#paused-banner-anchor {
+  position: relative;
+  height: 0;
+  width: 0;
+}
+
 #paused-banner {
   position: absolute;
-  top: 40vh;
+  top: 210px;
+  left: 320px;
   display: none;
   filter: invert(1);
 }
@@ -291,10 +298,17 @@ table {
   display: block;
 }
 
+#game-over-container-anchor {
+  position: relative;
+  height: 0;
+  width: 0;
+}
+
 #game-over-container {
   display: none;
   position: absolute;
-  top: 30vh;
+  top: 150px;
+  left: 55px;
   width: 600px;
   height: 210px;
   background-color: #37446e;
@@ -409,7 +423,7 @@ canvas {
   font-size: 21px;
 }
 
-#links-relative-pos-anchor {
+#links-anchor {
   position: relative;
   width: 0;
   height: 0;
