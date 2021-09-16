@@ -72,3 +72,36 @@
 #controls {
     width: 90px;
 }
+
+#controls-container-relative-pos-anchor {
+    position: relative;
+    height: 0;
+    width: 0;
+}
+
+#controls-container {
+    position: absolute;
+    top: 51px;
+    left: 531px;
+    width: 180px;
+
+    background-color: #37446e;
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 5px;
+    display: none;
+}
+
+#controls-container.show {
+    display: block;
+}
+
+#controls-container ul {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+}
+
+#controls-container ul li {
+    font-family: "8-bit";
+}
