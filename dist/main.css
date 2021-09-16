@@ -82,9 +82,11 @@ table {
 #menu-title-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding-bottom: 75px;
-  margin-top: 20vh;
+  align-items: flex-end;
+  margin-bottom: 100px;
+  /* padding-bottom: 75px; */
+  /* margin-top: 20vh; */
+  height: 30vh;
 }
 
 #menu-title-container h1 {
@@ -121,8 +123,8 @@ table {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 6vh;
-  width: 7vw;
+  height: 40px;
+  width: 100px;
   background-color: #cce2e1;
   margin-top: 20px;
   font-family: "8-bit";
@@ -143,7 +145,7 @@ table {
 }
 
 #brief-description {
-  font-size: 4vh;
+  font-size: 30px;
 }
 
 #long-description {
@@ -156,7 +158,7 @@ table {
   justify-content: center;
   align-items: center;
   font-family: "8-bit";
-  font-size: 30px;
+  font-size: 20px;
 }
 
 #menu-links h3 {
