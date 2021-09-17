@@ -103,7 +103,7 @@ class Character extends MovingObject {
 
         // --------- Correcting x values for left facing animations, incrementing step ---------
         if (this.direction === "left") selection += 10;
-        this.step += (1 * (this.game.dt / (1000 / 60)));
+        this.step += (1 * (this.game.dt / (1000 / 60))); // Adjusting for refresh rate
 
         return selection;
     }

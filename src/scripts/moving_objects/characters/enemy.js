@@ -44,7 +44,7 @@ class Enemy extends Character {
         }
         // If stunned, keep adding to stun counter, do nothing extra
         if (this.stunned) {
-            this.stunnedCounter++;
+            this.stunnedCounter += (1 * (this.game.dt / (1000 / 60))); // Adjusting for refresh rate
             return;
         }
         // If knocked back, just do move logic
@@ -91,7 +91,9 @@ class Enemy extends Character {
         if (this.knockedBack) {
             this.attacking = false;
             // If game is slowed, increment counter slower
-            this.game.slowed ? this.knockedBackCounter += 0.25 : this.knockedBackCounter += 1;
+            this.game.slowed ? 
+                this.knockedBackCounter += (0.25 * (this.game.dt / (1000 / 60))) : // Adjusting for refresh rate
+                this.knockedBackCounter += (1 * ((this.game.dt / (1000 / 60)))); // Adjusting for refresh rate
             super.move();
         }
         // Under normal circumstances...
