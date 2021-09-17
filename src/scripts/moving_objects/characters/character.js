@@ -79,7 +79,8 @@ class Character extends MovingObject {
      */
     _selectFrame(stepFactor) {
         // Animation pace adjustment for refresh rate
-        stepFactor *= (this.game.dt / (1000 / 60));
+        console.log(this.game.dt / (1000 / 60))
+        stepFactor /= (this.game.dt / (1000 / 60));
 
         // --------- If past last step of animation, reset to first step ---------
         if (this.status === "idle" && !this.busy && this.step >= this.idleFrames * stepFactor) this.step = 0;
