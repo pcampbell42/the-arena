@@ -297,6 +297,21 @@ class Enemy extends Character {
         let yAdjustedTileNegative = this.game.floor.floorTiles[Math.floor((futureYCoord + 15) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
         let yAdjustedTilePositive = this.game.floor.floorTiles[Math.floor((futureYCoord - 10) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
 
+
+        // let xIndicesNegative = [[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 22) / 40) + 1]];
+        // let xIndicesPositive = [[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord + 20) / 40) + 1]];
+        // let yIndicesNegative = [[Math.floor((futureYCoord + 15) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1]];
+        // let yIndicesPositive = [[Math.floor((futureYCoord - 10) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1]];
+
+        // if (xIndicesNegative[0] >= 0 || xIndicesNegative[1] >= 0 || xIndicesPositive[0] >= 0 || xIndicesPositive[1] >= 0 ||
+        //     yIndicesNegative[0] >= 0 || yIndicesNegative[1] >= 0 || yIndicesPositive[0] >= 0 || yIndicesPositive[1] >= 0) {
+            
+        //     let xAdjustedTileNegative = this.game.floor.floorTiles[xIndicesNegative[0]][xIndicesNegative[1]];
+        //     let xAdjustedTilePositive = this.game.floor.floorTiles[xIndicesPositive[0]][xIndicesPositive[1]];
+        //     let yAdjustedTileNegative = this.game.floor.floorTiles[yIndicesNegative[0]][yIndicesNegative[1]];
+        //     let yAdjustedTilePositive = this.game.floor.floorTiles[yIndicesPositive[0]][yIndicesPositive[1]];
+
+
         // Make sure none of them are undefined (will throw nasty error)
         if (xAdjustedTileNegative !== undefined && xAdjustedTilePositive !== undefined &&
             yAdjustedTileNegative !== undefined && yAdjustedTilePositive !== undefined) {

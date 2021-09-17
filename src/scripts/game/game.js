@@ -37,7 +37,7 @@ class Game {
         // here to avoid having to thread it as a param through like 10 methods.
         // Ultimately used in MovingObjects move() method when making the basic
         // step (position + velocity) to move a MovingObject.
-        this.dt;
+        this.dt = 1;
     }
 
 
@@ -194,14 +194,14 @@ class Game {
     _slowSpeed() {
         this.slowed = true;
         this.player.animationPace = 0.5;
-        this.enemies.forEach(ele => {
-            ele.animationPace = 0.25;
-            ele.velocity[0] /= 4;
-            ele.velocity[1] /= 4;
+        this.enemies.forEach(enemy => {
+            enemy.animationPace = 0.25;
+            enemy.velocity[0] /= 4;
+            enemy.velocity[1] /= 4;
         });
-        this.projectiles.forEach(ele => {
-            ele.velocity[0] /= 4;
-            ele.velocity[1] /= 4;
+        this.projectiles.forEach(projectile => {
+            projectile.velocity[0] /= 4;
+            projectile.velocity[1] /= 4;
         });
     }
 

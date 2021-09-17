@@ -78,6 +78,9 @@ class Character extends MovingObject {
      * @returns - Number. The x-position of the frame to draw in the animation sheet.
      */
     _selectFrame(stepFactor) {
+        // Animation pace adjustment for refresh rate
+        stepFactor *= (this.game.dt / (1000 / 60));
+
         // --------- If past last step of animation, reset to first step ---------
         if (this.status === "idle" && !this.busy && this.step >= this.idleFrames * stepFactor) this.step = 0;
         if (this.status === "moving" && !this.busy && this.step >= this.runningFrames * stepFactor) this.step = 0;
