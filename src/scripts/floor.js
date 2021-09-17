@@ -12,15 +12,16 @@ class Floor {
         this.altTilset.src = "./dist/assets/tileset.png";
 
         this.switchOn = new Image();
-        this.switchOn.src = "./dist/assets/switch2.png"
+        this.switchOn.src = "./dist/assets/switch2.png";
 
         this.switchOff = new Image();
-        this.switchOff.src = "./dist/assets/switch0.png"
+        this.switchOff.src = "./dist/assets/switch0.png";
         
         // Positions of possible ground tiles in the tileset image. They're grouped 
         // into sets so that the ground doesn't look super weird (aka, red, blue, yellow, 
         // etc. colors of tiles on one floor - it's visually overwhelming). makeFloorTemplate()
-        // then uses one of these sets to create the basic template for a floor.
+        // then uses one of these sets to create the basic template for a floor. This could definitely
+        // be refactored into its own class with properties such as tile color, gridTile, etc.
         this.possibleGroundTiles = [
             [[0, 288], [32, 288], [64, 288], [128, 288], [160, 288], [192, 288], [222, 288], [192, 320], 
                 [128, 352], [222, 320]], 
@@ -88,10 +89,9 @@ class Floor {
                     ctx.drawImage(this.tileset, currentTile[1].position[0], currentTile[1].position[1], 32, 32, 40 * j, 40 * i, 40, 40);
                 }
                 // In some cases, non-wall tiles require background tiles, and must be handled differently from above
-                else if (currentTile[1] instanceof Array) {
+                else if (currentTile[1] instanceof Array && currentTile.length === 2) {
                     ctx.drawImage(this.tileset, currentTile[0][0], currentTile[0][1], 32, 32, 40 * j, 40 * i, 40, 40);
                     ctx.drawImage(this.tileset, currentTile[1][0], currentTile[1][1], 32, 32, 40 * j, 40 * i, 40, 40);
-
                 }
                 // Normal ground tiles
                 else {
@@ -511,7 +511,29 @@ class Floor {
                     ];
                 }
 
-
+                // -------------- Decorations --------------
+                // Area #
+                else if (i === 1 && j === 1) {
+                    this.floorTiles[i][j] = [
+                        [0, 352],
+                        [128, 384]
+                    ];
+                } else if (i === 1 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        [32, 352],
+                        [160, 384]
+                    ];
+                } else if (i === 2 && j === 1) {
+                    this.floorTiles[i][j] = [
+                        [0, 384],
+                        [Math.floor(Math.random() * 8) * 32, 416] // Randomize the #
+                    ];
+                } else if (i === 2 && j === 2) {
+                    this.floorTiles[i][j] = [
+                        [32, 384],
+                        [Math.floor(Math.random() * 8) * 32 + 13, 416] // Randomize the #
+                    ];
+                }
             }
         }
 
@@ -675,6 +697,30 @@ class Floor {
                     this.extraDoorPosition = [3, this.numCols - 8];
                     this.switchPosition = [1, this.numRows - 6];
                 }
+
+                // -------------- Decorations --------------
+                // Area #
+                else if (i === this.numRows - 4 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        [0, 352],
+                        [192, 384]
+                    ];
+                } else if (i === this.numRows - 4 && j === this.numCols - 3) {
+                    this.floorTiles[i][j] = [
+                        [32, 352],
+                        [224, 384]
+                    ];
+                } else if (i === this.numRows - 3 && j === this.numCols - 4) {
+                    this.floorTiles[i][j] = [
+                        [0, 384],
+                        [Math.floor(Math.random() * 8) * 32, 416] // Randomize the #
+                    ];
+                } else if (i === this.numRows - 3 && j === this.numCols - 3) {
+                    this.floorTiles[i][j] = [
+                        [32, 384],
+                        [Math.floor(Math.random() * 8) * 32 + 13, 416] // Randomize the #
+                    ];
+                }
             }
         }
         return newFloorTiles;
@@ -798,6 +844,30 @@ class Floor {
                     this.floorTiles[i][j] = new SpecialTile({ position: [32, 160], type: "pit" });
                 } else if (i === 4 && j === 11) {
                     this.floorTiles[i][j] = new SpecialTile({ position: [64, 160], type: "pit" });
+                }
+
+                // -------------- Decorations --------------
+                // Area #
+                else if (i === 3 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        [0, 352],
+                        [192, 384]
+                    ];
+                } else if (i === 3 && j === 7) {
+                    this.floorTiles[i][j] = [
+                        [32, 352],
+                        [224, 384]
+                    ];
+                } else if (i === 4 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        [0, 384],
+                        [Math.floor(Math.random() * 8) * 32, 416] // Randomize the #
+                    ];
+                } else if (i === 4 && j === 7) {
+                    this.floorTiles[i][j] = [
+                        [32, 384],
+                        [Math.floor(Math.random() * 8) * 32 + 13, 416] // Randomize the #
+                    ];
                 }
             }
         }
@@ -960,6 +1030,30 @@ class Floor {
                     this.floorTiles[i][j] = [
                         this.floorTiles[this.numRows - 2][0].position,
                         new SpecialTile({ position: [160, 64], type: "wall" })
+                    ];
+                }
+
+                // -------------- Decorations --------------
+                // Area #
+                else if (i === 1 && j === this.numCols - 3) {
+                    this.floorTiles[i][j] = [
+                        [0, 352],
+                        [192, 480]
+                    ];
+                } else if (i === 1 && j === this.numCols - 2) {
+                    this.floorTiles[i][j] = [
+                        [32, 352],
+                        [224, 480]
+                    ];
+                } else if (i === 2 && j === this.numCols - 3) {
+                    this.floorTiles[i][j] = [
+                        [0, 384],
+                        [Math.floor(Math.random() * 8) * 32, 416] // Randomize the #
+                    ];
+                } else if (i === 2 && j === this.numCols - 2) {
+                    this.floorTiles[i][j] = [
+                        [32, 384],
+                        [Math.floor(Math.random() * 8) * 32 + 13, 416] // Randomize the #
                     ];
                 }
             }
@@ -1389,6 +1483,30 @@ class Floor {
                     this.floorTiles[i][j] = [
                         this.floorTiles[this.numRows - 2][0].position,
                         new SpecialTile({ position: [128, 544], type: "wall" })
+                    ];
+                }
+
+                // -------------- Decorations --------------
+                // Area #
+                else if (i === 5 && j === 8) {
+                    this.floorTiles[i][j] = [
+                        [0, 352],
+                        [128, 384]
+                    ];
+                } else if (i === 5 && j === 9) {
+                    this.floorTiles[i][j] = [
+                        [32, 352],
+                        [160, 384]
+                    ];
+                } else if (i === 6 && j === 8) {
+                    this.floorTiles[i][j] = [
+                        [0, 384],
+                        [Math.floor(Math.random() * 8) * 32, 416] // Randomize the #
+                    ];
+                } else if (i === 6 && j === 9) {
+                    this.floorTiles[i][j] = [
+                        [32, 384],
+                        [Math.floor(Math.random() * 8) * 32 + 13, 416] // Randomize the #
                     ];
                 }
             }
