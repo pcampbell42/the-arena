@@ -142,6 +142,7 @@ class Enemy extends Character {
             ctx.fillStyle = "#32CD32";
             ctx.fillRect(this.position[0] + 15, this.position[1], this.maxHealth * (this.health / this.maxHealth), 10)
         }
+        console.log("in here")
 
         // Draw stun image
         if (this.stunned) {
