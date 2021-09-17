@@ -31,7 +31,7 @@
         </div>
 
         <div id="menu-play-button">
-            <button>Play</button>
+            <button id="menu-play-button-pb">Play</button>
         </div>
 
         <div id="menu-difficulty-selector-container">
@@ -80,9 +80,51 @@
             </div>
         </div>
 
-        <div id="instructions-container-anchor">
-            <div id="instructions-container">
-
+        <div id="instructions-display-anchor">
+            <div id="instructions-display">
+                <div id="instructions-header-anchor">
+                    <h1 id="instructions-header">Instructions</h1>
+                </div>
+                <div class="instruction">
+                    <img class="instructions-img" src="./dist/assets//instruction_gifs/movement_attack.gif" /><br />
+                    - Move with WASD<br />
+                    - Aim with your mouse<br />
+                    - Attack with left click
+                </div>
+                <div class="instruction">
+                    <img class="instructions-img" src="./dist/assets/instruction_gifs/roll.gif" /><br />
+                    - Roll with space<br />
+                    - Rolling gives you an iframe!<br />
+                    - You can roll through enemies and projectiles
+                </div>
+                <div class="instruction">
+                    <img class="instructions-img" src="./dist/assets/instruction_gifs/kick.gif" /><br />
+                    - Kick with f<br />
+                    - Kicking enemies into walls stuns them<br />
+                    - Kicking enemies into other enemies stuns them both
+                </div>
+                <div class="instruction">
+                    <img class="instructions-img" src="./dist/assets/instruction_gifs/time_slow.gif" /><br />
+                    - Slow time by holding shift<br />
+                    - Use sparingly, as it quickly drains your energy!
+                </div>
+                <div class="instruction">
+                    <img class="instructions-img" id="health-energy-img" src="./dist/assets//instruction_gifs/health_energy.png" /><br />
+                    - The green bar is your health<br />
+                    - The blue bar is your energy<br />
+                    - Energy is drained via normal attacks and slowing time<br />
+                    - Regain 20 energy each floor
+                </div>
+                
+                <div id="start-message-anchor">
+                    <div id="start-message">
+                        Defeat all the enemies on a floor to open the door to the next floor.<br />
+                        Try to make it to floor 15... Good Luck!
+                    </div>
+                </div>
+                <div id="start-button-anchor">
+                    <button id="start-button">Start</button>
+                </div>
             </div>
         </div>
 

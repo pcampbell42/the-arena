@@ -102,7 +102,7 @@ table {
   align-self: center;
 }
 
-#menu-play-button button {
+#menu-play-button-pb {
   background-color: green;
   width: 150px;
   height: 90px;
@@ -111,7 +111,7 @@ table {
   font-size: 45px;
 }
 
-#menu-play-button button:hover {
+#menu-play-button-pb:hover {
   background-color: #37446e;
 }
 
@@ -256,7 +256,7 @@ table {
 
 #controls-container {
   position: absolute;
-  top: 68px;
+  top: 52px;
   left: 531px;
   width: 180px;
   background-color: #37446e;
@@ -456,6 +456,116 @@ canvas {
 
 .github-link:hover {
   opacity: 0.5;
+}
+
+#instructions-display-anchor {
+  position: fixed;
+  z-index: 300;
+  background-color: rgba(1, 1, 1, 0.9);
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: none;
+}
+
+#instructions-display-anchor.on {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#instructions-display {
+  display: flex;
+  flex-wrap: wrap;
+  width: 80vw;
+  height: 90vh;
+  overflow-y: auto;
+  background-color: #424346;
+  border-style: solid;
+  border-color: #37446e;
+  border-width: 1px;
+  border-radius: 10px;
+}
+
+#instructions-header-anchor {
+  position: relative;
+  height: 0;
+  width: 0;
+}
+
+#instructions-header {
+  position: absolute;
+  top: 3vh;
+  left: 4vw;
+  font-family: "8-bit";
+  font-size: 5vh;
+}
+
+.instruction {
+  height: 30vh;
+  width: 15vw;
+  margin-top: 10vh;
+  margin-left: 3.8vw;
+  text-align: left;
+  font-family: "8-bit";
+  font-size: 2.5vh;
+}
+
+.instructions-img {
+  height: 25vh;
+  width: 30vh;
+  margin-bottom: 1vh;
+  border-radius: 1vh;
+  border-style: solid;
+  border-color: #37446e;
+  border-width: 0.3vh;
+}
+
+#health-energy-img {
+  height: 7vh;
+  width: 15vw;
+  border-radius: 10px;
+}
+
+#start-message-anchor {
+  position: relative;
+  height: 0;
+  width: 0;
+}
+
+#start-message {
+  position: absolute;
+  top: 20vh;
+  left: 5vw;
+  width: 55vw;
+  text-align: left;
+  font-family: "8-bit";
+  font-size: 4vh;
+  line-height: 5vh;
+}
+
+#start-button-anchor {
+  position: relative;
+  height: 0;
+  width: 0;
+}
+
+#start-button {
+  position: absolute;
+  left: 50vw;
+  top: 30vh;
+  background-color: green;
+  width: 125px;
+  height: 60px;
+  margin-top: 15px;
+  border: none;
+  font-family: "8-bit";
+  font-size: 30px;
+}
+
+#start-button:hover {
+  background-color: #37446e;
 }
 
 @font-face {

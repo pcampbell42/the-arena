@@ -47,7 +47,7 @@
     align-self: center;
 }
 
-#menu-play-button button {
+#menu-play-button-pb {
     background-color: green;
     width: 150px;
     height: 90px;
@@ -56,7 +56,7 @@
     font-size: 45px;
 }
 
-#menu-play-button button:hover {
+#menu-play-button-pb:hover {
     background-color: #37446e;
 }
 

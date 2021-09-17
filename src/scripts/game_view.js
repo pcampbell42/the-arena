@@ -41,6 +41,26 @@ class GameView {
 
 
     /**
+     * When a player clicks play or retry, this method is called and instructions are
+     * displayed. The player can then click the start button to actually play the game.
+     */
+    instructions() {
+        // Show instructions
+        const instructions = document.getElementById("instructions-display-anchor");
+        instructions.classList.toggle("on");
+
+        // If haven't already, add event listener for the start button
+        if (this.firstGame) {
+            const startButton = document.getElementById("start-button");
+            startButton.addEventListener("click", () => {
+                instructions.classList.toggle("on");
+                this.start();
+            });
+        }
+    }
+
+
+    /**
      * This method is called when the user clicks Play. Launches the Game.
      */
     start() {
@@ -329,7 +349,7 @@ class GameView {
      */
     mainMenuButtonHandlers() {
         // ------------------------ Play button ------------------------
-        const playButton = document.getElementById("menu-play-button");
+        const playButton = document.getElementById("menu-play-button-pb");
         const menuDisplay = document.getElementById("menu-display");
         const gameDisplay = document.getElementById("game-display");
 
@@ -342,9 +362,8 @@ class GameView {
             const gameOverContainer = document.getElementById("game-over-container");
             if (gameOverContainer.classList.length === 1) gameOverContainer.classList.toggle("on");
 
-            // Start music
-            this.song.pause();
-            this.start();
+            this.song.pause(); // Start music
+            this.instructions();
         });
 
 
