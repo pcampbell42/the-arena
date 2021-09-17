@@ -143,13 +143,13 @@ class Enemy extends Character {
         }
 
         // Draw stun image
-        // if (this.stunned) {
-        //     let stunnedImage = new Image();
-        //     stunnedImage.src = "./dist/assets/stunned.png";
-        //     ctx.filter = "invert(1)";
-        //     ctx.drawImage(stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
-        //     ctx.filter = "invert(0)";
-        // }
+        if (this.stunned) {
+            let stunnedImage = new Image();
+            stunnedImage.src = "./dist/assets/stunned.png";
+            ctx.filter = "invert(1)";
+            ctx.drawImage(stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
+            ctx.filter = "invert(0)";
+        }
 
         // Animate if attacking
         if (this.attacking) {
@@ -318,7 +318,7 @@ class Enemy extends Character {
                 // the character is stunned, and the character takes small damage
                 if (this.knockedBack) {
                     this.knockedBack = false;
-                    this.stunned = true;
+                    // this.stunned = true;
                     this.stunnedCounter = 0;
                     this.velocity = [0, 0];
                     this.takeDamage(5);
