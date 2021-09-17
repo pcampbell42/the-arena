@@ -144,13 +144,13 @@ class Enemy extends Character {
         }
 
         // Draw stun image
-        // if (this.stunned) {
-        //     let stunnedImage = new Image();
-        //     stunnedImage.src = "./dist/assets/stunned.png";
-        //     ctx.filter = "invert(1)";
-        //     ctx.drawImage(stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
-        //     ctx.filter = "invert(0)";
-        // }
+        if (this.stunned) {
+            let stunnedImage = new Image();
+            stunnedImage.src = "./dist/assets/stunned.png";
+            ctx.filter = "invert(1)";
+            ctx.drawImage(stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
+            ctx.filter = "invert(0)";
+        }
 
         // Animate if attacking
         if (this.attacking) {
@@ -181,15 +181,15 @@ class Enemy extends Character {
             }
         }
         // Animate if stunned
-        // else if (this.stunned) {
-        //     let stepXCoord = this._selectFrame(18 / this.animationPace);
-        //     if (this.direction === "right") {
-        //         this.drawing.src = `${this.images}/idle_r.png`;
-        //     } else {
-        //         this.drawing.src = `${this.images}/idle_l.png`;
-        //     }
-        //     ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
-        // }
+        else if (this.stunned) {
+            let stepXCoord = this._selectFrame(18 / this.animationPace);
+            if (this.direction === "right") {
+                this.drawing.src = `${this.images}/idle_r.png`;
+            } else {
+                this.drawing.src = `${this.images}/idle_l.png`;
+            }
+            ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
+        }
 
         // Animate if idle / moving
         else if (!this.attacking) super.draw(ctx);
