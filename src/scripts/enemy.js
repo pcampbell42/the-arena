@@ -181,9 +181,6 @@ class Enemy extends Character {
                 this.drawing.src = `${this.images}/idle_l.png`;
             }
             ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
-            // ctx.filter = "invert(1)";
-            ctx.drawImage(this.stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
-            // ctx.filter = "invert(0)";
         }
 
         // Animate if idle / moving
