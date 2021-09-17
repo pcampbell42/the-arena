@@ -145,6 +145,7 @@ class Enemy extends Character {
 
         // Draw stun image
         if (this.stunned) {
+            console.log("hello")
             let stunnedImage = new Image();
             stunnedImage.src = "./dist/assets/stunned.png";
             ctx.filter = "invert(1)";
