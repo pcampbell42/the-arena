@@ -13,8 +13,12 @@ class MovingObject {
      * The very basics of moving a MovingObject. Both Projectile and Character call this.
      */
     move() {
-        this.position[0] += this.velocity[0];
-        this.position[1] += this.velocity[1];
+        // Adjusting for refresh rate...
+        let adjustedX = this.velocity[0] * (this.game.dt / (1000 / 60));
+        let adjustedY = this.velocity[1] * (this.game.dt / (1000 / 60));
+
+        this.position[0] += adjustedX;
+        this.position[1] += adjustedY;
     }
 
     

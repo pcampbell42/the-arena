@@ -1,8 +1,8 @@
-const Player = require("./player.js");
-const Shooter = require("./shooter.js");
-const Rusher = require("./rusher.js")
-const Projectile = require("./projectile.js");
-const Floor = require("./floor.js");
+const Player = require("../moving_objects/characters/player.js");
+const Shooter = require("../moving_objects/characters/shooter.js");
+const Rusher = require("../moving_objects/characters/rusher.js")
+const Projectile = require("../moving_objects/projectile.js");
+const Floor = require("../floors/floor.js");
 
 
 class Game {
@@ -30,7 +30,14 @@ class Game {
         this.slowed = false;
         this.paused = false;
 
+        // On journalist difficulty, all damage the player takes is set to 1
         this.journalistDifficulty = journalistDifficulty;
+
+        // Time used to fix refresh rate issues... saved as an instance variable
+        // here to avoid having to thread it as a param through like 10 methods.
+        // Ultimately used in MovingObjects move() method when making the basic
+        // step (position + velocity) to move a MovingObject.
+        this.dt;
     }
 
 
@@ -53,8 +60,11 @@ class Game {
     /**
      * One of the two main methods that plays the game (they both get called in a loop
      * in the GameView class). Takes care of the game's logic.
+     * @param {Number} dt - Time... Used to fix refresh rate issues
      */
-    step() {
+    step(dt) {
+        this.dt = dt; // Save dt
+
         // ------------- Time slow logic -------------
         if (key.shift && !this.slowed && this.player.energy > 0) {
             this._slowSpeed();

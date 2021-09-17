@@ -73,7 +73,6 @@ class GameView {
             this.song = new Audio(`./dist/assets/music/song${Math.floor(Math.random() * 4 + 1)}.mp3`);
         this.song.volume = 0.125;
         
-
         // If it's not the first game, the mouse, menu bar, and retry button already have event listeners
         if (this.firstGame) {
             this.mouseHandler();
@@ -84,21 +83,27 @@ class GameView {
         this.firstGame = false;
 
         // Start the game loop
+        this.lastTime = 0;
         requestAnimationFrame(this.animate.bind(this));
     }
 
 
     /**
      * The main Game loop method
+     * @param {Number} time - Time... Used to fix refresh rate issues
      * @returns - Null
      */
-    animate() {
+    animate(time) {
         if (this.endCurrentGame) return; // Stops loop if game is ended
         if (!this.audioMuted) this.song.play(); // Play song
+
+        const dt = time - this.lastTime; // To fix refresh rate issues...
         if (!this.game.paused) {
-            this.game.step(); // Takes care of game logic
+            this.game.step(dt); // Takes care of game logic
             this.draw(); // Takes care of drawing everything
         }
+        this.lastTime = time;
+
         if (this.game.player.isDead) this.gameOver(); // End game when player is dead
 
         requestAnimationFrame(this.animate.bind(this));

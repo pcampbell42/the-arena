@@ -12,7 +12,7 @@ class Shooter extends Enemy {
         this.maxHealth = 30; // Used to figure out when to display healthbar (maxHealth !== health)
         this.health = 30;
 
-        this.attackRange = 300;
+        this.attackRange = 700; // Basically can fire across entire map, kind of obsolete now
         this.speed = 1;
     }
 
