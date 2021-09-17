@@ -458,6 +458,62 @@ canvas {
   opacity: 0.5;
 }
 
+#plus-20-energy-anchor {
+  position: absolute;
+  height: 0;
+  width: 0;
+}
+
+#plus-20-energy {
+  display: none;
+  position: relative;
+  left: 210px;
+  bottom: 26px;
+  font-family: "8-bit";
+  font-size: 25px;
+  color: blue;
+}
+
+#plus-20-energy.on {
+  display: block;
+  animation: fadePlus20 2s linear infinite;
+}
+
+@keyframes fadePlus20 {
+  0% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.8;
+  }
+  70% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.4;
+  }
+  90% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 #instructions-display-anchor {
   position: fixed;
   z-index: 300;
@@ -566,6 +622,7 @@ canvas {
 
 #start-button:hover {
   background-color: #37446e;
+  cursor: pointer;
 }
 
 @font-face {
