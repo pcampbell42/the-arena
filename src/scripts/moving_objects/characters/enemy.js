@@ -1,5 +1,5 @@
 const Character = require("./character.js");
-const SpecialTile = require("./special_tile");
+const SpecialTile = require("../../floors/special_tile");
 
 
 class Enemy extends Character {
@@ -129,8 +129,7 @@ class Enemy extends Character {
     draw(ctx) {
         // For some bizarro reason, I have to do this here instead of in startKnockback, which would make way more sense
         // Basically, if an enemy is knockedBack, attacking is canceled and they're no longer busy
-        // if (this.knockedBack || this.stunned) {
-        if (this.knockedBack) {
+        if (this.knockedBack || this.stunned) {
             this.attacking = false;
             this.busy = false;
         }
@@ -180,8 +179,12 @@ class Enemy extends Character {
             } else {
                 this.drawing.src = `${this.images}/idle_l.png`;
             }
-            ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
+            // Draw stun icon
+            ctx.filter = "invert(1)";
             ctx.drawImage(this.stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
+            ctx.filter = "invert(0)";
+
+            ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
         }
 
         // Animate if idle / moving
@@ -315,6 +318,7 @@ class Enemy extends Character {
                     this.stunned = true;
                     this.stunnedCounter = 0;
                     this.velocity = [0, 0];
+                    this.step = 0;
                     this.takeDamage(5);
                 }
                 return false;
@@ -333,6 +337,7 @@ class Enemy extends Character {
         // Setting instance vars
         this.knockedBack = true;
         this.knockedBackCounter = 0;
+        this.step = 0;
         
         // Figuring out direction to knock enemy and setting velocity
         switch (knockedDirection) {

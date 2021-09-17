@@ -1,6 +1,6 @@
-const MovingObject = require("./moving_object");
-const Projectile = require("./projectile.js");
-const SpecialTile = require("./special_tile.js");
+const MovingObject = require("../moving_object");
+const Projectile = require("../projectile.js");
+const SpecialTile = require("../../floors/special_tile.js");
 
 
 class Character extends MovingObject {
@@ -128,12 +128,14 @@ class Character extends MovingObject {
                         this.stunned = true;
                         this.stunnedCounter = 0;
                         this.velocity = [0, 0];
+                        this.step = 0;
                         this.takeDamage(5);
 
                         if (this.game.enemies[i]) {
                             this.game.enemies[i].stunned = true;
                             this.game.enemies[i].stunnedCounter = 0;
                             this.velocity = [0, 0];
+                            this.step = 0;
                             this.game.enemies[i].takeDamage(5);
                         }
                     }

@@ -1,6 +1,6 @@
 // webpack --watch --mode=development
 
-const GameView = require('./scripts/game_view.js');
+const GameView = require('./scripts/game/game_view.js');
 
 
 /**

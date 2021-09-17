@@ -1,5 +1,5 @@
 const Character = require("./character.js");
-const SpecialTile = require("./special_tile");
+const SpecialTile = require("../../floors/special_tile");
 
 
 class Player extends Character {
@@ -171,6 +171,7 @@ class Player extends Character {
                         this.stunned = true;
                         this.stunnedCounter = 0;
                         this.velocity = [0, 0];
+                        this.step = 0;
                         this.takeDamage(5);
                     }
                     return false;
