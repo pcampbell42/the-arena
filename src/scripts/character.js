@@ -125,7 +125,7 @@ class Character extends MovingObject {
                     // halted, they both get stunned, and they both take small damage
                     if (this.knockedBack) {
                         this.knockedBack = false;
-                        // this.stunned = true;
+                        this.stunned = true;
                         this.stunnedCounter = 0;
                         this.velocity = [0, 0];
                         this.takeDamage(5);

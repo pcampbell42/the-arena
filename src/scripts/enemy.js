@@ -37,15 +37,15 @@ class Enemy extends Character {
         if (this.busy) return; // If busy, do nothing extra
 
         // Ending stun when stun counter reaches 55
-        if (this.stunnedCounter >= 55) {
-            this.stunnedCounter = 0;
-            this.stunned = false;
-        }
+        // if (this.stunnedCounter >= 55) {
+        //     this.stunnedCounter = 0;
+        //     this.stunned = false;
+        // }
         // If stunned, keep adding to stun counter, do nothing extra
-        if (this.stunned) {
-            this.stunnedCounter += 1;
-            return;
-        }
+        // if (this.stunned) {
+        //     this.stunnedCounter++;
+        //     return;
+        // }
         // If knocked back, just do move logic
         if (this.knockedBack) {
             this.move(); // Takes us up a level to Shooter / Rusher move()
@@ -128,7 +128,8 @@ class Enemy extends Character {
     draw(ctx) {
         // For some bizarro reason, I have to do this here instead of in startKnockback, which would make way more sense
         // Basically, if an enemy is knockedBack, attacking is canceled and they're no longer busy
-        if (this.knockedBack || this.stunned) {
+        // if (this.knockedBack || this.stunned) {
+        if (this.knockedBack) {
             this.attacking = false;
             this.busy = false;
         }
@@ -143,13 +144,13 @@ class Enemy extends Character {
         }
 
         // Draw stun image
-        if (this.stunned) {
-            let stunnedImage = new Image();
-            stunnedImage.src = "./dist/assets/stunned.png";
-            ctx.filter = "invert(1)";
-            ctx.drawImage(stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
-            ctx.filter = "invert(0)";
-        }
+        // if (this.stunned) {
+        //     let stunnedImage = new Image();
+        //     stunnedImage.src = "./dist/assets/stunned.png";
+        //     ctx.filter = "invert(1)";
+        //     ctx.drawImage(stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
+        //     ctx.filter = "invert(0)";
+        // }
 
         // Animate if attacking
         if (this.attacking) {
@@ -180,15 +181,15 @@ class Enemy extends Character {
             }
         }
         // Animate if stunned
-        else if (this.stunned) {
-            let stepXCoord = this._selectFrame(18 / this.animationPace);
-            if (this.direction === "right") {
-                this.drawing.src = `${this.images}/idle_r.png`;
-            } else {
-                this.drawing.src = `${this.images}/idle_l.png`;
-            }
-            ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
-        }
+        // else if (this.stunned) {
+        //     let stepXCoord = this._selectFrame(18 / this.animationPace);
+        //     if (this.direction === "right") {
+        //         this.drawing.src = `${this.images}/idle_r.png`;
+        //     } else {
+        //         this.drawing.src = `${this.images}/idle_l.png`;
+        //     }
+        //     ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
+        // }
 
         // Animate if idle / moving
         else if (!this.attacking) super.draw(ctx);
@@ -318,7 +319,7 @@ class Enemy extends Character {
                 // the character is stunned, and the character takes small damage
                 if (this.knockedBack) {
                     this.knockedBack = false;
-                    // this.stunned = true;
+                    this.stunned = true;
                     this.stunnedCounter = 0;
                     this.velocity = [0, 0];
                     this.takeDamage(5);

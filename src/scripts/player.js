@@ -168,7 +168,7 @@ class Player extends Character {
         
                     if (this.knockedBack) {
                         this.knockedBack = false;
-                        // this.stunned = true;
+                        this.stunned = true;
                         this.stunnedCounter = 0;
                         this.velocity = [0, 0];
                         this.takeDamage(5);
