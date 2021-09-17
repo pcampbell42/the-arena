@@ -24,7 +24,8 @@ class Enemy extends Character {
         this.knockedBackCounter = 0;
         this.stunned = false;
         this.stunnedCounter = 0;
-        
+        this.stunnedImage = new Image();
+        this.stunnedImage.src = "./dist/assets/stunned.png";
     }
 
 
@@ -142,17 +143,6 @@ class Enemy extends Character {
             ctx.fillStyle = "#32CD32";
             ctx.fillRect(this.position[0] + 15, this.position[1], this.maxHealth * (this.health / this.maxHealth), 10)
         }
-        console.log("in here")
-
-        // Draw stun image
-        if (this.stunned) {
-            console.log("hello")
-            let stunnedImage = new Image();
-            stunnedImage.src = "./dist/assets/stunned.png";
-            ctx.filter = "invert(1)";
-            ctx.drawImage(stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
-            ctx.filter = "invert(0)";
-        }
 
         // Animate if attacking
         if (this.attacking) {
@@ -191,6 +181,9 @@ class Enemy extends Character {
                 this.drawing.src = `${this.images}/idle_l.png`;
             }
             ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
+            ctx.filter = "invert(1)";
+            ctx.drawImage(stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
+            ctx.filter = "invert(0)";
         }
 
         // Animate if idle / moving
