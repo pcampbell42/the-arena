@@ -79,8 +79,7 @@ class Character extends MovingObject {
      */
     _selectFrame(stepFactor) {
         // Animation pace adjustment for refresh rate
-        console.log(this.game.dt / (1000 / 60))
-        stepFactor /= (this.game.dt / (1000 / 60));
+        // stepFactor /= (this.game.dt / (1000 / 60));
 
         // --------- If past last step of animation, reset to first step ---------
         if (this.status === "idle" && !this.busy && this.step >= this.idleFrames * stepFactor) this.step = 0;
@@ -104,7 +103,7 @@ class Character extends MovingObject {
 
         // --------- Correcting x values for left facing animations, incrementing step ---------
         if (this.direction === "left") selection += 10;
-        this.step += 1;
+        this.step += (1 * (this.game.dt / (1000 / 60)));
 
         return selection;
     }
