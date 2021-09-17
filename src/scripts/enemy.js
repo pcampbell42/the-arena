@@ -49,7 +49,6 @@ class Enemy extends Character {
         // If knocked back, just do move logic
         if (this.knockedBack) {
             this.move(); // Takes us up a level to Shooter / Rusher move()
-
         } 
         // Under normal circumstances...
         else {
@@ -144,13 +143,13 @@ class Enemy extends Character {
         }
 
         // Draw stun image
-        if (this.stunned) {
-            let stunnedImage = new Image();
-            stunnedImage.src = "./dist/assets/stunned.png";
-            ctx.filter = "invert(1)";
-            ctx.drawImage(stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
-            ctx.filter = "invert(0)";
-        }
+        // if (this.stunned) {
+        //     let stunnedImage = new Image();
+        //     stunnedImage.src = "./dist/assets/stunned.png";
+        //     ctx.filter = "invert(1)";
+        //     ctx.drawImage(stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
+        //     ctx.filter = "invert(0)";
+        // }
 
         // Animate if attacking
         if (this.attacking) {
@@ -208,8 +207,7 @@ class Enemy extends Character {
      * Player. Only passed in because we happen to have distanceToPlayer where we 
      * call this, so we can just pass it in and avoid doing the calculation again.
      */
-    pullAggro(distanceToPlayer) {    
-        console.log(this.losingAggroCounter)    
+    pullAggro(distanceToPlayer) {
         let facingPlayer = ((this.position[0] - this.game.player.position[0]) >= 0 && this.direction === "left" ||
             (this.position[0] - this.game.player.position[0]) <= 0 && this.direction === "right");
 
