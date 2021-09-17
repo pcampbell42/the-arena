@@ -37,15 +37,15 @@ class Enemy extends Character {
         if (this.busy) return; // If busy, do nothing extra
 
         // Ending stun when stun counter reaches 55
-        // if (this.stunnedCounter >= 55) {
-        //     this.stunnedCounter = 0;
-        //     this.stunned = false;
-        // }
+        if (this.stunnedCounter >= 55) {
+            this.stunnedCounter = 0;
+            this.stunned = false;
+        }
         // If stunned, keep adding to stun counter, do nothing extra
-        // if (this.stunned) {
-        //     this.stunnedCounter++;
-        //     return;
-        // }
+        if (this.stunned) {
+            this.stunnedCounter++;
+            return;
+        }
         // If knocked back, just do move logic
         if (this.knockedBack) {
             this.move(); // Takes us up a level to Shooter / Rusher move()
