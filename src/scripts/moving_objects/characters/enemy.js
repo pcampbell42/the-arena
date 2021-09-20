@@ -44,7 +44,14 @@ class Enemy extends Character {
         }
         // If stunned, keep adding to stun counter, do nothing extra
         if (this.stunned) {
-            this.stunnedCounter += (1 * (this.game.dt / (1000 / 60))); // Adjusting for refresh rate
+            // Adjusting for refresh rate. The basic idea here is this.game.dt is 
+            // a Number that more or less represents the refresh rate. The higher
+            // the refresh rate, the lower the number. On higher refresh rate monitors,
+            // the game loop happens much faster. Therefore, we use this.game.dt to 
+            // slow everything down. In addition to slowing the velocity and animation
+            // down, we also need to slow down all the counters in the game,
+            // because they go up much faster on a high refresh rate monitor.
+            this.stunnedCounter += (1 * (this.game.dt / (1000 / 60)));
             return;
         }
         // If knocked back, just do move logic
@@ -153,8 +160,8 @@ class Enemy extends Character {
             } else {
                 this.drawing.src = `${this.images}/attack_l.png`;
             }
-            if (!this.game.slowed && this.step % 9 === 0) this.constructor.name === "Shooter" ? this.launchProjectile() : this.swing();
-            if (this.game.slowed && this.step % 36 === 0) this.constructor.name === "Shooter" ? this.launchProjectile() : this.swing();
+            if (!this.game.slowed && Math.floor(this.step % 9) === 0) this.constructor.name === "Shooter" ? this.launchProjectile() : this.swing();
+            if (this.game.slowed && Math.floor(this.step % 36) === 0) this.constructor.name === "Shooter" ? this.launchProjectile() : this.swing();
             if (stepXCoord >= 144) {
                 this.attacking = false;
                 this.busy = false;

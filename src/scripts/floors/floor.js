@@ -115,6 +115,7 @@ class Floor {
             }
         }
     }
+    
 
     /**
      * Simple helper method that picks and calls one of the floor versions.
@@ -539,6 +540,7 @@ class Floor {
 
         return newFloorTiles;
     }
+
 
     /**
      * Method that finalizes the tiles for the floor. Version 2. Pit, extra door, lots of walls.
