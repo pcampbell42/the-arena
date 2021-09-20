@@ -146,37 +146,34 @@ class Player extends Character {
         // Finding what type of tile the Character is moving into based on position / velocity
         let futureXCoord = this.position[0] + this.velocity[0];
         let futureYCoord = this.position[1] + this.velocity[1];
-        // let a = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
+
+        // Get tiles. Note don't need to check indices here like we do in the Enemy validMove(). This is because
+        // there's no reason the Player would ever have an out-of-bounds index.
         let xAdjustedTileNegative = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 10) / 40) + 1];
         let xAdjustedTilePositive = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 2) / 40) + 1];
         let yAdjustedTileNegative = this.game.floor.floorTiles[Math.floor((futureYCoord + 12) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
         let yAdjustedTilePositive = this.game.floor.floorTiles[Math.floor((futureYCoord - 4) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
 
-        // Make sure none of them are undefined (will throw nasty error)
-        if (xAdjustedTileNegative !== undefined && xAdjustedTilePositive !== undefined &&
-            yAdjustedTileNegative !== undefined && yAdjustedTilePositive !== undefined) {
+        // If any of the tiles are a wall, the move is invalid
+        if ((xAdjustedTileNegative instanceof SpecialTile && xAdjustedTileNegative.type === "wall") ||
+            (xAdjustedTileNegative[0] instanceof Array && xAdjustedTileNegative[1].type === "wall") ||
+            (xAdjustedTilePositive instanceof SpecialTile && xAdjustedTilePositive.type === "wall") ||
+            (xAdjustedTilePositive[0] instanceof Array && xAdjustedTilePositive[1].type === "wall") ||
+            (yAdjustedTileNegative instanceof SpecialTile && yAdjustedTileNegative.type === "wall") ||
+            (yAdjustedTileNegative[0] instanceof Array && yAdjustedTileNegative[1].type === "wall") ||
+            (yAdjustedTilePositive instanceof SpecialTile && yAdjustedTilePositive.type === "wall") ||
+            (yAdjustedTilePositive[0] instanceof Array && yAdjustedTilePositive[1].type === "wall")) {
 
-                // If any of the tiles are a wall, the move is invalid
-                if ((xAdjustedTileNegative instanceof SpecialTile && xAdjustedTileNegative.type === "wall") ||
-                    (xAdjustedTileNegative[0] instanceof Array && xAdjustedTileNegative[1].type === "wall") ||
-                    (xAdjustedTilePositive instanceof SpecialTile && xAdjustedTilePositive.type === "wall") ||
-                    (xAdjustedTilePositive[0] instanceof Array && xAdjustedTilePositive[1].type === "wall") ||
-                    (yAdjustedTileNegative instanceof SpecialTile && yAdjustedTileNegative.type === "wall") ||
-                    (yAdjustedTileNegative[0] instanceof Array && yAdjustedTileNegative[1].type === "wall") ||
-                    (yAdjustedTilePositive instanceof SpecialTile && yAdjustedTilePositive.type === "wall") ||
-                    (yAdjustedTilePositive[0] instanceof Array && yAdjustedTilePositive[1].type === "wall")) {
-        
-                    if (this.knockedBack) {
-                        this.knockedBack = false;
-                        this.stunned = true;
-                        this.stunnedCounter = 0;
-                        this.velocity = [0, 0];
-                        this.step = 0;
-                        this.takeDamage(5);
-                    }
-                    return false;
-                }
+            if (this.knockedBack) {
+                this.knockedBack = false;
+                this.stunned = true;
+                this.stunnedCounter = 0;
+                this.velocity = [0, 0];
+                this.step = 0;
+                this.takeDamage(5);
             }
+            return false;
+        }
         return super.validMove() ? true : false;
     }
 

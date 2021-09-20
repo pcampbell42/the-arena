@@ -271,8 +271,13 @@ class Enemy extends Character {
         while (x1 < x2) {
             let currentY = (m * x1) + b
 
-            // Tile the line is currently on
-            let currentTile = this.game.floor.floorTiles[Math.floor(currentY / 40) + 1][Math.floor(x1 / 40) + 1];
+            // Check that tile indices are valid
+            let currentTileIndices = [Math.floor(currentY / 40) + 1, Math.floor(x1 / 40) + 1];
+            if (currentTileIndices[0] <= 0 || currentTileIndices[0] >= this.game.floor.numRows ||
+                currentTileIndices[1] <= 0 || currentTileIndices[1] >= this.game.floor.numCols) return false;
+            
+            // Get current tile and check it
+            let currentTile = this.game.floor.floorTiles[currentTileIndices[0]][currentTileIndices[1]];
             if ((currentTile instanceof SpecialTile && currentTile.type === "wall") ||
                 currentTile[0] instanceof Array && currentTile[1].type === "wall") return false;
 
@@ -300,53 +305,65 @@ class Enemy extends Character {
         let futureXCoord = this.position[0] + this.velocity[0];
         let futureYCoord = this.position[1] + this.velocity[1];
 
-        // Checks four tiles so that I can make custom adjustments in all four directions
-        let xAdjustedTileNegative = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 22) / 40) + 1];
-        let xAdjustedTilePositive = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord + 20) / 40) + 1];
-        let yAdjustedTileNegative = this.game.floor.floorTiles[Math.floor((futureYCoord + 15) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
-        let yAdjustedTilePositive = this.game.floor.floorTiles[Math.floor((futureYCoord - 10) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
+        // Checks four tiles so that I can make custom adjustments in all four directions. Note that we
+        // are only getting the indices here, not the actual tiles. This is so that we can check that the
+        // indices are in bounds of the tile array (aka, not negative or larger than the array). If we 
+        // didn't check this, we would get a rare nasty error when trying to spawn enemies in.
+        let xIndicesNegative = [Math.floor((futureYCoord + 5) / 40) + 1, Math.floor((futureXCoord - 22) / 40) + 1];
+        let xIndicesPositive = [Math.floor((futureYCoord + 5) / 40) + 1, Math.floor((futureXCoord + 20) / 40) + 1];
+        let yIndicesNegative = [Math.floor((futureYCoord + 15) / 40) + 1, Math.floor((futureXCoord - 5) / 40) + 1];
+        let yIndicesPositive = [Math.floor((futureYCoord - 10) / 40) + 1, Math.floor((futureXCoord - 5) / 40) + 1];
 
+        console.log(`${xIndicesNegative} ---- ${xIndicesPositive} ---- ${yIndicesNegative} ---- ${yIndicesPositive}`);
 
-        // let xIndicesNegative = [[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 22) / 40) + 1]];
-        // let xIndicesPositive = [[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord + 20) / 40) + 1]];
-        // let yIndicesNegative = [[Math.floor((futureYCoord + 15) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1]];
-        // let yIndicesPositive = [[Math.floor((futureYCoord - 10) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1]];
+        // Bug fix - if any of our indices are negative or out of bounds, we get a nasty error. This can
+        // happen when spawning in enemies (spawnEnemies in Game uses validMove to check if the spawn position
+        // is valid). We also just go ahead and check 0 here, because if any of the indices are 0, we know its 
+        // a wall, so we can return false.
+        let cols = this.game.floor.numCols;
+        let rows = this.game.floor.numRows;
+        if (xIndicesNegative[0] <= 0 || xIndicesNegative[1] <= 0 || xIndicesPositive[0] <= 0 || xIndicesPositive[1] <= 0 ||
+            yIndicesNegative[0] <= 0 || yIndicesNegative[1] <= 0 || yIndicesPositive[0] <= 0 || yIndicesPositive[1] <= 0 || 
+            xIndicesNegative[0] >= rows - 1 || xIndicesNegative[1] >= cols - 1 || xIndicesPositive[0] >= rows - 1 || xIndicesPositive[1] >= cols - 1 ||
+            yIndicesNegative[0] >= rows - 1 || yIndicesNegative[1] >= cols - 1 || yIndicesPositive[0] >= rows - 1 || yIndicesPositive[1] >= cols - 1) {
+            // this.dead() is a bug fix. There's a bizarre and very rare bug where, when spawning an Enemy, 
+            // it spawns them in a valid position and then immediately seems to move them out of bounds. This bug
+            // appeared when I implemented game.dt (refresh rate fix). Likely it has something to do with not
+            // using the adjusted velocities when checking collision. Even then though, that oversight doesn't 
+            // explain the bizarre teleporting of position and why this only happens immediately after being 
+            // spawned in. Being that this is such a rare bug and not particularly game breaking, rather than
+            // fix the source of this, we can simply remove the Enemy from the Game if they are out of bounds.
+            this.dead();
+            return false;
+        }
+        
+        // Indices are valid, now we can get the tiles
+        let xAdjustedTileNegative = this.game.floor.floorTiles[xIndicesNegative[0]][xIndicesNegative[1]];
+        let xAdjustedTilePositive = this.game.floor.floorTiles[xIndicesPositive[0]][xIndicesPositive[1]];
+        let yAdjustedTileNegative = this.game.floor.floorTiles[yIndicesNegative[0]][yIndicesNegative[1]];
+        let yAdjustedTilePositive = this.game.floor.floorTiles[yIndicesPositive[0]][yIndicesPositive[1]];
 
-        // if (xIndicesNegative[0] >= 0 || xIndicesNegative[1] >= 0 || xIndicesPositive[0] >= 0 || xIndicesPositive[1] >= 0 ||
-        //     yIndicesNegative[0] >= 0 || yIndicesNegative[1] >= 0 || yIndicesPositive[0] >= 0 || yIndicesPositive[1] >= 0) {
-            
-        //     let xAdjustedTileNegative = this.game.floor.floorTiles[xIndicesNegative[0]][xIndicesNegative[1]];
-        //     let xAdjustedTilePositive = this.game.floor.floorTiles[xIndicesPositive[0]][xIndicesPositive[1]];
-        //     let yAdjustedTileNegative = this.game.floor.floorTiles[yIndicesNegative[0]][yIndicesNegative[1]];
-        //     let yAdjustedTilePositive = this.game.floor.floorTiles[yIndicesPositive[0]][yIndicesPositive[1]];
+        // If any of the tiles are a wall, the move is invalid
+        if ((xAdjustedTileNegative instanceof SpecialTile && xAdjustedTileNegative.type === "wall") ||
+            (xAdjustedTileNegative[0] instanceof Array && xAdjustedTileNegative[1].type === "wall") ||
+            (xAdjustedTilePositive instanceof SpecialTile && xAdjustedTilePositive.type === "wall") ||
+            (xAdjustedTilePositive[0] instanceof Array && xAdjustedTilePositive[1].type === "wall") ||
+            (yAdjustedTileNegative instanceof SpecialTile && yAdjustedTileNegative.type === "wall") ||
+            (yAdjustedTileNegative[0] instanceof Array && yAdjustedTileNegative[1].type === "wall") ||
+            (yAdjustedTilePositive instanceof SpecialTile && yAdjustedTilePositive.type === "wall") ||
+            (yAdjustedTilePositive[0] instanceof Array && yAdjustedTilePositive[1].type === "wall")) {
 
-
-        // Make sure none of them are undefined (will throw nasty error)
-        if (xAdjustedTileNegative !== undefined && xAdjustedTilePositive !== undefined &&
-            yAdjustedTileNegative !== undefined && yAdjustedTilePositive !== undefined) {
-
-            // If any of the tiles are a wall, the move is invalid
-            if ((xAdjustedTileNegative instanceof SpecialTile && xAdjustedTileNegative.type === "wall") ||
-                (xAdjustedTileNegative[0] instanceof Array && xAdjustedTileNegative[1].type === "wall") ||
-                (xAdjustedTilePositive instanceof SpecialTile && xAdjustedTilePositive.type === "wall") ||
-                (xAdjustedTilePositive[0] instanceof Array && xAdjustedTilePositive[1].type === "wall") ||
-                (yAdjustedTileNegative instanceof SpecialTile && yAdjustedTileNegative.type === "wall") ||
-                (yAdjustedTileNegative[0] instanceof Array && yAdjustedTileNegative[1].type === "wall") ||
-                (yAdjustedTilePositive instanceof SpecialTile && yAdjustedTilePositive.type === "wall") ||
-                (yAdjustedTilePositive[0] instanceof Array && yAdjustedTilePositive[1].type === "wall")) {
-
-                // If a character is knocked into a wall, the knockback is halted,
-                // the character is stunned, and the character takes small damage
-                if (this.knockedBack) {
-                    this.knockedBack = false;
-                    this.stunned = true;
-                    this.stunnedCounter = 0;
-                    this.velocity = [0, 0];
-                    this.step = 0;
-                    this.takeDamage(5);
-                }
-                return false;
+            // If a character is knocked into a wall, the knockback is halted,
+            // the character is stunned, and the character takes small damage
+            if (this.knockedBack) {
+                this.knockedBack = false;
+                this.stunned = true;
+                this.stunnedCounter = 0;
+                this.velocity = [0, 0];
+                this.step = 0;
+                this.takeDamage(5);
             }
+            return false;
         }
         return super.validMove() ? true : false;
     }

@@ -147,19 +147,36 @@ class Character extends MovingObject {
             }
         }
 
-        // ------------------ Checking Pit Collision ------------------
+        // ------------------ Pit Collision - Preventing Enemies from walking into Pits ------------------
 
         // Enemies pit collision (they shouldn't just walk into a pit for no reason)
         let futureXCoord = this.position[0] + this.velocity[0];
         let futureYCoord = this.position[1] + this.velocity[1];
-        let nextTile = this.game.floor.floorTiles[Math.floor((futureYCoord + 5) / 40) + 1][Math.floor((futureXCoord - 5) / 40) + 1];
+
+        // Check that indices are valid before getting tile. If not, return false. Don't do this check for the Player.
+        let nextTileIndices = [Math.floor((futureYCoord + 5) / 40) + 1, Math.floor((futureXCoord - 5) / 40) + 1];
+        if (this !== this.game.player && (nextTileIndices[0] <= 0 || nextTileIndices[0] >= this.game.floor.numRows || 
+            nextTileIndices[1] <= 0 || nextTileIndices[1] >= this.game.floor.numCols)) return false;
+
+        // Get tile and check if valid
+        let nextTile = this.game.floor.floorTiles[nextTileIndices[0]][nextTileIndices[1]];
         if (this !== this.game.player && !this.knockedBack &&
             nextTile instanceof SpecialTile && nextTile.type === "pit") return false;
 
-        // Player pit collision (uses currentTile instead of nextTile - aka, position instead of position + velocity)
-        let currentTile = this.game.floor.floorTiles[Math.floor((this.position[1] + 5) / 40) + 1][Math.floor((this.position[0] - 5) / 40) + 1];
+
+        // ------------------ Pit Collision - Checking if Character is in Pit ------------------
+
+        // Check that indices are valid before getting tile. Don't do this check for the Player.
+        let currentTileIndices = [Math.floor((this.position[1] + 5) / 40) + 1, Math.floor((this.position[0] - 5) / 40) + 1];
+        if (this !== this.game.player && (currentTileIndices[0] <= 0 || currentTileIndices[0] >= this.game.floor.numRows ||
+            currentTileIndices[1] <= 0 || currentTileIndices[1] >= this.game.floor.numCols)) return false;
+
+        // Get tile and check if in pit
+        let currentTile = this.game.floor.floorTiles[currentTileIndices[0]][currentTileIndices[1]];
         if (currentTile instanceof SpecialTile && currentTile.type === "pit") this.dead();
 
+
+        // If nothing was hit, its a valid move!
         return true;
     }
 

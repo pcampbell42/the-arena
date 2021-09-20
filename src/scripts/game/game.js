@@ -164,7 +164,7 @@ class Game {
                 }
 
                 // Uses validMove() in the Character class to check if valid spawn location
-                if (!enemy.validMove()) validPosition = false;
+                validPosition = enemy.validMove();
             }
             this.enemies.push(enemy);
         }
