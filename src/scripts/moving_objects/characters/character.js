@@ -78,9 +78,6 @@ class Character extends MovingObject {
      * @returns - Number. The x-position of the frame to draw in the animation sheet.
      */
     _selectFrame(stepFactor) {
-        // Animation pace adjustment for refresh rate
-        // stepFactor /= (this.game.dt / (1000 / 60));
-
         // --------- If past last step of animation, reset to first step ---------
         if (this.status === "idle" && !this.busy && this.step >= this.idleFrames * stepFactor) this.step = 0;
         if (this.status === "moving" && !this.busy && this.step >= this.runningFrames * stepFactor) this.step = 0;
@@ -155,8 +152,8 @@ class Character extends MovingObject {
 
         // Check that indices are valid before getting tile. If not, return false. Don't do this check for the Player.
         let nextTileIndices = [Math.floor((futureYCoord + 5) / 40) + 1, Math.floor((futureXCoord - 5) / 40) + 1];
-        if (this !== this.game.player && (nextTileIndices[0] <= 0 || nextTileIndices[0] >= this.game.floor.numRows || 
-            nextTileIndices[1] <= 0 || nextTileIndices[1] >= this.game.floor.numCols)) return false;
+        if (this !== this.game.player && (nextTileIndices[0] <= 0 || nextTileIndices[0] >= this.game.floor.numRows - 1 || 
+            nextTileIndices[1] <= 0 || nextTileIndices[1] >= this.game.floor.numCols - 1)) return false;
 
         // Get tile and check if valid
         let nextTile = this.game.floor.floorTiles[nextTileIndices[0]][nextTileIndices[1]];
@@ -168,8 +165,8 @@ class Character extends MovingObject {
 
         // Check that indices are valid before getting tile. Don't do this check for the Player.
         let currentTileIndices = [Math.floor((this.position[1] + 5) / 40) + 1, Math.floor((this.position[0] - 5) / 40) + 1];
-        if (this !== this.game.player && (currentTileIndices[0] <= 0 || currentTileIndices[0] >= this.game.floor.numRows ||
-            currentTileIndices[1] <= 0 || currentTileIndices[1] >= this.game.floor.numCols)) return false;
+        if (this !== this.game.player && (currentTileIndices[0] <= 0 || currentTileIndices[0] >= this.game.floor.numRows - 1 ||
+            currentTileIndices[1] <= 0 || currentTileIndices[1] >= this.game.floor.numCols - 1)) return false;
 
         // Get tile and check if in pit
         let currentTile = this.game.floor.floorTiles[currentTileIndices[0]][currentTileIndices[1]];

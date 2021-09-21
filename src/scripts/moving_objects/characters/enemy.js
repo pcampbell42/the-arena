@@ -1,5 +1,6 @@
 const Character = require("./character.js");
 const SpecialTile = require("../../floors/special_tile");
+const EnemyPathfinder = require("../../util/enemy_pathfinder");
 
 
 class Enemy extends Character {
@@ -11,6 +12,11 @@ class Enemy extends Character {
         this.aggroed = false;
         this.losingAggroCounter = 0; // Allows for Enemies to lose aggro slowly
         this.loseAggroThreshold = 125; // When counter hits this #, Enemy loses aggro
+
+        // Each Enemy has its own pathfinder that stores the next 3 tiles the Enemy should
+        // move to to get to the player. These 3 tiles are updated at each iteration of the
+        // game loop via this.pathfinder.findPath().
+        this.pathfinder = new EnemyPathfinder({ floor: params["game"].floor });
 
         // Currently, only Shooter uses these 3 variables, but they are in the
         // Enemy class because future Enemies may use them as well. These are
@@ -108,16 +114,42 @@ class Enemy extends Character {
             // --------- If enemy is close to player and in LOS, enemy will chase player down ---------
             if (this.aggroed) {
 
+
+                // if (this.pathfinder.moveList.length === 0) this.pathfinder.findPath(this.position, this.game.player.position);
+                this.pathfinder.findPath(this.position, this.game.player.position);
+
+                console.log(this.pathfinder.moveList);
                 /////////////////////////////////////////////
                 // THIS IS WHERE PATHFINDING ALGO WOULD GO //
                 /////////////////////////////////////////////
 
-                // --------- Getting the direction the player is in and setting velocity ---------
-                let xDir = Math.sign(this.game.player.position[0] - this.position[0]);
-                let yDir = Math.sign(this.game.player.position[1] - this.position[1]);
+                if (this.pathfinder.moveList.length === 0) return; // Check if there's somewhere to move to
+
+                let nextTileIndices = this.pathfinder.moveList.shift(); // Get the indices for the next move
+
+                let currentTileIndices = [Math.floor(this.position[1] / 40) + 1, Math.floor(this.position[0] / 40) + 1];
+                if (currentTileIndices[0] === nextTileIndices[0] && currentTileIndices[1] === nextTileIndices[1]) {
+                    nextTileIndices = this.pathfinder.moveList.shift();
+                }
+                if (nextTileIndices === undefined) return;
+
+                // Translating tile indices to position. Remember that we have to flip i and j because we're 
+                // going from [row, col] to [x, y].
+                let nextPosition = [(nextTileIndices[1] - 1) * 40, (nextTileIndices[0] - 1) * 40];
+
+                let xDir = Math.sign(nextPosition[0] - this.position[0]);
+                let yDir = Math.sign(nextPosition[1] - this.position[1]);
                 this.velocity = [xDir * this.speed, yDir * this.speed];
                 (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
                 this.status = "moving";
+
+
+                // --------- Getting the direction the player is in and setting velocity ---------
+                // let xDir = Math.sign(this.game.player.position[0] - this.position[0]);
+                // let yDir = Math.sign(this.game.player.position[1] - this.position[1]);
+                // this.velocity = [xDir * this.speed, yDir * this.speed];
+                // (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
+                // this.status = "moving";
             }
             // If time is slowed, slow velocity
             if (this.game.slowed) {
@@ -313,8 +345,6 @@ class Enemy extends Character {
         let xIndicesPositive = [Math.floor((futureYCoord + 5) / 40) + 1, Math.floor((futureXCoord + 20) / 40) + 1];
         let yIndicesNegative = [Math.floor((futureYCoord + 15) / 40) + 1, Math.floor((futureXCoord - 5) / 40) + 1];
         let yIndicesPositive = [Math.floor((futureYCoord - 10) / 40) + 1, Math.floor((futureXCoord - 5) / 40) + 1];
-
-        console.log(`${xIndicesNegative} ---- ${xIndicesPositive} ---- ${yIndicesNegative} ---- ${yIndicesPositive}`);
 
         // Bug fix - if any of our indices are negative or out of bounds, we get a nasty error. This can
         // happen when spawning in enemies (spawnEnemies in Game uses validMove to check if the spawn position
