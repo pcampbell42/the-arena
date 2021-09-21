@@ -1,4 +1,4 @@
-const Enemy = require("./enemy.js")
+const Enemy = require("./enemy")
 
 
 class Rusher extends Enemy {

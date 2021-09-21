@@ -78,9 +78,6 @@ class Character extends MovingObject {
      * @returns - Number. The x-position of the frame to draw in the animation sheet.
      */
     _selectFrame(stepFactor) {
-        // Animation pace adjustment for refresh rate
-        // stepFactor /= (this.game.dt / (1000 / 60));
-
         // --------- If past last step of animation, reset to first step ---------
         if (this.status === "idle" && !this.busy && this.step >= this.idleFrames * stepFactor) this.step = 0;
         if (this.status === "moving" && !this.busy && this.step >= this.runningFrames * stepFactor) this.step = 0;
@@ -155,8 +152,8 @@ class Character extends MovingObject {
 
         // Check that indices are valid before getting tile. If not, return false. Don't do this check for the Player.
         let nextTileIndices = [Math.floor((futureYCoord + 5) / 40) + 1, Math.floor((futureXCoord - 5) / 40) + 1];
-        if (this !== this.game.player && (nextTileIndices[0] <= 0 || nextTileIndices[0] >= this.game.floor.numRows || 
-            nextTileIndices[1] <= 0 || nextTileIndices[1] >= this.game.floor.numCols)) return false;
+        if (this !== this.game.player && (nextTileIndices[0] <= 0 || nextTileIndices[0] >= this.game.floor.numRows - 1 || 
+            nextTileIndices[1] <= 0 || nextTileIndices[1] >= this.game.floor.numCols - 1)) return false;
 
         // Get tile and check if valid
         let nextTile = this.game.floor.floorTiles[nextTileIndices[0]][nextTileIndices[1]];
@@ -168,8 +165,8 @@ class Character extends MovingObject {
 
         // Check that indices are valid before getting tile. Don't do this check for the Player.
         let currentTileIndices = [Math.floor((this.position[1] + 5) / 40) + 1, Math.floor((this.position[0] - 5) / 40) + 1];
-        if (this !== this.game.player && (currentTileIndices[0] <= 0 || currentTileIndices[0] >= this.game.floor.numRows ||
-            currentTileIndices[1] <= 0 || currentTileIndices[1] >= this.game.floor.numCols)) return false;
+        if (this !== this.game.player && (currentTileIndices[0] <= 0 || currentTileIndices[0] >= this.game.floor.numRows - 1 ||
+            currentTileIndices[1] <= 0 || currentTileIndices[1] >= this.game.floor.numCols - 1)) return false;
 
         // Get tile and check if in pit
         let currentTile = this.game.floor.floorTiles[currentTileIndices[0]][currentTileIndices[1]];
@@ -201,13 +198,21 @@ class Character extends MovingObject {
      * methods of Enemy and Player.
      */
     launchProjectile() {
-        let z = Math.sqrt((this.target[0] - (this.position[0] + 30)) ** 2 + (this.target[1] - (this.position[1] + 25)) ** 2);
+        // If this is a Shooter, adjust the target to make more visual sense 
+        // (have to use targ bc references and all that).
+        let targ = [this.target[0], this.target[1]];
+        if (this.constructor.name === "Shooter") {
+            targ[0] += 30;
+            targ[1] += 25;
+        }
+
+        let z = Math.sqrt((targ[0] - (this.position[0] + 30)) ** 2 + (targ[1] - (this.position[1] + 25)) ** 2);
 
         let speed;
         (this.game.player === this) ? speed = 10 : speed = 7;
         const p = new Projectile({
             position: [this.position[0] + 30, this.position[1] + 25],
-            velocity: [(this.target[0] - (this.position[0] + 30)) / z * speed, (this.target[1] - (this.position[1] + 25)) / z * speed],
+            velocity: [(targ[0] - (this.position[0] + 30)) / z * speed, (targ[1] - (this.position[1] + 25)) / z * speed],
             damage: 10,
             shooter: this,
             game: this.game
