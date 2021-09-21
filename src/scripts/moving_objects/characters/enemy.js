@@ -1,4 +1,4 @@
-const Character = require("./character.js");
+const Character = require("./character");
 const SpecialTile = require("../../floors/special_tile");
 const EnemyPathfinder = require("../../util/enemy_pathfinder");
 
@@ -17,6 +17,8 @@ class Enemy extends Character {
         // move to to get to the player. These 3 tiles are updated at each iteration of the
         // game loop via this.pathfinder.findPath().
         this.pathfinder = new EnemyPathfinder({ floor: params["game"].floor });
+        this.positionedInTile = false;
+        this.positionReference = [];
 
         // Currently, only Shooter uses these 3 variables, but they are in the
         // Enemy class because future Enemies may use them as well. These are
@@ -111,45 +113,72 @@ class Enemy extends Character {
         }
         // Under normal circumstances...
         else {
-            // --------- If enemy is close to player and in LOS, enemy will chase player down ---------
+            // --------- If enemy is close to player and aggroed, enemy will chase player down ---------
             if (this.aggroed) {
 
-
-                // if (this.pathfinder.moveList.length === 0) this.pathfinder.findPath(this.position, this.game.player.position);
+                // This method updates the moveList attribute of the pathfinder object.
+                // This moveList is a list of tile indices that give a valid path to the Player.
                 this.pathfinder.findPath(this.position, this.game.player.position);
+                console.log(this.pathfinder.moveList)
 
-                console.log(this.pathfinder.moveList);
-                /////////////////////////////////////////////
-                // THIS IS WHERE PATHFINDING ALGO WOULD GO //
-                /////////////////////////////////////////////
+                // Get first tile to move to
+                let nextTileIndices = this.pathfinder.moveList[0];
+                if (nextTileIndices === undefined) return; // If nothing in moveList, exit out
 
-                if (this.pathfinder.moveList.length === 0) return; // Check if there's somewhere to move to
+                // Get tile the Character is currently on
+                let currentTileIndices = [Math.floor((this.position[1] + 5) / 40) + 1, Math.floor((this.position[0] - 5) / 40) + 1];
 
-                let nextTileIndices = this.pathfinder.moveList.shift(); // Get the indices for the next move
+                // When the Character moves into a new tile, positionedInTile is set to false
+                if (this.positionReference[0] !== currentTileIndices[0] || this.positionReference[1] !== currentTileIndices[1])
+                    this.positionedInTile = false;
 
-                let currentTileIndices = [Math.floor(this.position[1] / 40) + 1, Math.floor(this.position[0] / 40) + 1];
-                if (currentTileIndices[0] === nextTileIndices[0] && currentTileIndices[1] === nextTileIndices[1]) {
-                    nextTileIndices = this.pathfinder.moveList.shift();
+                // Sets the target position within the new tile that the Character must get to
+                // before moving onto the next tile. This is to avoid collision with neighboring
+                // walls and pits.
+                let targetPosition = [(nextTileIndices[1] - 1) * 40 + 25, (nextTileIndices[0] - 1) * 40 + 15];
+
+                // Once the Character makes it to the target position in the tile, 2 instance
+                // variables are set. positionedInTile is set to true, which is used below when
+                // setting velocity. Basically, it tells the Character to move to the next tile.
+                // positionReference is set to the current tile. This is used above, so that when
+                // the Character makes it to the next tile, we can flip positionedInTile back to
+                // false, thus starting the cycle over again.
+                if (Math.abs(targetPosition[0] - Math.floor(this.position[0])) <= 5 && 
+                    Math.abs(targetPosition[1] - Math.floor(this.position[1])) <= 5 &&
+                    this.positionedInTile === false) {
+
+                    this.positionedInTile = true;
+                    this.positionReference = currentTileIndices;
                 }
-                if (nextTileIndices === undefined) return;
 
-                // Translating tile indices to position. Remember that we have to flip i and j because we're 
-                // going from [row, col] to [x, y].
-                let nextPosition = [(nextTileIndices[1] - 1) * 40, (nextTileIndices[0] - 1) * 40];
+                // Once properly positioned in the current tile, set nextTile to the next tile.
+                if (this.positionedInTile) {
+                    nextTileIndices = this.pathfinder.moveList[1];
+                    if (nextTileIndices === undefined) return; // If nothing there, exit out
+                }
 
-                let xDir = Math.sign(nextPosition[0] - this.position[0]);
-                let yDir = Math.sign(nextPosition[1] - this.position[1]);
-                this.velocity = [xDir * this.speed, yDir * this.speed];
-                (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
+                // Setting velocities
+                let xDir;
+                let yDir;
+                // If already positioned, use tile indices rather than exact positions - less accurate, but smoother looking
+                if (this.positionedInTile) {
+                    xDir = Math.sign(nextTileIndices[1] - currentTileIndices[1]);
+                    yDir = Math.sign(nextTileIndices[0] - currentTileIndices[0]);
+                }
+                // If not positioned, use exact positions to get the Character to the target position in the tile
+                else {
+                    // If the difference is less than 5, velocity is 0... Prevents shaking
+                    Math.abs(targetPosition[0] - Math.floor(this.position[0])) <= 5 ? xDir = 0 :
+                        xDir = Math.sign(targetPosition[0] - Math.floor(this.position[0]));
+                    
+                    Math.abs(targetPosition[1] - Math.floor(this.position[1])) <= 5 ? yDir = 0 :
+                        yDir = Math.sign(targetPosition[1] - Math.floor(this.position[1]));
+                }
+                this.velocity = [xDir * this.speed, yDir * this.speed]; // Sets velocity with custom class speed
+
+                // Set direction, status
+                this.position[0] - this.game.player.position[0] < 0 ? this.direction = "right" : this.direction = "left";
                 this.status = "moving";
-
-
-                // --------- Getting the direction the player is in and setting velocity ---------
-                // let xDir = Math.sign(this.game.player.position[0] - this.position[0]);
-                // let yDir = Math.sign(this.game.player.position[1] - this.position[1]);
-                // this.velocity = [xDir * this.speed, yDir * this.speed];
-                // (Math.sign(this.velocity[0]) === -1) ? this.direction = "left" : this.direction = "right";
-                // this.status = "moving";
             }
             // If time is slowed, slow velocity
             if (this.game.slowed) {
@@ -341,21 +370,21 @@ class Enemy extends Character {
         // are only getting the indices here, not the actual tiles. This is so that we can check that the
         // indices are in bounds of the tile array (aka, not negative or larger than the array). If we 
         // didn't check this, we would get a rare nasty error when trying to spawn enemies in.
-        let xIndicesNegative = [Math.floor((futureYCoord + 5) / 40) + 1, Math.floor((futureXCoord - 22) / 40) + 1];
-        let xIndicesPositive = [Math.floor((futureYCoord + 5) / 40) + 1, Math.floor((futureXCoord + 20) / 40) + 1];
-        let yIndicesNegative = [Math.floor((futureYCoord + 15) / 40) + 1, Math.floor((futureXCoord - 5) / 40) + 1];
-        let yIndicesPositive = [Math.floor((futureYCoord - 10) / 40) + 1, Math.floor((futureXCoord - 5) / 40) + 1];
+        // Old adjustment values were 22, 20, 15, 10 - had to shrink hitboxes to accomodate pathfinding
+        let xIndicesNegative = [Math.floor((futureYCoord + 5) / 40) + 1, Math.floor((futureXCoord - 10) / 40) + 1];
+        let xIndicesPositive = [Math.floor((futureYCoord + 5) / 40) + 1, Math.floor((futureXCoord + 8) / 40) + 1];
+        let yIndicesNegative = [Math.floor((futureYCoord + 8) / 40) + 1, Math.floor((futureXCoord - 5) / 40) + 1];
+        let yIndicesPositive = [Math.floor((futureYCoord - 3) / 40) + 1, Math.floor((futureXCoord - 5) / 40) + 1];
 
         // Bug fix - if any of our indices are negative or out of bounds, we get a nasty error. This can
         // happen when spawning in enemies (spawnEnemies in Game uses validMove to check if the spawn position
-        // is valid). We also just go ahead and check 0 here, because if any of the indices are 0, we know its 
-        // a wall, so we can return false.
+        // is valid).
         let cols = this.game.floor.numCols;
         let rows = this.game.floor.numRows;
-        if (xIndicesNegative[0] <= 0 || xIndicesNegative[1] <= 0 || xIndicesPositive[0] <= 0 || xIndicesPositive[1] <= 0 ||
-            yIndicesNegative[0] <= 0 || yIndicesNegative[1] <= 0 || yIndicesPositive[0] <= 0 || yIndicesPositive[1] <= 0 || 
-            xIndicesNegative[0] >= rows - 1 || xIndicesNegative[1] >= cols - 1 || xIndicesPositive[0] >= rows - 1 || xIndicesPositive[1] >= cols - 1 ||
-            yIndicesNegative[0] >= rows - 1 || yIndicesNegative[1] >= cols - 1 || yIndicesPositive[0] >= rows - 1 || yIndicesPositive[1] >= cols - 1) {
+        if (xIndicesNegative[0] < 0 || xIndicesNegative[1] < 0 || xIndicesPositive[0] < 0 || xIndicesPositive[1] < 0 ||
+            yIndicesNegative[0] < 0 || yIndicesNegative[1] < 0 || yIndicesPositive[0] < 0 || yIndicesPositive[1] < 0 || 
+            xIndicesNegative[0] > rows - 1 || xIndicesNegative[1] > cols - 1 || xIndicesPositive[0] > rows - 1 || xIndicesPositive[1] > cols - 1 ||
+            yIndicesNegative[0] > rows - 1 || yIndicesNegative[1] > cols - 1 || yIndicesPositive[0] > rows - 1 || yIndicesPositive[1] > cols - 1) {
             // this.dead() is a bug fix. There's a bizarre and very rare bug where, when spawning an Enemy, 
             // it spawns them in a valid position and then immediately seems to move them out of bounds. This bug
             // appeared when I implemented game.dt (refresh rate fix). Likely it has something to do with not

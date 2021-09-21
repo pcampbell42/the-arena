@@ -1,4 +1,5 @@
 const PolyTreeNode = require("./poly_tree_node");
+const SpecialTile = require("../floors/special_tile");
 
 
 class EnemyPathfinder {
@@ -52,24 +53,6 @@ class EnemyPathfinder {
 
 
     /**
-     * Helper method that translates position to the indices (in floor.floorTiles) 
-     * of the tile the Character is currently on.
-     * @param {Array} position - A normal position given as [x, y]
-     * @returns - Indices of the tile given as [row, col]. If indices are invalid,
-     * returns false and findPath() is exited.
-     */
-    _getTileIndices(position) {
-        let currentTileIndices = [Math.floor((position[1] + 5) / 40) + 1, Math.floor((position[0] - 5) / 40) + 1];
-
-        // If invalid indices...
-        if (currentTileIndices[0] <= 0 || currentTileIndices[0] >= this.floor.numRows - 1 ||
-            currentTileIndices[1] <= 0 || currentTileIndices[1] >= this.floor.numCols - 1) return false;
-
-        return currentTileIndices;
-    }
-
-
-    /**
      * Helper method that takes in a node (that represents a tile) and returns an 
      * Array of the valid tiles (as PolyTreeNodes) the Character could move to from this tile.
      * @param {PolyTreeNode} currentNode - PolyTreeNode representing the current position of the algorithm
@@ -84,13 +67,15 @@ class EnemyPathfinder {
         let cols = this.floor.numCols - 1;
         let currIdx = currentNode.indices;
 
-        // Look at each of the four adjacent tiles. Note that we don't consider
-        // diagonal tiles because this can cause collision issues.
+        // Check all 8 adjacent tiles to see if valid - diagonal tiles have more checks
         let childNode;
-        
-        // Check top tile
-        if (currIdx[0] > 0 && tiles[currIdx[0] - 1][currIdx[1]] instanceof Array && 
-            !this._consideredPosition([currIdx[0] - 1, currIdx[1]])) {
+
+        // Check top tile. Checks the following: 1) Not looking out of bounds. 2) If position
+        // has already been considered. 3) If the tile is a wall or a pit (this can be formatted
+        // in 2 different ways, hence two checks are needed for this condition).
+        if (currIdx[0] > 0 && !this._consideredPosition([currIdx[0] - 1, currIdx[1]]) &&
+            !(tiles[currIdx[0] - 1][currIdx[1]][1] instanceof SpecialTile) &&
+            !(tiles[currIdx[0] - 1][currIdx[1]] instanceof SpecialTile)) {
 
             childNode = new PolyTreeNode({ indices: [currIdx[0] - 1, currIdx[1]] }); // Create node out of position
             childNode.parent = currentNode; // Set the new node's parent to the current node
@@ -100,9 +85,22 @@ class EnemyPathfinder {
             this.consideredPositions.push(childNode.indices);
         }
 
+        // Check right tile
+        if (currIdx[1] < cols && !this._consideredPosition([currIdx[0], currIdx[1] + 1]) &&
+            !(tiles[currIdx[0]][currIdx[1] + 1][1] instanceof SpecialTile) && 
+            !(tiles[currIdx[0]][currIdx[1] + 1] instanceof SpecialTile)) {
+
+            childNode = new PolyTreeNode({ indices: [currIdx[0], currIdx[1] + 1] });
+            childNode.parent = currentNode;
+            currentNode.children.push(childNode);
+            nextMoves.push(childNode);
+            this.consideredPositions.push(childNode.indices);
+        }
+
         // Check bottom tile
-        if (currIdx[0] < rows && tiles[currIdx[0] + 1][currIdx[1]] instanceof Array &&
-                !this._consideredPosition([currIdx[0] + 1, currIdx[1]])) {
+        if (currIdx[0] < rows && !this._consideredPosition([currIdx[0] + 1, currIdx[1]]) &&
+            !(tiles[currIdx[0] + 1][currIdx[1]][1] instanceof SpecialTile) &&
+            !(tiles[currIdx[0] + 1][currIdx[1]] instanceof SpecialTile)) {
 
             childNode = new PolyTreeNode({ indices: [currIdx[0] + 1, currIdx[1]] });
             childNode.parent = currentNode;
@@ -112,8 +110,9 @@ class EnemyPathfinder {
         }
 
         // Check left tile
-        if (currIdx[1] < cols && tiles[currIdx[0]][currIdx[1] - 1] instanceof Array && 
-                !this._consideredPosition([currIdx[0], currIdx[1] - 1])) {
+        if (currIdx[1] > 0 && !this._consideredPosition([currIdx[0], currIdx[1] - 1]) &&
+            !(tiles[currIdx[0]][currIdx[1] - 1][1] instanceof SpecialTile) &&
+            !(tiles[currIdx[0]][currIdx[1] - 1] instanceof SpecialTile)) {
 
             childNode = new PolyTreeNode({ indices: [currIdx[0], currIdx[1] - 1] });
             childNode.parent = currentNode;
@@ -122,16 +121,64 @@ class EnemyPathfinder {
             this.consideredPositions.push(childNode.indices);
         }
 
-        // Check right tile
-        if (currIdx[1] > 0 && tiles[currIdx[0]][currIdx[1] + 1] instanceof Array && 
-                !this._consideredPosition([currIdx[0], currIdx[1] + 1])) {
+        // Check top right diagonal tile. In addition to the normal checks, for a 
+        // diagonal tile to be a valid move, The other two adjacent tiles can't be
+        // walls or pits (to avoid collision issues). For example, for the top right
+        // diagonal tile, the top tile and the right tile cannot be walls / pits
+        // because we're going to slightly move through them.
+        if (currIdx[1] < cols && currIdx[0] > 0 && !this._consideredPosition([currIdx[0] - 1, currIdx[1] + 1]) &&
+            !(tiles[currIdx[0] - 1][currIdx[1] + 1][1] instanceof SpecialTile) && !(tiles[currIdx[0] - 1][currIdx[1] + 1] instanceof SpecialTile) &&
+            !(tiles[currIdx[0]][currIdx[1] + 1][1] instanceof SpecialTile) && !(tiles[currIdx[0]][currIdx[1] + 1] instanceof SpecialTile) &&
+            !(tiles[currIdx[0] - 1][currIdx[1]][1] instanceof SpecialTile) && !(tiles[currIdx[0] - 1][currIdx[1]] instanceof SpecialTile)) {
 
-            childNode = new PolyTreeNode({ indices: [currIdx[0], currIdx[1] + 1] });
+            childNode = new PolyTreeNode({ indices: [currIdx[0] - 1, currIdx[1] + 1] });
             childNode.parent = currentNode;
             currentNode.children.push(childNode);
             nextMoves.push(childNode);
             this.consideredPositions.push(childNode.indices);
         }
+
+        // Check top left diagonal tile
+        if (currIdx[1] > 0 && currIdx[0] > 0 && !this._consideredPosition([currIdx[0] - 1, currIdx[1] - 1]) &&
+            !(tiles[currIdx[0] - 1][currIdx[1] - 1][1] instanceof SpecialTile) && !(tiles[currIdx[0] - 1][currIdx[1] - 1] instanceof SpecialTile) &&
+            !(tiles[currIdx[0]][currIdx[1] - 1][1] instanceof SpecialTile) && !(tiles[currIdx[0]][currIdx[1] - 1] instanceof SpecialTile) &&
+            !(tiles[currIdx[0] - 1][currIdx[1]][1] instanceof SpecialTile) && !(tiles[currIdx[0] - 1][currIdx[1]] instanceof SpecialTile)) {
+
+            childNode = new PolyTreeNode({ indices: [currIdx[0] - 1, currIdx[1] - 1] });
+            childNode.parent = currentNode;
+            currentNode.children.push(childNode);
+            nextMoves.push(childNode);
+            this.consideredPositions.push(childNode.indices);
+        }
+
+        // Check bottom right diagonal tile
+        if (currIdx[0] < rows && currIdx[1] < cols && !this._consideredPosition([currIdx[0] + 1, currIdx[1] + 1]) &&
+            !(tiles[currIdx[0] + 1][currIdx[1] + 1][1] instanceof SpecialTile) && !(tiles[currIdx[0] + 1][currIdx[1] + 1] instanceof SpecialTile) &&
+            !(tiles[currIdx[0] + 1][currIdx[1]][1] instanceof SpecialTile) && !(tiles[currIdx[0] + 1][currIdx[1]] instanceof SpecialTile) &&
+            !(tiles[currIdx[0]][currIdx[1] + 1][1] instanceof SpecialTile) && !(tiles[currIdx[0]][currIdx[1] + 1] instanceof SpecialTile)) {
+
+            childNode = new PolyTreeNode({ indices: [currIdx[0] + 1, currIdx[1] + 1] });
+            childNode.parent = currentNode;
+            currentNode.children.push(childNode);
+            nextMoves.push(childNode);
+            this.consideredPositions.push(childNode.indices);
+        }
+
+        // Check bottom left diagonal tile
+        if (currIdx[0] < rows && currIdx[1] > 0 && !this._consideredPosition([currIdx[0] + 1, currIdx[1] - 1]) &&
+            !(tiles[currIdx[0] + 1][currIdx[1] - 1][1] instanceof SpecialTile) && !(tiles[currIdx[0] + 1][currIdx[1] - 1] instanceof SpecialTile) &&
+            !(tiles[currIdx[0]][currIdx[1] - 1][1] instanceof SpecialTile) && !(tiles[currIdx[0]][currIdx[1] - 1] instanceof SpecialTile) &&
+            !(tiles[currIdx[0] + 1][currIdx[1]][1] instanceof SpecialTile) && !(tiles[currIdx[0] + 1][currIdx[1]] instanceof SpecialTile)) {
+
+            childNode = new PolyTreeNode({ indices: [currIdx[0] + 1, currIdx[1] - 1] });
+            childNode.parent = currentNode;
+            currentNode.children.push(childNode);
+            nextMoves.push(childNode);
+            this.consideredPositions.push(childNode.indices);
+        }
+
+
+
         return nextMoves;
     }
 
@@ -154,6 +201,24 @@ class EnemyPathfinder {
 
         this.moveList = foundPath.reverse(); // Update moveList
         this.consideredPositions = []; // Clear considered positions
+    }
+
+
+    /**
+        * Helper method that translates position to the indices (in floor.floorTiles) 
+        * of the tile the Character is currently on.
+        * @param {Array} position - A normal position given as [x, y]
+        * @returns - Indices of the tile given as [row, col]. If indices are invalid,
+        * returns false and findPath() is exited.
+        */
+    _getTileIndices(position) {
+        let currentTileIndices = [Math.floor((position[1] + 5) / 40) + 1, Math.floor((position[0] - 5) / 40) + 1];
+
+        // If invalid indices...
+        if (currentTileIndices[0] <= 0 || currentTileIndices[0] >= this.floor.numRows - 1 ||
+            currentTileIndices[1] <= 0 || currentTileIndices[1] >= this.floor.numCols - 1) return false;
+
+        return currentTileIndices;
     }
 
 
