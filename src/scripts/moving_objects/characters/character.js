@@ -198,13 +198,21 @@ class Character extends MovingObject {
      * methods of Enemy and Player.
      */
     launchProjectile() {
-        let z = Math.sqrt((this.target[0] - (this.position[0] + 30)) ** 2 + (this.target[1] - (this.position[1] + 25)) ** 2);
+        // If this is a Shooter, adjust the target to make more visual sense 
+        // (have to use targ bc references and all that).
+        let targ = [this.target[0], this.target[1]];
+        if (this.constructor.name === "Shooter") {
+            targ[0] += 30;
+            targ[1] += 25;
+        }
+
+        let z = Math.sqrt((targ[0] - (this.position[0] + 30)) ** 2 + (targ[1] - (this.position[1] + 25)) ** 2);
 
         let speed;
         (this.game.player === this) ? speed = 10 : speed = 7;
         const p = new Projectile({
             position: [this.position[0] + 30, this.position[1] + 25],
-            velocity: [(this.target[0] - (this.position[0] + 30)) / z * speed, (this.target[1] - (this.position[1] + 25)) / z * speed],
+            velocity: [(targ[0] - (this.position[0] + 30)) / z * speed, (targ[1] - (this.position[1] + 25)) / z * speed],
             damage: 10,
             shooter: this,
             game: this.game

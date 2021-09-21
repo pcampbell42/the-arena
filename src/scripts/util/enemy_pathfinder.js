@@ -176,9 +176,7 @@ class EnemyPathfinder {
             nextMoves.push(childNode);
             this.consideredPositions.push(childNode.indices);
         }
-
-
-
+        
         return nextMoves;
     }
 

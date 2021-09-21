@@ -119,7 +119,6 @@ class Enemy extends Character {
                 // This method updates the moveList attribute of the pathfinder object.
                 // This moveList is a list of tile indices that give a valid path to the Player.
                 this.pathfinder.findPath(this.position, this.game.player.position);
-                console.log(this.pathfinder.moveList)
 
                 // Get first tile to move to
                 let nextTileIndices = this.pathfinder.moveList[0];
