@@ -4,8 +4,8 @@ const Rusher = require("../moving_objects/characters/enemies/rusher")
 const Projectile = require("../moving_objects/projectile");
 const Floor = require("../floors/floor");
 const Punk = require("../moving_objects/characters/enemies/bosses/punk");
-const Tank = require("../moving_objects/characters/enemies/tank");
-const Shield = require("../moving_objects/characters/enemies/bosses/shield");
+const Meathead = require("../moving_objects/characters/enemies/meathead");
+const Tank = require("../moving_objects/characters/enemies/bosses/tank");
 
 
 class Game {
@@ -109,8 +109,8 @@ class Game {
                         this.spawnEnemies(1);
                         break;
                 
-                    case 5: // Spawn shield boss on 5th floor
-                        this.enemies.push(new Shield({
+                    case 5: // Spawn tank boss on 5th floor
+                        this.enemies.push(new Tank({
                             position: [this.canvasSizeX / 2, 100],
                             velocity: [0, 0],
                             game: this
@@ -182,7 +182,7 @@ class Game {
 
                 // Randomly decide if enemy is a shooter or a rusher
                 let randomNum = Math.random() * 10;
-                if (randomNum > 4.5) {
+                if (randomNum > 5.5) {
                     enemy = new Shooter({
                         position: randomPos,
                         velocity: [0, 0],
@@ -195,7 +195,7 @@ class Game {
                         game: this
                     });
                 } else {
-                    enemy = new Tank({
+                    enemy = new Meathead({
                         position: randomPos,
                         velocity: [0, 0],
                         game: this

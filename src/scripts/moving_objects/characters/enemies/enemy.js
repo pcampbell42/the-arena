@@ -198,7 +198,7 @@ class Enemy extends Character {
         // Draw health bar
         if (this.health !== this.maxHealth) {
             let healthAdjust = 15;
-            this.constructor.name === "Tank" ? healthAdjust = -5 : null
+            this.constructor.name === "Meathead" ? healthAdjust = -5 : null
 
             ctx.fillStyle = "white";
             ctx.fillRect(this.position[0] + healthAdjust, this.position[1], this.maxHealth, 10);
@@ -215,24 +215,7 @@ class Enemy extends Character {
             } else {
                 this.drawing.src = `${this.images}/attack_l.png`;
             }
-
-            /////////////////////// REFACTOR TO HELPER ? ///////////////////////
-            ///////////////////// INSTEAD OF _selectFrame //////////////////////
-            //////////////////// EACH CLASS HAS OWN CUSTOM //////////////////////
-
-            if (!this.game.slowed && Math.floor(this.step % 9) === 0) 
-                this.constructor.name === "Shooter" || this.constructor.name === "Punk" ? 
-                    this.launchProjectile() : this.swing();
-            if (this.game.slowed && Math.floor(this.step % 36) === 0) 
-                this.constructor.name === "Shooter" || this.constructor.name === "Punk" ? 
-                    this.launchProjectile() : this.swing();
-            if (stepXCoord >= 144) {
-                this.attacking = false;
-                this.busy = false;
-            }
-            /////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////////////
-
+            stepXCoord = this.attackAnimationHelper(stepXCoord);
             ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
         }
 
@@ -441,13 +424,18 @@ class Enemy extends Character {
 
 
     /**
-     * Method that handles Rushers, Tanks, and the Shield's melee attacks.
+     * Method that handles Rushers, Meatheads, and the Tank's melee attacks.
      */
     swing() {
         // Calculating distance between player and enemy        
         let distanceToPlayer = Math.sqrt((this.game.player.position[0] - this.position[0]) ** 2 +
             (this.game.player.position[1] - this.position[1]) ** 2);
-        if (distanceToPlayer <= 55 && !this.game.player.rolling) this.game.player.takeDamage(this.damage);
+
+        // Boolean - true if Enemy is facing player. Enemies only attack player when they are facing them
+        let facingPlayer = ((this.position[0] - this.game.player.position[0]) >= 0 && this.direction === "left" ||
+            (this.position[0] - this.game.player.position[0]) <= 0 && this.direction === "right");
+        
+        if (facingPlayer && distanceToPlayer <= 55 && !this.game.player.rolling) this.game.player.takeDamage(this.damage);
     }
 
 

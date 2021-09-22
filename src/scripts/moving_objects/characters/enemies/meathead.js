@@ -1,25 +1,36 @@
-const Enemy = require("../enemy");
+const Enemy = require("./enemy");
 
 
-class Punk extends Enemy {
+class Meathead extends Enemy {
     constructor(params) {
         super(params);
 
-        this.images = "./dist/assets/punk";
+        this.images = "./dist/assets/meathead";
         this.idleFrames = 4; // How many frames this Character has in the idle animation
         this.runningFrames = 6; // How many frames this Character has in the running animation
-        this.animationPace = 2; // Personalized animation pace... changes when time is slowed
+        this.animationPace = 1.5; // Custom animation pace for Meathead (default is 1)
 
-        this.maxHealth = 100;
-        this.health = 100;
+        this.maxHealth = 80;
+        this.health = 80;
 
-        this.attackRange = 1000; // Entire canvas...
-        this.speed = 4;
+        this.attackRange = 100; // Slightly larger than Rusher
+        this.damage = 40;
+        this.speed = 0.5;
     }
 
-    
-    move() {
 
+    /**
+     * Meathead's custom idle behavior goes here (right now his custom idle behavior
+     * is that he just stands there doing nothing). Super is then called for everything
+     * else.
+     * @param {Number} distanceToPlayer - Length of line drawn between Player and Rusher
+     */
+    move(distanceToPlayer) {
+        if (!this.aggroed) {
+            this.status = "idle";
+            this.velocity = [0, 0];
+        }
+        super.move(distanceToPlayer);
     }
 
 
@@ -51,12 +62,7 @@ class Punk extends Enemy {
             stepXCoord += 5;
         return stepXCoord;
     }
-
-
-    kick() {
-
-    }
 }
 
 
-module.exports = Punk;
+module.exports = Meathead;

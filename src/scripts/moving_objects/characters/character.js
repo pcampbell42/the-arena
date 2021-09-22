@@ -57,6 +57,7 @@ class Character extends MovingObject {
         // --------- Figuring out which general animation to do ---------
         if (this.status === "moving") {
             if (this.direction === "right") {
+                this.constructor.name === "Meathead" ? stepXCoord -= 5 : null; // Adjust if Meathead (large sprite)
                 this.drawing.src = `${this.images}/run_r.png`;
             } else {
                 this.drawing.src = `${this.images}/run_l.png`;
@@ -104,8 +105,12 @@ class Character extends MovingObject {
             selection = 144;
         } else if (this.step < 5 * stepFactor) {
             selection = 196;
-        } else {
+        } else if (this.step < 6 * stepFactor) {
             selection = 240;
+        } else if (this.step < 7 * stepFactor) {
+            selection = 288;
+        } else {
+            selection = 336;
         }
 
         // --------- Correcting x values for left facing animations, incrementing step ---------
@@ -196,6 +201,9 @@ class Character extends MovingObject {
      * or the player's mouse position
      */
     startAttack(target) {
+        // If meathead, set animationPace faster so it looks better
+        this.constructor.name === "Meathead" ? this.animationPace = 2 : null;
+        
         this.attacking = true; // The draw() method sees this and animates / fires off attacks
         this.busy = true; // Prevents the character from doing anything else
         this.step = 0; // Sets the animation step to 0 to begin attack animation
