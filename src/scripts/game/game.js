@@ -4,6 +4,7 @@ const Rusher = require("../moving_objects/characters/rusher")
 const Projectile = require("../moving_objects/projectile");
 const Floor = require("../floors/floor");
 const Punk = require("../moving_objects/characters/punk");
+const Tank = require("../moving_objects/characters/tank");
 
 
 class Game {
@@ -84,6 +85,8 @@ class Game {
 
         // ------------- Move to next floor logic -------------
         if (this.enemies.length === 0 && this.currentFloor === 10) { // If cleared last floor
+
+            //OQIWJEOIQWJEOIQJWEOIQJWEOIJQWOIEJQOIWEJOIWJEOIQJWEOIJQWOIEJQWOIEJIOQWEJ
             
         } else if (this.enemies.length === 0) {
             this.floor.doorOpened = true; // Opens the door to next floor
