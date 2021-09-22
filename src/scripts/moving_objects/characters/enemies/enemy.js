@@ -1,6 +1,6 @@
-const Character = require("./character");
-const SpecialTile = require("../../floors/special_tile");
-const EnemyPathfinder = require("../../util/enemy_pathfinder");
+const Character = require("../character");
+const SpecialTile = require("../../../floors/special_tile");
+const EnemyPathfinder = require("../../../util/enemy_pathfinder");
 
 
 class Enemy extends Character {
@@ -197,11 +197,14 @@ class Enemy extends Character {
 
         // Draw health bar
         if (this.health !== this.maxHealth) {
+            let healthAdjust = 15;
+            this.constructor.name === "Tank" ? healthAdjust = -5 : null
+
             ctx.fillStyle = "white";
-            ctx.fillRect(this.position[0] + 15, this.position[1], this.maxHealth, 10);
+            ctx.fillRect(this.position[0] + healthAdjust, this.position[1], this.maxHealth, 10);
 
             ctx.fillStyle = "#32CD32";
-            ctx.fillRect(this.position[0] + 15, this.position[1], this.maxHealth * (this.health / this.maxHealth), 10)
+            ctx.fillRect(this.position[0] + healthAdjust, this.position[1], this.maxHealth * (this.health / this.maxHealth), 10)
         }
 
         // Animate if attacking
@@ -212,6 +215,11 @@ class Enemy extends Character {
             } else {
                 this.drawing.src = `${this.images}/attack_l.png`;
             }
+
+            /////////////////////// REFACTOR TO HELPER ? ///////////////////////
+            ///////////////////// INSTEAD OF _selectFrame //////////////////////
+            //////////////////// EACH CLASS HAS OWN CUSTOM //////////////////////
+
             if (!this.game.slowed && Math.floor(this.step % 9) === 0) 
                 this.constructor.name === "Shooter" || this.constructor.name === "Punk" ? 
                     this.launchProjectile() : this.swing();
@@ -222,6 +230,9 @@ class Enemy extends Character {
                 this.attacking = false;
                 this.busy = false;
             }
+            /////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////
+
             ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
         }
 
@@ -426,6 +437,17 @@ class Enemy extends Character {
             return false;
         }
         return super.validMove() ? true : false;
+    }
+
+
+    /**
+     * Method that handles Rushers, Tanks, and the Shield's melee attacks.
+     */
+    swing() {
+        // Calculating distance between player and enemy        
+        let distanceToPlayer = Math.sqrt((this.game.player.position[0] - this.position[0]) ** 2 +
+            (this.game.player.position[1] - this.position[1]) ** 2);
+        if (distanceToPlayer <= 55 && !this.game.player.rolling) this.game.player.takeDamage(this.damage);
     }
 
 

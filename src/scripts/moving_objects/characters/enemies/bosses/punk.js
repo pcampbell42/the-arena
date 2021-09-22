@@ -1,4 +1,4 @@
-const Enemy = require("./enemy");
+const Enemy = require("../enemy");
 
 
 class Punk extends Enemy {
@@ -14,7 +14,7 @@ class Punk extends Enemy {
         this.health = 100;
 
         this.attackRange = 1000; // Entire canvas...
-        this.speed = 5;
+        this.speed = 4;
     }
 
     

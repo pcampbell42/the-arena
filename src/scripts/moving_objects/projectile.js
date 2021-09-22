@@ -110,8 +110,9 @@ class Projectile extends MovingObject {
             this.remove();
             obj.remove();
         } 
-        // If a Shooter is hit by an Enemy projectile, they take a small amount of damage
-        else if (obj.maxHealth === 30 && this.shooter !== this.game.player) {
+        // If a Shooter or Tank is hit by an Enemy projectile, they take a small amount of damage
+        else if ((obj.maxHealth === 30 && this.shooter !== this.game.player) ||
+                 (obj.maxHealth === 80 && this.shooter !== this.game.player)) {
             obj.takeDamage(2);
             this.remove();
         } else {

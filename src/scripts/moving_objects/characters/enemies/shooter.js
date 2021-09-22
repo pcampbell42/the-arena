@@ -68,9 +68,8 @@ class Shooter extends Enemy {
      * @param {Number} damage - Amount of damage to take
      */
     takeDamage(damage) {
-        if (!this.busy && this.playerInLOS()) {
-            this.startAttack(this.game.player.position); // Enemy shoots in players direction if hit
-        }
+        // Enemy shoots in players direction if hit
+        if (!this.busy && this.playerInLOS()) this.startAttack(this.game.player.position);
         super.takeDamage(damage);
     }
 }

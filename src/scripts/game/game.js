@@ -1,10 +1,11 @@
 const Player = require("../moving_objects/characters/player");
-const Shooter = require("../moving_objects/characters/shooter");
-const Rusher = require("../moving_objects/characters/rusher")
+const Shooter = require("../moving_objects/characters/enemies/shooter");
+const Rusher = require("../moving_objects/characters/enemies/rusher")
 const Projectile = require("../moving_objects/projectile");
 const Floor = require("../floors/floor");
-const Punk = require("../moving_objects/characters/punk");
-const Tank = require("../moving_objects/characters/tank");
+const Punk = require("../moving_objects/characters/enemies/bosses/punk");
+const Tank = require("../moving_objects/characters/enemies/tank");
+const Shield = require("../moving_objects/characters/enemies/bosses/shield");
 
 
 class Game {
@@ -89,28 +90,47 @@ class Game {
             this.floor.doorOpened = true; // Opens the door to next floor
 
             // If moved through door on floor 10, the player wins!
-            if (this.currentFloor === 2 && this.player.position[1] <= -10) {
+            if (this.currentFloor === 10 && this.player.position[1] <= -10) {
                 this.cleared = true;
             }
             // Else, move to next floor
             else if (this.player.position[1] <= -10) {
+                this.currentFloor += 1;
                 this.floor = new Floor({
                     canvasSizeX: this.canvasSizeX,
                     canvasSizeY: this.canvasSizeY,
                     floorNum: this.currentFloor
                 });
                 this.player.position = [35, this.canvasSizeY - 100];
-                this.currentFloor += 1;
 
-                // First floor only 1 enemy spawns, after that its random. Floor 10 just spawn the punk
-                let numEnemiesToSpawn = this.currentFloor === 1 ? this.currentFloor :
-                        Math.floor((Math.random() * 5)) + 5; // Number enemies to spawn is random after floor 5
-                this.currentFloor !== 2 ? this.spawnEnemies(numEnemiesToSpawn) : 
-                    this.enemies.push(new Tank({
-                        position: [this.canvasSizeX / 2, 100],
-                        velocity: [0, 0],
-                        game: this
-                    }));
+                // Spawn enemies based on floor #
+                switch (this.currentFloor) {
+                    case 1: // Spawn 1 enemy on first floor
+                        this.spawnEnemies(1);
+                        break;
+                
+                    case 5: // Spawn shield boss on 5th floor
+                        this.enemies.push(new Shield({
+                            position: [this.canvasSizeX / 2, 100],
+                            velocity: [0, 0],
+                            game: this
+                        }));
+                        break;
+                      
+                    case 10: // Spawn punk boss on 10th floor
+                        this.enemies.push(new Punk({
+                            position: [this.canvasSizeX / 2, 100],
+                            velocity: [0, 0],
+                            game: this
+                        }));
+                        break;
+
+                    default: // Spawn random # of enemies on other floors
+                        let numEnemiesToSpawn = this.currentFloor === 1 ? this.currentFloor :
+                            Math.floor((Math.random() * 5)) + 5;
+                        this.spawnEnemies(numEnemiesToSpawn);
+                        break;
+                }
     
                 this.player.energy += 20; // Player receives 20 energy on moving to next floor
                 if (this.player.energy > 100) this.player.energy = 100;
@@ -161,18 +181,25 @@ class Game {
                 validPosition = true;
 
                 // Randomly decide if enemy is a shooter or a rusher
-                if (Math.random() * 3 > 1) {
+                let randomNum = Math.random() * 10;
+                if (randomNum > 4.5) {
                     enemy = new Shooter({
                         position: randomPos,
                         velocity: [0, 0],
                         game: this
                     });
-                } else {
+                } else if (randomNum > 2) {
                     enemy = new Rusher({
                         position: randomPos,
                         velocity: [0, 0],
                         game: this
-                    })
+                    });
+                } else {
+                    enemy = new Tank({
+                        position: randomPos,
+                        velocity: [0, 0],
+                        game: this
+                    });
                 }
 
                 // Uses validMove() in the Character class to check if valid spawn location
@@ -191,7 +218,7 @@ class Game {
     remove(obj) {
         if (obj instanceof Projectile) {
             this.projectiles.splice(this.projectiles.indexOf(obj), 1);
-        } else if (obj instanceof Shooter || obj instanceof Rusher) {
+        } else {
             this.enemies.splice(this.enemies.indexOf(obj), 1);
         }
     }
