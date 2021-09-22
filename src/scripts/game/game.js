@@ -84,7 +84,7 @@ class Game {
 
         // ------------- Move to next floor logic -------------
         if (this.enemies.length === 0 && this.currentFloor === 10) { // If cleared last floor
-
+            
         } else if (this.enemies.length === 0) {
             this.floor.doorOpened = true; // Opens the door to next floor
 

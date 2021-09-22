@@ -191,7 +191,7 @@ class Player extends Character {
     launchProjectile() {
         // Can't shoot if out of energy
         if (this.energy > 0) {
-            this.energy -= 0.5; // Shooting costs 0.5 energy
+            this.energy -= 0.25; // Shooting costs 0.5 energy
             super.launchProjectile();
         }
     }
