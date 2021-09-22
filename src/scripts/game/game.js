@@ -1,8 +1,9 @@
-const Player = require("../moving_objects/characters/player.js");
-const Shooter = require("../moving_objects/characters/shooter.js");
-const Rusher = require("../moving_objects/characters/rusher.js")
-const Projectile = require("../moving_objects/projectile.js");
-const Floor = require("../floors/floor.js");
+const Player = require("../moving_objects/characters/player");
+const Shooter = require("../moving_objects/characters/shooter");
+const Rusher = require("../moving_objects/characters/rusher")
+const Projectile = require("../moving_objects/projectile");
+const Floor = require("../floors/floor");
+const Punk = require("../moving_objects/characters/punk");
 
 
 class Game {
@@ -82,23 +83,29 @@ class Game {
 
 
         // ------------- Move to next floor logic -------------
-        if (this.enemies.length === 0) {
+        if (this.enemies.length === 0 && this.currentFloor === 10) { // If cleared last floor
+
+        } else if (this.enemies.length === 0) {
             this.floor.doorOpened = true; // Opens the door to next floor
 
             if (this.player.position[1] <= -10) { // The player has moved through door to next floor
                 this.floor = new Floor({
                     canvasSizeX: this.canvasSizeX,
-                    canvasSizeY: this.canvasSizeY
+                    canvasSizeY: this.canvasSizeY,
+                    floorNum: this.currentFloor
                 });
                 this.player.position = [35, this.canvasSizeY - 100];
                 this.currentFloor += 1;
 
-                // Leaving this so that if I want to make # of enemies random again, I can just uncomment
-                // let numEnemiesToSpawn = this.currentFloor <= 5 ? this.currentFloor :
-                //         Math.floor((Math.random() * 10)) + 5; // Number enemies to spawn is random after floor 5
-                // this.spawnEnemies(numEnemiesToSpawn);
-
-                this.spawnEnemies(this.currentFloor); // # of enemies = floor number
+                // First floor only 1 enemy spawns, after that its random. Floor 10 just spawn the punk
+                let numEnemiesToSpawn = this.currentFloor === 1 ? this.currentFloor :
+                        Math.floor((Math.random() * 5)) + 5; // Number enemies to spawn is random after floor 5
+                this.currentFloor !== 2 ? this.spawnEnemies(numEnemiesToSpawn) : 
+                    this.enemies.push(new Punk({
+                        position: [this.canvasSizeX / 2, 100],
+                        velocity: [0, 0],
+                        game: this
+                    }));
     
                 this.player.energy += 20; // Player receives 20 energy on moving to next floor
                 if (this.player.energy > 100) this.player.energy = 100;

@@ -1,4 +1,4 @@
-const Enemy = require("./enemy.js")
+const Enemy = require("./enemy")
 
 
 class Shooter extends Enemy {
@@ -68,7 +68,7 @@ class Shooter extends Enemy {
      * @param {Number} damage - Amount of damage to take
      */
     takeDamage(damage) {
-        if (!this.busy) {
+        if (!this.busy && this.playerInLOS()) {
             this.startAttack(this.game.player.position); // Enemy shoots in players direction if hit
         }
         super.takeDamage(damage);

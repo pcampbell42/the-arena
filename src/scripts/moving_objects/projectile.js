@@ -1,5 +1,5 @@
-const MovingObject = require("./moving_object.js");
-const SpecialTile = require("../floors/special_tile.js");
+const MovingObject = require("./moving_object");
+const SpecialTile = require("../floors/special_tile");
 
 
 class Projectile extends MovingObject {
