@@ -1,4 +1,4 @@
-const Character = require("./character.js");
+const Character = require("./character");
 const SpecialTile = require("../../floors/special_tile");
 
 
@@ -14,7 +14,6 @@ class Player extends Character {
         this.health = 100;
         this.energy = 100;
         this.isDead = false;
-        this.kicking = false;
     }
 
 
@@ -71,6 +70,13 @@ class Player extends Character {
      * @param {CanvasRenderingContext2D} ctx - 2D canvas context to draw board 
      */
     draw(ctx) {
+        // For some bizarro reason, I have to do this here instead of in startKnockback, which would make way more sense
+        // Basically, if an enemy is knockedBack, attacking is canceled and they're no longer busy
+        if (this.knockedBack || this.stunned) {
+            this.attacking = false;
+            this.busy = false;
+        }
+
         // Animate normal attack
         if (this.attacking) {
             // The x-coordinate inside the animation sheet. As animation goes on,
@@ -185,20 +191,9 @@ class Player extends Character {
     launchProjectile() {
         // Can't shoot if out of energy
         if (this.energy > 0) {
-            this.energy -= 1; // Shooting costs 1 energy
+            this.energy -= 0.25; // Shooting costs 0.5 energy
             super.launchProjectile();
         }
-    }
-
-
-    /**
-     * Called when f is pressed by player. Sets kicking to true, which is then used
-     * in the Player draw() method to fire off a kick.
-     */
-    startKick() {
-        this.kicking = true;
-        this.busy = true;
-        this.step = 5;
     }
 
 
@@ -216,8 +211,8 @@ class Player extends Character {
             // This checks what direction (left or right) the Enemy is in from the Player (kick is directional)
             let enemyDirection = this.game.enemies[i].position[0] - this.position[0];
 
-            if (distanceToEnemy <= 55 && ((this.direction === "right" && enemyDirection >= -18) || 
-                                           this.direction === "left" && enemyDirection <= 18)) {
+            if (distanceToEnemy <= 55 && ((this.direction === "right" && enemyDirection >= -18) ||
+                this.direction === "left" && enemyDirection <= 18)) {
 
                 // Figuring out what direction to knock enemy in
                 let knockedDirection;

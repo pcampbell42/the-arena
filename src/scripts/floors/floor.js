@@ -1,6 +1,6 @@
 // The file of despair, enter at your own risk
 
-const SpecialTile = require("./special_tile.js");
+const SpecialTile = require("./special_tile");
 
 
 class Floor {
@@ -54,7 +54,7 @@ class Floor {
 
         // Creates template, picks which floor to use
         this.floorTiles = this.makeFloorTemplate();
-        params["floorNum"] === 1 ? null : this.pickFloor(); // Floor 1 is empty room
+        params["floorNum"] === 1 || params["floorNum"] === 2 ? null : this.pickFloor(); // Floor 1 is empty room
     }
 
 
@@ -553,7 +553,7 @@ class Floor {
 
                 // -------------- Adding bottom left wall segment --------------
                 // Bottom row of wall
-                if (i === this.floorTiles.length - 3 && j < Math.floor(this.floorTiles[0].length / 2) + 1) {
+                if (i === this.floorTiles.length - 3 && j < Math.floor(this.floorTiles[0].length / 2) + 1 && j !== 4 && j !== 5) {
                     this.floorTiles[i][j] = this._selectRandomTopWallTile();
                 }
                 // Bottom right corner of wall
@@ -721,6 +721,54 @@ class Floor {
                     this.floorTiles[i][j] = [
                         [32, 384],
                         [Math.floor(Math.random() * 8) * 32 + 13, 416] // Randomize the #
+                    ];
+                }
+
+                // -------------- Adding cubby to bottom left wall segment --------------
+
+                if (i === this.numRows - 3 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 32], type: "wall" })
+                    ];
+                }
+                if (i === this.numRows - 3 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 32], type: "wall" })
+                    ];
+                }
+                if (i === this.numRows - 4 && j === 4) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 0], type: "wall" })
+                    ];
+                }
+                if (i === this.numRows - 4 && j === 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [64, 0], type: "wall" })
+                    ];
+                }
+                if (i === this.numRows - 4 && j === 3) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [32, 0], type: "wall" })
+                    ];
+                }
+                if (i === this.numRows - 4 && j === 6) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [96, 0], type: "wall" })
+                    ];
+                }
+
+                // -------------- Adding bottom small cover --------------
+
+                if (i === this.numRows - 3 && j === this.numCols - 5) {
+                    this.floorTiles[i][j] = [
+                        this.floorTiles[this.numRows - 2][0].position,
+                        new SpecialTile({ position: [160, 64], type: "wall" })
                     ];
                 }
             }

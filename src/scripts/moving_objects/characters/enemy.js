@@ -26,14 +26,6 @@ class Enemy extends Character {
         this.chillCounter = 100;
         this.wanderLeft = 0;
         this.wanderRight = 0;
-
-        // Knockback / stun
-        this.knockedBack = false;
-        this.knockedBackCounter = 0;
-        this.stunned = false;
-        this.stunnedCounter = 0;
-        this.stunnedImage = new Image();
-        this.stunnedImage.src = "./dist/assets/stunned.png";
     }
 
 
@@ -220,8 +212,12 @@ class Enemy extends Character {
             } else {
                 this.drawing.src = `${this.images}/attack_l.png`;
             }
-            if (!this.game.slowed && Math.floor(this.step % 9) === 0) this.constructor.name === "Shooter" ? this.launchProjectile() : this.swing();
-            if (this.game.slowed && Math.floor(this.step % 36) === 0) this.constructor.name === "Shooter" ? this.launchProjectile() : this.swing();
+            if (!this.game.slowed && Math.floor(this.step % 9) === 0) 
+                this.constructor.name === "Shooter" || this.constructor.name === "Punk" ? 
+                    this.launchProjectile() : this.swing();
+            if (this.game.slowed && Math.floor(this.step % 36) === 0) 
+                this.constructor.name === "Shooter" || this.constructor.name === "Punk" ? 
+                    this.launchProjectile() : this.swing();
             if (stepXCoord >= 144) {
                 this.attacking = false;
                 this.busy = false;
@@ -240,6 +236,7 @@ class Enemy extends Character {
                 ctx.drawImage(this.drawing, (this.knockedBackCounter > 5 ? 15 : 20), 0, 40, 80, this.position[0], this.position[1], 75, 90);
             }
         }
+        
         // Animate if stunned
         else if (this.stunned) {
             let stepXCoord = this._selectFrame(18 / this.animationPace);
@@ -362,6 +359,19 @@ class Enemy extends Character {
      * @returns - Boolean, true if the move is valid, false if invalid
      */
     validMove() {
+        // This is a bug fix. There's a bizarre and very rare bug where, when spawning an Enemy, 
+        // it spawns them in a valid position and then immediately seems to move them out of bounds. This bug
+        // appeared when I implemented game.dt (refresh rate fix). Likely it has something to do with not
+        // using the adjusted velocities when checking collision. Even then though, that oversight doesn't 
+        // explain the bizarre teleporting of position and why this only happens immediately after being 
+        // spawned in. Being that this is such a rare bug and not particularly game breaking, rather than
+        // fix the source of this, we can simply remove the Enemy from the Game if they are out of bounds.
+        if (this.position[0] < 10 || this.position[1] < 10 || this.position[0] > this.game.canvasSizeX - 10 ||
+            this.position[1] > this.game.canvasSizeY - 10) {
+            this.dead();
+            return false;
+        }
+
         let futureXCoord = this.position[0] + this.velocity[0];
         let futureYCoord = this.position[1] + this.velocity[1];
 
@@ -384,14 +394,6 @@ class Enemy extends Character {
             yIndicesNegative[0] < 0 || yIndicesNegative[1] < 0 || yIndicesPositive[0] < 0 || yIndicesPositive[1] < 0 || 
             xIndicesNegative[0] > rows - 1 || xIndicesNegative[1] > cols - 1 || xIndicesPositive[0] > rows - 1 || xIndicesPositive[1] > cols - 1 ||
             yIndicesNegative[0] > rows - 1 || yIndicesNegative[1] > cols - 1 || yIndicesPositive[0] > rows - 1 || yIndicesPositive[1] > cols - 1) {
-            // this.dead() is a bug fix. There's a bizarre and very rare bug where, when spawning an Enemy, 
-            // it spawns them in a valid position and then immediately seems to move them out of bounds. This bug
-            // appeared when I implemented game.dt (refresh rate fix). Likely it has something to do with not
-            // using the adjusted velocities when checking collision. Even then though, that oversight doesn't 
-            // explain the bizarre teleporting of position and why this only happens immediately after being 
-            // spawned in. Being that this is such a rare bug and not particularly game breaking, rather than
-            // fix the source of this, we can simply remove the Enemy from the Game if they are out of bounds.
-            this.dead();
             return false;
         }
         
@@ -424,50 +426,6 @@ class Enemy extends Character {
             return false;
         }
         return super.validMove() ? true : false;
-    }
-
-
-    /**
-     * Simple method that's called in kick() when a kick lands on an Enemy. Initiates
-     * a knockback by setting this.knockedBack to true.
-     * @param {String} knockedDirection - Specified in kick(), "up", "down", "left", or "right"
-     */
-    startKnockback(knockedDirection) {
-        // Setting instance vars
-        this.knockedBack = true;
-        this.knockedBackCounter = 0;
-        this.step = 0;
-        
-        // Figuring out direction to knock enemy and setting velocity
-        switch (knockedDirection) {
-            case "up":
-                this.velocity[0] = 0;
-                this.velocity[1] = -8;
-                break;
-
-            case "down":
-                this.velocity[0] = 0;
-                this.velocity[1] = 8;
-                break;
-
-            case "right":
-                this.velocity[0] = 8;
-                this.velocity[1] = 0;
-                break;
-
-            case "left":
-                this.velocity[0] = -8;
-                this.velocity[1] = 0;
-                break;
-        
-            default:
-                break;
-        }
-
-        // If time is slowed, cut the velocity
-        if (this.game.slowed) {
-            this.velocity[0] === 0 ? this.velocity[1] /= 4 : this.velocity[0] /= 4;
-        }
     }
 
 

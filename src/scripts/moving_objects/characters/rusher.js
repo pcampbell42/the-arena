@@ -13,7 +13,7 @@ class Rusher extends Enemy {
         this.health = 20;
 
         this.attackRange = 80;
-        this.speed = 3;
+        this.speed = 4;
     }
 
 

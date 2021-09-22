@@ -1,17 +1,27 @@
 const MovingObject = require("../moving_object");
-const Projectile = require("../projectile.js");
-const SpecialTile = require("../../floors/special_tile.js");
+const Projectile = require("../projectile");
+const SpecialTile = require("../../floors/special_tile");
 
 
 class Character extends MovingObject {
     constructor(params) {
         super(params);
 
+        // General status things
         this.status = "idle"
         this.direction = Math.random() > 0.5 ? "right" : "left"; // Randomly set direction on spawn
         this.attacking = false;
+        this.kicking = false;
         this.rolling = false;
         this.busy = false;
+
+        // Knockback / stun
+        this.knockedBack = false;
+        this.knockedBackCounter = 0;
+        this.stunned = false;
+        this.stunnedCounter = 0;
+        this.stunnedImage = new Image();
+        this.stunnedImage.src = "./dist/assets/stunned.png";
 
         this.step = 0; // Used for animation
         this.target = []; // Used when firing an attack (kind of an unnecessary instance variable)
@@ -224,6 +234,61 @@ class Character extends MovingObject {
             p.velocity[1] /= 4;
         }
         this.game.projectiles.push(p);
+    }
+
+
+    /**
+     * Called when f is pressed by player or Punk fires off locl. Sets kicking to true, 
+     * which is then used in the draw() method to fire off a kick.
+     */
+    startKick() {
+        this.kicking = true;
+        this.busy = true;
+        this.step = 5;
+    }
+
+
+    /**
+     * Simple method that's called in kick() when a kick lands on an Enemy. Initiates
+     * a knockback by setting this.knockedBack to true.
+     * @param {String} knockedDirection - Specified in kick(), "up", "down", "left", or "right"
+     */
+    startKnockback(knockedDirection) {
+        // Setting instance vars
+        this.knockedBack = true;
+        this.knockedBackCounter = 0;
+        this.step = 0;
+
+        // Figuring out direction to knock enemy and setting velocity
+        switch (knockedDirection) {
+            case "up":
+                this.velocity[0] = 0;
+                this.velocity[1] = -8;
+                break;
+
+            case "down":
+                this.velocity[0] = 0;
+                this.velocity[1] = 8;
+                break;
+
+            case "right":
+                this.velocity[0] = 8;
+                this.velocity[1] = 0;
+                break;
+
+            case "left":
+                this.velocity[0] = -8;
+                this.velocity[1] = 0;
+                break;
+
+            default:
+                break;
+        }
+
+        // If time is slowed, cut the velocity
+        if (this.game.slowed) {
+            this.velocity[0] === 0 ? this.velocity[1] /= 4 : this.velocity[0] /= 4;
+        }
     }
 
 
