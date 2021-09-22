@@ -173,9 +173,14 @@ class GameView {
         canvas.setAttribute("style", "cursor: default;");
 
         // Show game over banner
-        const enemiesKilledBanner = document.getElementById("enemies-killed-banner");
+        const enemiesKilledBanner = document.getElementById("floors-cleared-banner");
         enemiesKilledBanner.innerHTML = `You made it to floor ${this.game.currentFloor}`;
         document.getElementById("game-over-container").classList.toggle("on");
+    }
+
+
+    congrats() {
+        
     }
 
 
@@ -313,10 +318,6 @@ class GameView {
             menuDisplay.classList.toggle("hidden");
             gameDisplay.classList.toggle("play");
 
-            // What was this for ??????
-            // document.getElementById("enemies-killed-banner").classList.toggle("on");
-            // document.getElementById("game-over-banner").classList.toggle("on");
-
             // Pause song, endCurrentGame, and reset Game object
             this.song.pause();
             this.endCurrentGame = true;
@@ -363,7 +364,7 @@ class GameView {
             menuDisplay.classList.toggle("hidden");
             gameDisplay.classList.toggle("play");
 
-            // Making sure the game over and enemies-killed banners are off 
+            // Making sure the game over and floors-cleared banners are off 
             const gameOverContainer = document.getElementById("game-over-container");
             if (gameOverContainer.classList.length === 1) gameOverContainer.classList.toggle("on");
 
