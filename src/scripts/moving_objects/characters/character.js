@@ -57,7 +57,8 @@ class Character extends MovingObject {
         // --------- Figuring out which general animation to do ---------
         if (this.status === "moving") {
             if (this.direction === "right") {
-                this.constructor.name === "Meathead" ? stepXCoord -= 5 : null; // Adjust if Meathead (large sprite)
+                // Adjust if Meathead or Tank (they have really large sprites)
+                this.constructor.name === "Meathead" || this.constructor.name === "Tank" ? stepXCoord -= 5 : null;
                 this.drawing.src = `${this.images}/run_r.png`;
             } else {
                 this.drawing.src = `${this.images}/run_l.png`;
@@ -90,7 +91,7 @@ class Character extends MovingObject {
      */
     _selectFrame(stepFactor) {
         // --------- If past last step of animation, reset to first step ---------
-        if (this.status === "idle" && !this.busy && this.step >= this.idleFrames * stepFactor) this.step = 0;
+        if ((this.status === "idle" || this.stunned) && !this.busy && this.step >= this.idleFrames * stepFactor) this.step = 0;
         if (this.status === "moving" && !this.busy && this.step >= this.runningFrames * stepFactor) this.step = 0;
 
         // --------- Using step to find correct part of animation ---------
@@ -201,8 +202,12 @@ class Character extends MovingObject {
      * or the player's mouse position
      */
     startAttack(target) {
-        // If meathead, set animationPace faster so it looks better
-        this.constructor.name === "Meathead" ? this.animationPace = 2 : null;
+        // If meathead or tank, set animationPace faster so it looks better. Adjust properly if time slowed
+        this.constructor.name === "Meathead" || this.constructor.name === "Tank" ? 
+            this.game.slowed ?
+                this.animationPace = 1 : 
+                this.animationPace = 2 : 
+                null;
         
         this.attacking = true; // The draw() method sees this and animates / fires off attacks
         this.busy = true; // Prevents the character from doing anything else

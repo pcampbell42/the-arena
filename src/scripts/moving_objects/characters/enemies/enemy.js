@@ -73,7 +73,11 @@ class Enemy extends Character {
             let facingPlayer = ((this.position[0] - this.game.player.position[0]) >= 0 && this.direction === "left" ||
                 (this.position[0] - this.game.player.position[0]) <= 0 && this.direction === "right");
 
-            // If everything aligns, attack the Player
+            // If not a ranged enemy, manually set randNum to 5 so that when conditions allow, melee enemies always attack
+            this.constructor.name !== "Shooter" && this.constructor.name !== "Punk" ?
+                randNum = 5 : null;
+
+            // If all conditions allow, attack player
             if (randNum <= 5 && distanceToPlayer < this.attackRange && this.aggroed && facingPlayer && this.playerInLOS()) {
                 this.startAttack(this.game.player.position);
             }
@@ -236,7 +240,10 @@ class Enemy extends Character {
 
             } else {
                 this.drawing.src = `${this.images}/hurt_l.png`;
-                ctx.drawImage(this.drawing, (this.knockedBackCounter > 5 ? 15 : 20), 0, 40, 80, this.position[0], this.position[1], 75, 90);
+
+                // Need custom x-coord for Tank... 15 works for everything else
+                let drawingRedXCoord = this.constructor.name === "Tank" ? 10 : 15;
+                ctx.drawImage(this.drawing, (this.knockedBackCounter > 5 ? drawingRedXCoord : 20), 0, 40, 80, this.position[0], this.position[1], 75, 90);
             }
         }
         
@@ -444,7 +451,7 @@ class Enemy extends Character {
         let facingPlayer = ((this.position[0] - this.game.player.position[0]) >= 0 && this.direction === "left" ||
             (this.position[0] - this.game.player.position[0]) <= 0 && this.direction === "right");
         
-        if (facingPlayer && distanceToPlayer <= 55 && !this.game.player.rolling) this.game.player.takeDamage(this.damage);
+        if (facingPlayer && distanceToPlayer <= this.attackRange && !this.game.player.rolling) this.game.player.takeDamage(this.damage);
     }
 
 

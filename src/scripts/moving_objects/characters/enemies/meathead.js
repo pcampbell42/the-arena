@@ -13,8 +13,8 @@ class Meathead extends Enemy {
         this.maxHealth = 80;
         this.health = 80;
 
-        this.attackRange = 100; // Slightly larger than Rusher
-        this.damage = 40;
+        this.attackRange = 45;
+        this.damage = 50;
         this.speed = 0.5;
     }
 
@@ -23,7 +23,7 @@ class Meathead extends Enemy {
      * Meathead's custom idle behavior goes here (right now his custom idle behavior
      * is that he just stands there doing nothing). Super is then called for everything
      * else.
-     * @param {Number} distanceToPlayer - Length of line drawn between Player and Rusher
+     * @param {Number} distanceToPlayer - Length of line drawn between Player and Meathead
      */
     move(distanceToPlayer) {
         if (!this.aggroed) {
@@ -44,8 +44,8 @@ class Meathead extends Enemy {
      * animation sheet. Basically, we need this to tell when the attack animation is over.
      */
     attackAnimationHelper(stepXCoord) {
-        if (!this.game.slowed && Math.floor(this.step) === 85) this.swing();
-        if (this.game.slowed && Math.floor(this.step) === 325) this.swing();
+        if (!this.game.slowed && Math.floor(this.step) === 45) this.swing();
+        if (this.game.slowed && Math.floor(this.step) === 88) this.swing();
         if (stepXCoord >= 288) {
             this.attacking = false;
             this.busy = false;

@@ -12,7 +12,7 @@ class Rusher extends Enemy {
         this.maxHealth = 20; // Used to figure out when to display healthbar (maxHealth !== health)
         this.health = 20;
 
-        this.attackRange = 80;
+        this.attackRange = 50;
         this.damage = 20;
         this.speed = 3.5;
     }

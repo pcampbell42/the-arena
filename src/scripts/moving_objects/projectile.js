@@ -103,19 +103,38 @@ class Projectile extends MovingObject {
      * @param {MovingObject} obj - Any kind of MovingObject
      */
     collidedWith(obj) {
-        // Projectiles don't hit rolling targets. Also enemy Projectiles don't hit Rushers
+        // Projectiles don't hit rolling targets. Also Enemy Projectiles don't hit Rushers
         if (obj.rolling || (obj.maxHealth === 20 && this.shooter !== this.game.player)) {
             // Do nothing
-        } else if (obj instanceof Projectile) {
+        } 
+        // If a projectile hits another projectile, they cancel each other
+        else if (obj instanceof Projectile) {
             this.remove();
             obj.remove();
         } 
-        // If a Shooter or Meathead is hit by an Enemy projectile, they take a small amount of damage
-        else if ((obj.maxHealth === 30 && this.shooter !== this.game.player) ||
-                 (obj.maxHealth === 80 && this.shooter !== this.game.player)) {
+        // If a Shooter or Meathead is hit by an Enemy projectile, they take a reduced amount of damage
+        else if ((obj.constructor.name === "Shooter" && this.shooter !== this.game.player) ||
+                 (obj.constructor.name === "Meathead" && this.shooter !== this.game.player)) {
             obj.takeDamage(2);
             this.remove();
-        } else {
+        }
+        // The Tank boss has special mechnics for being hit
+        else if (obj.constructor.name === "Tank") {
+            // Boolean - true if Tank is facing the projectile
+            let facingProjectile = ((obj.direction === "right" && this.velocity[0] < 0) || 
+                                    (obj.direction === "left" && this.velocity[0] > 0))
+
+            // If the Tank is facing the projectile, not attacking, not knocked back, and not 
+            // stunned, he absorbs the projectile without taking damage
+            if (facingProjectile && !obj.attacking && !obj.knockedBack && !obj.stunned) {
+                this.remove();
+            } else { // Else he takes damage as normal
+                obj.takeDamage(this.damage);
+                this.remove();
+            }
+        }
+        // For normal Character + Projectile collision
+        else {
             obj.takeDamage(this.damage);
             this.remove();
         }
