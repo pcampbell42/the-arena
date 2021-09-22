@@ -54,7 +54,7 @@ class Floor {
 
         // Creates template, picks which floor to use
         this.floorTiles = this.makeFloorTemplate();
-        params["floorNum"] === 1 || params["floorNum"] === 5 || params["floorNum"] === 10 ? null : this.pickFloor(); // Floor 1 is empty room
+        params["floorNum"] === 1 || params["floorNum"] === 2 || params["floorNum"] === 10 ? null : this.pickFloor(); // Floor 1 is empty room
     }
 
 

@@ -105,11 +105,7 @@ class Game {
 
                 // Spawn enemies based on floor #
                 switch (this.currentFloor) {
-                    case 1: // Spawn 1 enemy on first floor
-                        this.spawnEnemies(1);
-                        break;
-                
-                    case 5: // Spawn tank boss on 5th floor
+                    case 2: // Spawn tank boss on 5th floor
                         this.enemies.push(new Tank({
                             position: [this.canvasSizeX / 2, 100],
                             velocity: [0, 0],

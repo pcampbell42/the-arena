@@ -195,16 +195,25 @@ class Enemy extends Character {
             this.busy = false;
         }
 
-        // Draw health bar
-        if (this.health !== this.maxHealth) {
-            let healthAdjust = 15;
-            this.constructor.name === "Meathead" ? healthAdjust = -5 : null
+        // Draw boss health bar
+        if (this.constructor.name === "Punk" || this.constructor.name === "Tank") {
+            ctx.font = "48px skirmisher";
+            ctx.fillStyle = "#ed4245";
+            ctx.fillText(this.constructor.name, 75, 45);
 
             ctx.fillStyle = "white";
-            ctx.fillRect(this.position[0] + healthAdjust, this.position[1], this.maxHealth, 10);
+            ctx.fillRect(70, 55, 580, 15);
+
+            ctx.fillStyle = "#ed4245";
+            ctx.fillRect(70, 55, 580 * (this.health / this.maxHealth), 15);
+        }
+        // Draw normal health bar
+        else if (this.health !== this.maxHealth) {
+            ctx.fillStyle = "white";
+            ctx.fillRect(this.position[0] + 15, this.position[1], 30, 10);
 
             ctx.fillStyle = "#32CD32";
-            ctx.fillRect(this.position[0] + healthAdjust, this.position[1], this.maxHealth * (this.health / this.maxHealth), 10)
+            ctx.fillRect(this.position[0] + 15, this.position[1], 30 * (this.health / this.maxHealth), 10)
         }
 
         // Animate if attacking
