@@ -31,6 +31,7 @@ class Game {
         
         this.slowed = false;
         this.paused = false;
+        this.cleared = false; // True when floor 10 is complete
 
         // On journalist difficulty, all damage the player takes is set to 1
         this.journalistDifficulty = journalistDifficulty;
@@ -84,14 +85,15 @@ class Game {
 
 
         // ------------- Move to next floor logic -------------
-        if (this.enemies.length === 0 && this.currentFloor === 10) { // If cleared last floor
-
-            //OQIWJEOIQWJEOIQJWEOIQJWEOIJQWOIEJQOIWEJOIWJEOIQJWEOIJQWOIEJQWOIEJIOQWEJ
-            
-        } else if (this.enemies.length === 0) {
+        if (this.enemies.length === 0) {
             this.floor.doorOpened = true; // Opens the door to next floor
 
-            if (this.player.position[1] <= -10) { // The player has moved through door to next floor
+            // If moved through door on floor 10, the player wins!
+            if (this.currentFloor === 2 && this.player.position[1] <= -10) {
+                this.cleared = true;
+            }
+            // Else, move to next floor
+            else if (this.player.position[1] <= -10) {
                 this.floor = new Floor({
                     canvasSizeX: this.canvasSizeX,
                     canvasSizeY: this.canvasSizeY,
@@ -104,7 +106,7 @@ class Game {
                 let numEnemiesToSpawn = this.currentFloor === 1 ? this.currentFloor :
                         Math.floor((Math.random() * 5)) + 5; // Number enemies to spawn is random after floor 5
                 this.currentFloor !== 2 ? this.spawnEnemies(numEnemiesToSpawn) : 
-                    this.enemies.push(new Punk({
+                    this.enemies.push(new Tank({
                         position: [this.canvasSizeX / 2, 100],
                         velocity: [0, 0],
                         game: this

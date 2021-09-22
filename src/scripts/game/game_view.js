@@ -78,7 +78,7 @@ class GameView {
             this.mouseHandler();
             this.menuBarButtonHandler();
             this.retryButtonHandler();
-
+            this.playAgainButtonHandler();
         }
         this.firstGame = false;
 
@@ -105,6 +105,7 @@ class GameView {
         this.lastTime = time;
 
         if (this.game.player.isDead) this.gameOver(); // End game when player is dead
+        if (this.game.cleared) this.congrats(); // End game and show congrats banner when floor 10 is cleared
 
         requestAnimationFrame(this.animate.bind(this));
     }
@@ -173,14 +174,26 @@ class GameView {
         canvas.setAttribute("style", "cursor: default;");
 
         // Show game over banner
-        const enemiesKilledBanner = document.getElementById("floors-cleared-banner");
-        enemiesKilledBanner.innerHTML = `You made it to floor ${this.game.currentFloor}`;
+        const floorsClearedBanner = document.getElementById("floors-cleared-banner");
+        floorsClearedBanner.innerHTML = `You made it to floor ${this.game.currentFloor}`;
         document.getElementById("game-over-container").classList.toggle("on");
     }
 
 
+    /**
+     * Ends the current game and displays the congratulations banner.
+     */
     congrats() {
-        
+        this.endCurrentGame = true; // End game
+
+        // Give user their cursor back
+        const canvas = document.getElementById("game-canvas");
+        canvas.setAttribute("style", "cursor: default;");
+
+        // Show congratulations banner
+        const congratsFloorsClearedBanner = document.getElementById("floors-cleared-banner-congrats");
+        congratsFloorsClearedBanner.innerHTML = `Congrats, you cleared all 10 floors!`;
+        document.getElementById("congrats-container").classList.toggle("on");
     }
 
 
@@ -246,6 +259,36 @@ class GameView {
             // Turn off game over banner
             gameOverContainer.classList.toggle("on");
             
+            // Start new game
+            this.start();
+        });
+    }
+
+
+    /**
+     * Method that adds an event listener for the play again button in the congratulations banner.
+     */
+    playAgainButtonHandler() {
+        const playAgainButton = document.getElementById("play-again-button");
+        const congratsContainer = document.getElementById("congrats-container");
+
+        playAgainButton.addEventListener("click", () => {
+            // Reset mute and pause so that if user plays another game, it doesn't
+            // open as muted or open as paused.
+            if (this.audioMuted) muteButton.click();
+            if (this.game.paused) pauseButton.click();
+
+            // Pause song, reset game object
+            this.song.pause();
+            this.game = null;
+
+            // Unbind key handlers
+            key.unbind("space");
+            key.unbind("f");
+
+            // Turn off game over banner
+            congratsContainer.classList.toggle("on");
+
             // Start new game
             this.start();
         });

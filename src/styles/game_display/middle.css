@@ -76,6 +76,62 @@
     cursor: pointer;
 }
 
+#congrats-container-anchor {
+    position: relative;
+    height: 0;
+    width: 0;
+}
+
+#congrats-container {
+    display: none;
+    position: absolute;
+    top: 150px;
+    left: 55px;
+    width: 600px;
+    height: 210px;
+    background-color: #37446e;
+
+    border-style: solid;
+    border-color: black;
+    border-width: 6px;
+    border-radius: 10px;
+
+    font-family: "skirmisher-2";
+    color: green;
+}
+
+#congrats-container.on {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#congrats-banner {
+    font-size: 90px;
+}
+
+#floors-cleared-banner-congrats {
+    font-size: 27px;
+}
+
+#play-again-button {
+    background-color: green;
+    width: 125px;
+    height: 65px;
+    margin-top: 15px;
+
+    border: none;
+
+    font-family: "8-bit";
+    font-size: 28px;
+    line-height: 25px;
+}
+
+#play-again-button:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
 canvas {
   cursor: none;
   background-color: gray;
