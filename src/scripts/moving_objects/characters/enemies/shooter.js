@@ -63,14 +63,36 @@ class Shooter extends Enemy {
 
 
     /**
+     * This method is called in Enemy draw() when the Enemy is in its attacking
+     * animation. In order to line up the actual attacks with the animation, we call
+     * the actual attacks inside draw(). When to call the attacks and when to end the
+     * animation is slightly different for each class, so each class gets there own
+     * attackAnimationHelper.
+     * 
+     * @param {Number} stepXCoord - The x-coordinate of what to do draw in the attack
+     * animation sheet. Basically, we need this to tell when the attack animation is over.
+     * @returns - stepXCoord (Number). For most classes, this will be the same as the input.
+     * For some, it will translate it to step through the sprite sheet backwards.
+     */
+    attackAnimationHelper(stepXCoord) {
+        if (!this.game.slowed && Math.floor(this.step % 9) === 0) this.launchProjectile();
+        if (this.game.slowed && Math.floor(this.step % 36) === 0) this.launchProjectile();
+        if (stepXCoord >= 144) {
+            this.attacking = false;
+            this.busy = false;
+        }
+        return stepXCoord; // Return same input, nothing needs to change
+    }
+
+
+    /**
      * Shooter needs its own takeDamage method because when the Shooter takes damage,
      * it automatically shoots at the player. Calls super to actaully take the damage.
      * @param {Number} damage - Amount of damage to take
      */
     takeDamage(damage) {
-        if (!this.busy && this.playerInLOS()) {
-            this.startAttack(this.game.player.position); // Enemy shoots in players direction if hit
-        }
+        // Enemy shoots in players direction if hit
+        if (!this.busy && this.playerInLOS()) this.startAttack(this.game.player.position);
         super.takeDamage(damage);
     }
 }

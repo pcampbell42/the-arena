@@ -14,11 +14,11 @@ class MovingObject {
      */
     move() {
         // Adjusting for refresh rate...
-        let adjustedX = this.velocity[0] * (this.game.dt / (1000 / 60));
-        let adjustedY = this.velocity[1] * (this.game.dt / (1000 / 60));
+        let adjustedXVelocity = this.velocity[0] * (this.game.dt / (1000 / 60));
+        let adjustedYVelocity = this.velocity[1] * (this.game.dt / (1000 / 60));
 
-        this.position[0] += adjustedX;
-        this.position[1] += adjustedY;
+        this.position[0] += adjustedXVelocity;
+        this.position[1] += adjustedYVelocity;
     }
 
     
@@ -45,8 +45,11 @@ class MovingObject {
      * @returns - A boolean, true if collided, false if not
      */
     willCollideWith(obj) {
-        return Math.abs(this.position[0] + this.velocity[0] - obj.position[0]) < 25 && 
-            Math.abs(this.position[1] + this.velocity[1] - obj.position[1]) < 35
+        let adjustedXVelocity = this.velocity[0] * (this.game.dt / (1000 / 60));
+        let adjustedYVelocity = this.velocity[1] * (this.game.dt / (1000 / 60));
+
+        return Math.abs(this.position[0] + adjustedXVelocity - obj.position[0]) < 25 && 
+            Math.abs(this.position[1] + adjustedYVelocity - obj.position[1]) < 35
     }
 
 

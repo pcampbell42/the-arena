@@ -1,6 +1,6 @@
-const Character = require("./character");
-const SpecialTile = require("../../floors/special_tile");
-const EnemyPathfinder = require("../../util/enemy_pathfinder");
+const Character = require("../character");
+const SpecialTile = require("../../../floors/special_tile");
+const EnemyPathfinder = require("../../../util/enemy_pathfinder");
 
 
 class Enemy extends Character {
@@ -73,7 +73,11 @@ class Enemy extends Character {
             let facingPlayer = ((this.position[0] - this.game.player.position[0]) >= 0 && this.direction === "left" ||
                 (this.position[0] - this.game.player.position[0]) <= 0 && this.direction === "right");
 
-            // If everything aligns, attack the Player
+            // If not a ranged enemy, manually set randNum to 5 so that when conditions allow, melee enemies always attack
+            this.constructor.name !== "Shooter" && this.constructor.name !== "Punk" ?
+                randNum = 5 : null;
+
+            // If all conditions allow, attack player
             if (randNum <= 5 && distanceToPlayer < this.attackRange && this.aggroed && facingPlayer && this.playerInLOS()) {
                 this.startAttack(this.game.player.position);
             }
@@ -195,13 +199,25 @@ class Enemy extends Character {
             this.busy = false;
         }
 
-        // Draw health bar
-        if (this.health !== this.maxHealth) {
+        // Draw boss health bar
+        if (this.constructor.name === "Punk" || this.constructor.name === "Tank") {
+            ctx.font = "48px skirmisher";
+            ctx.fillStyle = "#ed4245";
+            ctx.fillText(this.constructor.name, 75, 45);
+
             ctx.fillStyle = "white";
-            ctx.fillRect(this.position[0] + 15, this.position[1], this.maxHealth, 10);
+            ctx.fillRect(70, 55, 580, 15);
+
+            ctx.fillStyle = "#ed4245";
+            ctx.fillRect(70, 55, 580 * (this.health / this.maxHealth), 15);
+        }
+        // Draw normal health bar
+        else if (this.health !== this.maxHealth) {
+            ctx.fillStyle = "white";
+            ctx.fillRect(this.position[0] + 15, this.position[1], 30, 10);
 
             ctx.fillStyle = "#32CD32";
-            ctx.fillRect(this.position[0] + 15, this.position[1], this.maxHealth * (this.health / this.maxHealth), 10)
+            ctx.fillRect(this.position[0] + 15, this.position[1], 30 * (this.health / this.maxHealth), 10)
         }
 
         // Animate if attacking
@@ -212,16 +228,7 @@ class Enemy extends Character {
             } else {
                 this.drawing.src = `${this.images}/attack_l.png`;
             }
-            if (!this.game.slowed && Math.floor(this.step % 9) === 0) 
-                this.constructor.name === "Shooter" || this.constructor.name === "Punk" ? 
-                    this.launchProjectile() : this.swing();
-            if (this.game.slowed && Math.floor(this.step % 36) === 0) 
-                this.constructor.name === "Shooter" || this.constructor.name === "Punk" ? 
-                    this.launchProjectile() : this.swing();
-            if (stepXCoord >= 144) {
-                this.attacking = false;
-                this.busy = false;
-            }
+            stepXCoord = this.attackAnimationHelper(stepXCoord);
             ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
         }
 
@@ -233,7 +240,10 @@ class Enemy extends Character {
 
             } else {
                 this.drawing.src = `${this.images}/hurt_l.png`;
-                ctx.drawImage(this.drawing, (this.knockedBackCounter > 5 ? 15 : 20), 0, 40, 80, this.position[0], this.position[1], 75, 90);
+
+                // Need custom x-coord for Tank... 15 works for everything else
+                let drawingRedXCoord = this.constructor.name === "Tank" ? 10 : 15;
+                ctx.drawImage(this.drawing, (this.knockedBackCounter > 5 ? drawingRedXCoord : 20), 0, 40, 80, this.position[0], this.position[1], 75, 90);
             }
         }
         
@@ -426,6 +436,22 @@ class Enemy extends Character {
             return false;
         }
         return super.validMove() ? true : false;
+    }
+
+
+    /**
+     * Method that handles Rushers, Meatheads, and the Tank's melee attacks.
+     */
+    swing() {
+        // Calculating distance between player and enemy        
+        let distanceToPlayer = Math.sqrt((this.game.player.position[0] - this.position[0]) ** 2 +
+            (this.game.player.position[1] - this.position[1]) ** 2);
+
+        // Boolean - true if Enemy is facing player. Enemies only attack player when they are facing them
+        let facingPlayer = ((this.position[0] - this.game.player.position[0]) >= 0 && this.direction === "left" ||
+            (this.position[0] - this.game.player.position[0]) <= 0 && this.direction === "right");
+        
+        if (facingPlayer && distanceToPlayer <= this.attackRange && !this.game.player.rolling) this.game.player.takeDamage(this.damage);
     }
 
 
