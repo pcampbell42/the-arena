@@ -10,21 +10,56 @@ class Punk extends Enemy {
         this.runningFrames = 6; // How many frames this Character has in the running animation
         this.animationPace = 2; // Personalized animation pace... changes when time is slowed
 
-        this.maxHealth = 100;
-        this.health = 100;
+        this.maxHealth = 150;
+        this.health = 150;
 
         this.attackRange = 1000; // Entire canvas...
+        this.damage = 10;
         this.speed = 4;
 
         this.initialAggro = false; // For bosses, once aggroed, they cannot be unaggroed
     }
 
-    
+
+    /**
+     * Helper method that gets called in Enemy's action(). Punk uses most of the generalized
+     * action() method in the Enemy class, except for the last part. Therefore, the last part
+     * is skipped and this method is called in its stead. Determines whether the Punk will
+     * kick, attack and move, or just move.
+     * 
+     * @param {Number} distanceToPlayer - Length of a line drawn from the Punk to the Player
+     * @param {Boolean} facingPlayer - Boolean, determines whether Punk is facing the Player
+     * @param {Number} randNum - Random number, calculated in Enemy action()
+     */
+    actionHelper(distanceToPlayer, facingPlayer, randNum) {
+        // If close enough and player not already stunned / knocked back, kick the player
+        if (distanceToPlayer < 55 && this.aggroed && facingPlayer && this.playerInLOS() && 
+            !this.game.player.knockedBack && !this.game.player.stunned) {
+            this.startKick();
+        }
+        // Small chance to randomly roll (if not already busy)
+        else if (randNum > 40 && randNum < 44 && !this.busy) {
+            this.rolling = true; // Now rolling
+            this.busy = true; // Busy until roll is over
+            this.step = 0; // Animation starts at beginning
+        }
+        // Else, chance to launch ranged attack while moving
+        else if (randNum <= 40 && this.aggroed && facingPlayer && this.playerInLOS()) {
+            this.startAttack(this.game.player.position);
+            this.move(distanceToPlayer);
+        }
+        // Else, just move
+        else {
+            this.move(distanceToPlayer);
+        }
+    }
+
+
     /**
     * Punk's custom idle behavior goes here (right now his custom idle behavior
     * is that he just stands there doing nothing). Super is then called for everything
     * else.
-    * @param {Number} distanceToPlayer - Length of line drawn between Player and Punk
+    * @param {Number} distanceToPlayer - Length of line drawn between Player and Tank
     */
     move(distanceToPlayer) {
         // Starts off idle and unaggroed when player enters room
@@ -45,6 +80,64 @@ class Punk extends Enemy {
 
 
     /**
+     * The only Enemy with its own custom draw() method. It still uses Enemy's
+     * draw() method, but here, we do a few extra things. First, we also cancel 
+     * kicking if knocked back (this is the only Enemy that can kick). Second,
+     * we animate kicking and rolling (also the only Enemy that can do these).
+     * @param {CanvasRenderingContext2D} ctx - 2D canvas context to draw board
+     */
+    draw(ctx) {
+        // Need this at the beginning of the top level draw method
+        if (this.knockedBack || this.stunned) {
+            this.attacking = false;
+            this.kicking = false;
+            this.busy = false;
+        }
+
+        // Animate roll
+        if (this.rolling) {
+            // The x-coordinate inside the animation sheet. As animation goes on,
+            // move across the animation sheet.
+            let stepXCoord = this._selectFrame(9 / this.animationPace);
+
+            if (this.direction === "right") {
+                this.drawing.src = `${this.images}/roll_r.png`;
+            } else {
+                this.drawing.src = `${this.images}/roll_l.png`;
+            }
+            // End of the animation, end the roll
+            if (stepXCoord >= 240) {
+                this.rolling = false;
+                this.busy = false;
+            }
+            ctx.drawImage(this.drawing, stepXCoord - 5, 0, 35, 80, this.position[0], this.position[1] + 10, 75, 90);
+
+        }
+        // Animate kick
+        else if (this.kicking) {
+            // The x-coordinate inside the animation sheet. As animation goes on,
+            // move across the animation sheet.
+            let stepXCoord = this._selectFrame(9 / this.animationPace);
+
+            if (this.direction === "right") {
+                this.drawing.src = `${this.images}/kick_r.png`;
+            } else {
+                this.drawing.src = `${this.images}/kick_l.png`;
+            }
+            // End of the animation, fire the kick, end the kick
+            if (stepXCoord >= 240) {
+                this.kicking = false;
+                this.busy = false;
+                // this.kick();
+            }
+            ctx.drawImage(this.drawing, stepXCoord, 7, 35, 80, this.position[0], this.position[1] + 10, 75, 90);
+
+        }
+        super.draw(ctx); // Have to call this unconditionally to draw boss health bar
+    }
+
+
+    /**
      * This method is called in Enemy draw() when the Enemy is in its attacking
      * animation. In order to line up the actual attacks with the animation, we call
      * the actual attacks inside draw(). When to call the attacks and when to end the
@@ -54,22 +147,11 @@ class Punk extends Enemy {
      * animation sheet. Basically, we need this to tell when the attack animation is over.
      */
     attackAnimationHelper(stepXCoord) {
-        if (!this.game.slowed && Math.floor(this.step) === 85) this.swing();
-        if (this.game.slowed && Math.floor(this.step) === 325) this.swing();
-        if (stepXCoord >= 288) {
+        if (stepXCoord >= 108) {
             this.attacking = false;
             this.busy = false;
-            this.animationPace = 1.5; // Reset animationPace
+            this.launchProjectile();
         }
-
-        // Basically, when facing left, we step through the animation backwards.
-        // This has looked fine (haven't even noticed) up until now, but it looks
-        // goofy for the Meathead attack. Thus, here, we adjust stepXCoord to step
-        // through the animation sheet backwards and therefore, step through
-        // the animation the intended way.
-        this.direction === "left" ?
-            stepXCoord = 300 - stepXCoord :
-            stepXCoord += 5;
         return stepXCoord;
     }
 

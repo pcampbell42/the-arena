@@ -208,11 +208,13 @@ class Character extends MovingObject {
                 this.animationPace = 1 : 
                 this.animationPace = 2 : 
                 null;
-        
+
         this.attacking = true; // The draw() method sees this and animates / fires off attacks
         this.busy = true; // Prevents the character from doing anything else
         this.step = 0; // Sets the animation step to 0 to begin attack animation
         this.target = target;
+
+        this.constructor.name === "Punk" ? this.step = 1 : null; // Skipping first fram of Punk attack animation
     }
 
 
@@ -221,10 +223,10 @@ class Character extends MovingObject {
      * methods of Enemy and Player.
      */
     launchProjectile() {
-        // If this is a Shooter, adjust the target to make more visual sense 
+        // If this is a Shooter or Punk, adjust the target to make more visual sense 
         // (have to use targ bc references and all that).
         let targ = [this.target[0], this.target[1]];
-        if (this.constructor.name === "Shooter") {
+        if (this.constructor.name === "Shooter" || this.constructor.name === "Punk") {
             targ[0] += 30;
             targ[1] += 25;
         }

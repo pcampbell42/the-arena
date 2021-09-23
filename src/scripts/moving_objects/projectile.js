@@ -72,6 +72,8 @@ class Projectile extends MovingObject {
     draw(ctx) {
         if (this.shooter === this.game.player) { // Draws Player's lasers
             ctx.drawImage(this.drawing, 123, 295, 19, 19, this.position[0], this.position[1], 15, 15);
+        } else if (this.shooter.constructor.name === "Punk") { // Draws Punk's lasers
+            ctx.drawImage(this.drawing, 164, 295, 19, 19, this.position[0], this.position[1], 15, 15);
         } else { // Draws Shooter's bullets
             ctx.strokeStyle = "red";
             ctx.lineWidth = 1;
