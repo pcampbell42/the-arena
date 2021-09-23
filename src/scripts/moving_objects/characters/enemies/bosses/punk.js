@@ -15,11 +15,32 @@ class Punk extends Enemy {
 
         this.attackRange = 1000; // Entire canvas...
         this.speed = 4;
+
+        this.initialAggro = false; // For bosses, once aggroed, they cannot be unaggroed
     }
 
     
-    move() {
-
+    /**
+    * Punk's custom idle behavior goes here (right now his custom idle behavior
+    * is that he just stands there doing nothing). Super is then called for everything
+    * else.
+    * @param {Number} distanceToPlayer - Length of line drawn between Player and Punk
+    */
+    move(distanceToPlayer) {
+        // Starts off idle and unaggroed when player enters room
+        if (!this.aggroed && !this.initialAggro) {
+            this.status = "idle";
+            this.velocity = [0, 0];
+        }
+        // If aggroed and initialAggro hasn't been toggled, toggle it
+        else if (this.aggroed && !this.initialAggro) {
+            this.initialAggro = true;
+        }
+        // If unaggroed, but has been aggroed before, flip back to aggroed
+        else if (!this.aggroed && this.initialAggro) {
+            this.aggroed = true;
+        }
+        super.move(distanceToPlayer);
     }
 
 
