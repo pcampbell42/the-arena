@@ -35,7 +35,7 @@ class Enemy extends Character {
      * @returns - Null
      */
     action() {
-        if (this.busy) return; // If busy, do nothing extra
+        if (this.busy) return; // If busy, do nothing else
 
         // Ending stun when stun counter reaches 55
         if (this.stunnedCounter >= 55) {

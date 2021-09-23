@@ -10,6 +10,7 @@ class Player extends Character {
         this.idleFrames = 4; // How many frames this Character has in the idle animation
         this.runningFrames = 6; // How many frames this Character has in the running animation
         this.animationPace = 2; // Personalized animation pace... changes when time is slowed
+        this.direction = "right"; // Overwrite randomized direction in Character
 
         this.health = 100;
         this.energy = 100;
@@ -107,9 +108,13 @@ class Player extends Character {
                 this.drawing.src = `${this.images}/roll_r.png`;
             } else {
                 this.drawing.src = `${this.images}/roll_l.png`;
+                stepXCoord = 275 - stepXCoord;
             }
             // End of the animation, end the roll
-            if (stepXCoord >= 240) {
+            if (stepXCoord >= 240 && this.direction === "right") {
+                this.rolling = false;
+                this.busy = false;
+            } else if (stepXCoord <= 0 && this.direction === "left") {
                 this.rolling = false;
                 this.busy = false;
             }

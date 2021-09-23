@@ -14,10 +14,30 @@ class Punk extends Enemy {
         this.health = 150;
 
         this.attackRange = 1000; // Entire canvas...
-        this.damage = 10;
+        this.damage = 20;
         this.speed = 4;
 
         this.initialAggro = false; // For bosses, once aggroed, they cannot be unaggroed
+    }
+
+
+    /**
+     * The only Enemy with its own action(). This is because Punk has a few unique
+     * behaviors amongst Enemies - attacking while moving, kicking, and rolling. 
+     * All three of these cases are addressed in this method.
+     * @returns - null
+     */
+    action() {
+        if (this.kicking) return; // If kicking, do nothing extra
+
+        // If attacking or rolling, skip the rest of action (super.action() in Enemy)
+        // and go straight to move(). This is the only Enemy that can roll as well as
+        // the only Enemy that can attack while moving, hence the need for this.
+        if (this.attacking || this.rolling) {
+            let distanceToPlayer = Math.sqrt((this.game.player.position[0] - this.position[0]) ** 2 +
+                (this.game.player.position[1] - this.position[1]) ** 2);
+            this.move(distanceToPlayer);
+        } else super.action(); // If not kicking, attacking, or rolling, do normal Enemy action()
     }
 
 
@@ -38,7 +58,7 @@ class Punk extends Enemy {
             this.startKick();
         }
         // Small chance to randomly roll (if not already busy)
-        else if (randNum > 40 && randNum < 44 && !this.busy) {
+        else if (randNum > 40 && randNum < 44 && !this.busy && this.aggroed) {
             this.rolling = true; // Now rolling
             this.busy = true; // Busy until roll is over
             this.step = 0; // Animation starts at beginning
@@ -104,9 +124,13 @@ class Punk extends Enemy {
                 this.drawing.src = `${this.images}/roll_r.png`;
             } else {
                 this.drawing.src = `${this.images}/roll_l.png`;
+                stepXCoord = 270 - stepXCoord;
             }
             // End of the animation, end the roll
-            if (stepXCoord >= 240) {
+            if (stepXCoord >= 240 && this.direction === "right") {
+                this.rolling = false;
+                this.busy = false;
+            } else if (stepXCoord <= 0 && this.direction === "left") {
                 this.rolling = false;
                 this.busy = false;
             }
