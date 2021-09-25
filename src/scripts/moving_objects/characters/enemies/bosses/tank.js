@@ -9,8 +9,8 @@ class Tank extends Enemy {
         this.idleFrames = 4; // How many frames this Character has in the idle animation
         this.runningFrames = 6; // How many frames this Character has in the running animation
 
-        this.maxHealth = 175;
-        this.health = 175;
+        this.maxHealth = 125;
+        this.health = 125;
 
         this.attackRange = 65;
         this.damage = 15;
