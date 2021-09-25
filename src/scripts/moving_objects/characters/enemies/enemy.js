@@ -35,10 +35,15 @@ class Enemy extends Character {
      * @returns - Null
      */
     action() {
-        if (this.busy) return; // If busy, do nothing extra
+        if (this.busy) return; // If busy, do nothing else
 
         // Ending stun when stun counter reaches 55
-        if (this.stunnedCounter >= 55) {
+        if (this.constructor.name === "Tank") { // Tank gets stunned longer
+            if (this.stunnedCounter >= 80) {
+                this.stunnedCounter = 0;
+                this.stunned = false;
+            }
+        } else if (this.stunnedCounter >= 55) {
             this.stunnedCounter = 0;
             this.stunned = false;
         }
@@ -56,13 +61,13 @@ class Enemy extends Character {
         }
         // If knocked back, just do move logic
         if (this.knockedBack) {
-            this.move(); // Takes us up a level to Shooter / Rusher move()
+            this.move(); // Takes us up a level to Shooter / Rusher / Meathead / Tank move()
         } 
         // Under normal circumstances...
         else {
             // Calculating distance between player and enemy        
             let distanceToPlayer = Math.sqrt((this.game.player.position[0] - this.position[0]) ** 2 +
-            (this.game.player.position[1] - this.position[1]) ** 2);
+                (this.game.player.position[1] - this.position[1]) ** 2);
             
             this.pullAggro(distanceToPlayer); // Check if player has pulled aggro
 
@@ -77,8 +82,12 @@ class Enemy extends Character {
             this.constructor.name !== "Shooter" && this.constructor.name !== "Punk" ?
                 randNum = 5 : null;
 
-            // If all conditions allow, attack player
-            if (randNum <= 5 && distanceToPlayer < this.attackRange && this.aggroed && facingPlayer && this.playerInLOS()) {
+            // At this point, Punk has seperate logic from all other Enemies, so split off and call Punk's actionHelper()
+            if (this.constructor.name === "Punk") {
+                this.actionHelper(distanceToPlayer, facingPlayer, randNum);
+            }
+            // If all conditions allow and randNum rolls correctly, attack player
+            else if (randNum <= 5 && distanceToPlayer < this.attackRange && this.aggroed && facingPlayer && this.playerInLOS()) {
                 this.startAttack(this.game.player.position);
             }
             // Else moves towards player - enemies can't move and shoot at same time - 1 or the other
@@ -95,9 +104,8 @@ class Enemy extends Character {
      */
     move(distanceToPlayer) {
         // End knockback once counter is 15
-        if (this.knockedBackCounter >= 15) {
-            this.knockedBack = false;
-        }
+        if (this.knockedBackCounter >= 15) this.knockedBack = false;
+        
         // Increment knockback counter, call super for basic move logic
         if (this.knockedBack) {
             this.attacking = false;
@@ -222,7 +230,7 @@ class Enemy extends Character {
 
         // Animate if attacking
         if (this.attacking) {
-            let stepXCoord = this._selectFrame(18 / this.animationPace);
+            let stepXCoord = this._selectFrame((this.constructor.name === "Punk" ? 5 : 18) / this.animationPace);
             if (this.direction === "right") {
                 this.drawing.src = `${this.images}/attack_r.png`;
             } else {
@@ -256,15 +264,18 @@ class Enemy extends Character {
                 this.drawing.src = `${this.images}/idle_l.png`;
             }
             // Draw stun icon
+            let stunnedImagePosition =  [15, -30];
+            this.constructor.name === "Tank" || this.constructor.name === "Punk" ? 
+                stunnedImagePosition = [22, -20] : null;
             ctx.filter = "invert(1)";
-            ctx.drawImage(this.stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
+            ctx.drawImage(this.stunnedImage, this.position[0] + stunnedImagePosition[0], this.position[1] + stunnedImagePosition[1], 30, 30);
             ctx.filter = "invert(0)";
 
             ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
         }
 
         // Animate if idle / moving
-        else if (!this.attacking) super.draw(ctx);
+        else if (!this.attacking && !this.rolling && !this.kicking) super.draw(ctx);
     }
 
 

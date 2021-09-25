@@ -55,7 +55,7 @@ class Floor {
         // Creates template, picks which floor to use
         this.floorTiles = this.makeFloorTemplate();
         params["floorNum"] === 1 ? null : // Floor 1 is empty room
-            params["floorNum"] === 5 || params["floorNum"] === 2 ? this.makeFloorV6() : // Boss fights use V6
+            params["floorNum"] === 5 || params["floorNum"] === 10 ? this.makeFloorV6() : // Boss fights use V6
                 this.pickFloor(); // All other floors are randomized V1 - V5
     }
 
@@ -1569,7 +1569,7 @@ class Floor {
 
 
     /**
-     * Method that finalizes the tiles for the floor. Version 6. Extra simple, next to nothing in it.
+     * Method that finalizes the tiles for the floor. Version 6. Tank boss fight room
      * @returns New array of tiles for a floor
      */
     makeFloorV6() {

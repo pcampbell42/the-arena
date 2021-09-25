@@ -113,7 +113,7 @@ class Game {
                         }));
                         break;
                       
-                    case 2: // Spawn punk boss on 10th floor
+                    case 10: // Spawn punk boss on 10th floor
                         this.enemies.push(new Punk({
                             position: [this.canvasSizeX / 2, 100],
                             velocity: [0, 0],
@@ -127,6 +127,7 @@ class Game {
                         this.spawnEnemies(numEnemiesToSpawn);
                         break;
                 }
+                this.projectiles = []; // Clear projectiles
     
                 this.player.energy += 20; // Player receives 20 energy on moving to next floor
                 if (this.player.energy > 100) this.player.energy = 100;
