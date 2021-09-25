@@ -55,7 +55,7 @@ class Floor {
         // Creates template, picks which floor to use
         this.floorTiles = this.makeFloorTemplate();
         params["floorNum"] === 1 ? null : // Floor 1 is empty room
-            params["floorNum"] === 5 || params["floorNum"] === 2 ? this.makeFloorV6() : // Boss fights use V6
+            params["floorNum"] === 5 || params["floorNum"] === 10 ? this.makeFloorV6() : // Boss fights use V6
                 this.pickFloor(); // All other floors are randomized V1 - V5
     }
 
@@ -1577,110 +1577,6 @@ class Floor {
 
         for (let i = 0; i < this.floorTiles.length; i++) {
             for (let j = 0; j < this.floorTiles[0].length; j++) {
-
-                // Top left wall
-                if (i === 3 && j === 3) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [224, 32], type: "wall" })
-                    ];
-                } else if (i === 4 && j === 3) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [224, 96], type: "wall" })
-                    ];
-                }
-
-                // Top right wall
-                else if (i === 2 && j === this.numCols - 7) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [160, 0], type: "wall" })
-                    ];
-                } else if (i === 2 && j === this.numCols - 6) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [192, 0], type: "wall" })
-                    ];
-                } else if (i === 2 && j === this.numCols - 5) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [224, 0], type: "wall" })
-                    ];
-                } else if (i === 3 && j === this.numCols - 5) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [224, 32], type: "wall" })
-                    ];
-                } else if (i === 4 && j === this.numCols - 5) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [224, 96], type: "wall" })
-                    ];
-                }
-
-                // Bottom left wall
-                else if (i === this.numRows - 4 && j === this.numCols - 9) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [160, 0], type: "wall" })
-                    ];
-                } else if (i === this.numRows - 4 && j === this.numCols - 8) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [192, 0], type: "wall" })
-                    ];
-                } else if (i === this.numRows - 4 && j === this.numCols - 7) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [192, 0], type: "wall" })
-                    ];
-                } else if (i === this.numRows - 4 && j === this.numCols - 6) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [224, 0], type: "wall" })
-                    ];
-                }
-
-                // Bottom left single wall
-                else if (i === this.numRows - 4 && j === 5) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [160, 64], type: "wall" })
-                    ];
-                }
-
-                // Top single wall
-                else if (i === 2 && j === 6) {
-                    this.floorTiles[i][j] = [
-                        this.floorTiles[this.numRows - 2][0].position,
-                        new SpecialTile({ position: [160, 64], type: "wall" })
-                    ];
-                }
-            }
-        }
-
-        return newFloorTiles;
-
-    }
-
-
-    /**
-     * Method that finalizes the tiles for the floor. Version 7. Punk boss fight room
-     * @returns New array of tiles for a floor
-     */
-    makeFloorV7() {
-        let newFloorTiles = this.floorTiles;
-
-        for (let i = 0; i < this.floorTiles.length; i++) {
-            for (let j = 0; j < this.floorTiles[0].length; j++) {
-
-                // -------------- Top left pit --------------
-                // Top left corner
-                if (i === 2 && j === 4) {
-                    this.floorTiles[i][j] = new SpecialTile({ position: [160, 96], type: "pit" });
-                }
-
 
                 // Top left wall
                 if (i === 3 && j === 3) {
