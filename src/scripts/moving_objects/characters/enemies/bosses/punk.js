@@ -111,6 +111,7 @@ class Punk extends Enemy {
         if (this.knockedBack || this.stunned) {
             this.attacking = false;
             this.kicking = false;
+            this.rolling = false;
             this.busy = false;
         }
 
@@ -152,7 +153,7 @@ class Punk extends Enemy {
             if (stepXCoord >= 240) {
                 this.kicking = false;
                 this.busy = false;
-                // this.kick();
+                this.kick();
             }
             ctx.drawImage(this.drawing, stepXCoord, 7, 35, 80, this.position[0], this.position[1] + 10, 75, 90);
 
@@ -180,8 +181,38 @@ class Punk extends Enemy {
     }
 
 
+    /**
+     * Same as the Player kick() method, but instead of looping through all Enemies,
+     * just checks if its hit the Player.
+     */
     kick() {
+        let distanceToPlayer = Math.sqrt((this.game.player.position[0] - this.position[0]) ** 2 +
+            (this.game.player.position[1] - this.position[1]) ** 2);
 
+        // This checks what direction (left or right) the Enemy is in from the Player (kick is directional)
+        let enemyDirection = this.game.player.position[0] - this.position[0];
+
+        if (distanceToPlayer <= 55 && !this.game.player.rolling && 
+            ((this.direction === "right" && enemyDirection >= -18) || 
+            this.direction === "left" && enemyDirection <= 18)) {
+
+            // Figuring out what direction to knock enemy in
+            let knockedDirection;
+            let knockedCharacter = this.game.player;
+            if (knockedCharacter.position[1] - this.position[1] > 30) {
+                knockedDirection = "down";
+            } else if (knockedCharacter.position[1] - this.position[1] < -30) {
+                knockedDirection = "up";
+            } else if (this.direction === "right" && enemyDirection >= 0) {
+                knockedDirection = "right";
+            } else {
+                knockedDirection = "left";
+            }
+
+            // Knocking Player
+            this.game.player.startKnockback(knockedDirection);
+            this.game.player.takeDamage(10);
+        }
     }
 }
 

@@ -127,6 +127,7 @@ class Game {
                         this.spawnEnemies(numEnemiesToSpawn);
                         break;
                 }
+                this.projectiles = []; // Clear projectiles
     
                 this.player.energy += 20; // Player receives 20 energy on moving to next floor
                 if (this.player.energy > 100) this.player.energy = 100;

@@ -38,7 +38,12 @@ class Enemy extends Character {
         if (this.busy) return; // If busy, do nothing else
 
         // Ending stun when stun counter reaches 55
-        if (this.stunnedCounter >= 55) {
+        if (this.constructor.name === "Tank") { // Tank gets stunned longer
+            if (this.stunnedCounter >= 80) {
+                this.stunnedCounter = 0;
+                this.stunned = false;
+            }
+        } else if (this.stunnedCounter >= 55) {
             this.stunnedCounter = 0;
             this.stunned = false;
         }
@@ -99,9 +104,8 @@ class Enemy extends Character {
      */
     move(distanceToPlayer) {
         // End knockback once counter is 15
-        if (this.knockedBackCounter >= 15) {
-            this.knockedBack = false;
-        }
+        if (this.knockedBackCounter >= 15) this.knockedBack = false;
+        
         // Increment knockback counter, call super for basic move logic
         if (this.knockedBack) {
             this.attacking = false;
@@ -260,8 +264,11 @@ class Enemy extends Character {
                 this.drawing.src = `${this.images}/idle_l.png`;
             }
             // Draw stun icon
+            let stunnedImagePosition =  [15, -30];
+            this.constructor.name === "Tank" || this.constructor.name === "Punk" ? 
+                stunnedImagePosition = [22, -20] : null;
             ctx.filter = "invert(1)";
-            ctx.drawImage(this.stunnedImage, this.position[0] + 15, this.position[1] - 30, 30, 30);
+            ctx.drawImage(this.stunnedImage, this.position[0] + stunnedImagePosition[0], this.position[1] + stunnedImagePosition[1], 30, 30);
             ctx.filter = "invert(0)";
 
             ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);

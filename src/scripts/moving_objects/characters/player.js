@@ -31,6 +31,17 @@ class Player extends Character {
                 this.game.floor.extraDoorOpen = true;
             }
         } 
+
+        // Stun logic
+        if (this.stunnedCounter >= 55) {
+            this.stunnedCounter = 0;
+            this.stunned = false;
+        }
+        if (this.stunned) {
+            this.stunnedCounter += (1 * (this.game.dt / (1000 / 60)));
+            return;
+        }
+
         this.move();
     }
 
@@ -39,16 +50,25 @@ class Player extends Character {
      * Movement method for the player character. Handles keybinds.
      */
     move() {
-        // Resets velocity immediately (momentum isn't a thing. Also, if kicking, velocity is 0
-        if (!this.rolling || this.kicking) {
+        // Resets velocity immediately (momentum isn't a thing). Also, if kicking, velocity is 0
+        if ((!this.rolling && !this.knockedBack) || this.kicking) {
             this.velocity[0] = 0;
             this.velocity[1] = 0;
+        }
+
+        // Knocked back logic
+        if (this.knockedBackCounter >= 15) this.knockedBack = false;
+        if (this.knockedBack) {
+            this.attacking = false;
+            this.game.slowed ?
+                this.knockedBackCounter += (0.25 * (this.game.dt / (1000 / 60))) : 
+                this.knockedBackCounter += (1 * ((this.game.dt / (1000 / 60))));
         }
 
         // --------- Setting velocity based on key input ---------
 
         // If kicking or rolling, can't add velocity
-        if (!this.rolling && !this.kicking) {
+        if (!this.rolling && !this.kicking && !this.stunned && !this.knockedBack) {
             if (key.isPressed("w")) this.velocity[1] -= (2.5 * this.animationPace);
             if (key.isPressed("s")) this.velocity[1] += (2.5 * this.animationPace);
             if (key.isPressed("a")) {
@@ -75,6 +95,8 @@ class Player extends Character {
         // Basically, if an enemy is knockedBack, attacking is canceled and they're no longer busy
         if (this.knockedBack || this.stunned) {
             this.attacking = false;
+            this.rolling = false;
+            this.kicking = false;
             this.busy = false;
         }
 
@@ -141,6 +163,35 @@ class Player extends Character {
             ctx.drawImage(this.drawing, stepXCoord, 7, 35, 80, this.position[0], this.position[1] + 10, 75, 90);
 
         } 
+        // Animate if knocked back
+        else if (this.knockedBack) {
+            if (this.direction === "right") {
+                this.drawing.src = `${this.images}/hurt_r.png`;
+                ctx.drawImage(this.drawing, (this.knockedBackCounter < 5 ? 42 : 0), 0, 40, 80, this.position[0], this.position[1], 75, 90);
+
+            } else {
+                this.drawing.src = `${this.images}/hurt_l.png`;
+
+                // Need custom x-coord for Tank... 15 works for everything else
+                let drawingRedXCoord = this.constructor.name === "Tank" ? 10 : 15;
+                ctx.drawImage(this.drawing, (this.knockedBackCounter > 5 ? drawingRedXCoord : 20), 0, 40, 80, this.position[0], this.position[1], 75, 90);
+            }
+        }
+        // Animate if stunned
+        else if (this.stunned) {
+            let stepXCoord = this._selectFrame(18 / this.animationPace);
+            if (this.direction === "right") {
+                this.drawing.src = `${this.images}/idle_r.png`;
+            } else {
+                this.drawing.src = `${this.images}/idle_l.png`;
+            }
+            // Draw stun icon
+            ctx.filter = "invert(1)";
+            ctx.drawImage(this.stunnedImage, this.position[0] + 18, this.position[1] - 20, 30, 30);
+            ctx.filter = "invert(0)";
+
+            ctx.drawImage(this.drawing, stepXCoord, 0, 40, 80, this.position[0], this.position[1], 75, 90);
+        }
         // If not attacking, rolling, or kicking...
         else {
             super.draw(ctx);
@@ -216,7 +267,8 @@ class Player extends Character {
             // This checks what direction (left or right) the Enemy is in from the Player (kick is directional)
             let enemyDirection = this.game.enemies[i].position[0] - this.position[0];
 
-            if (distanceToEnemy <= 55 && ((this.direction === "right" && enemyDirection >= -18) ||
+            if (distanceToEnemy <= 55 && !this.game.enemies[i].rolling && 
+                ((this.direction === "right" && enemyDirection >= -18) ||
                 this.direction === "left" && enemyDirection <= 18)) {
 
                 // Figuring out what direction to knock enemy in

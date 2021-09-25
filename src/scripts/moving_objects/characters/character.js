@@ -139,7 +139,7 @@ class Character extends MovingObject {
 
                     // If a character was knocked into another character, the knockback is 
                     // halted, they both get stunned, and they both take small damage
-                    if (this.knockedBack) {
+                    if (this.knockedBack && this !== this.game.player) {
                         this.knockedBack = false;
                         this.stunned = true;
                         this.stunnedCounter = 0;

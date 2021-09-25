@@ -120,7 +120,7 @@ class Projectile extends MovingObject {
             obj.takeDamage(2);
             this.remove();
         }
-        // The Tank boss has special mechnics for being hit
+        // The Tank boss has special mechanics for being hit
         else if (obj.constructor.name === "Tank") {
             // Boolean - true if Tank is facing the projectile
             let facingProjectile = ((obj.direction === "right" && this.velocity[0] < 0) || 
@@ -131,6 +131,17 @@ class Projectile extends MovingObject {
             if (facingProjectile && !obj.attacking && !obj.knockedBack && !obj.stunned) {
                 this.remove();
             } else { // Else he takes damage as normal
+                obj.takeDamage(this.damage);
+                this.remove();
+            }
+        }
+        // The Punk boss has a chance to roll right as hes hit, avoiding damage
+        else if (obj.constructor.name === "Punk") {
+            let randNum = Math.floor(Math.random() * 100);
+            if (!obj.busy && randNum <= 65) {
+                obj.aggroed = true;
+                obj.roll();
+            } else {
                 obj.takeDamage(this.damage);
                 this.remove();
             }
