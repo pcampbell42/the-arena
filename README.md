@@ -10,7 +10,7 @@
 * [Local Installation Guide](#local-installation-guide)
 
 ## Technologies Used
-[The Factory](https://pcampbell42.github.io/the-factory/) is a game built entirely in JavaScript, HTML5, and CSS3. It uses mostly ES6 syntax, with a small amount of ES5 sprinkled in. This project takes advantage of D3.js and npm. The game is drawn using Canvas and a 2D rendering context. The animation takes advantage of request animation frame. UI elements are rendered using event listeners. 
+[The Factory](https://pcampbell42.github.io/the-factory/) is a game built entirely in JavaScript, HTML5, and CSS3. It uses mostly ES6 syntax, with a small amount of ES5 sprinkled in. This project takes advantage of D3.js and npm. The game is drawn using Canvas and a 2D rendering context. The animation uses request animation frame. UI elements are rendered using event listeners. 
 
 ## Class Diagram
 A basic conceptual class diagram to show the general layout of the project.
