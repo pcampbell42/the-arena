@@ -6,7 +6,7 @@
 * [Technologies Used](#technologies-used)
 * [Class Diagram](#class-diagram)
 * [Features](#features)
-* [Future Directions](#future-directions)
+* [Future Direction](#future-direction)
 * [Local Installation Guide](#local-installation-guide)
 
 ## Technologies Used
@@ -115,7 +115,7 @@ playerInLOS() {
 ```
 
 
-## Future Directions
+## Future Direction
 Of course, there are countless things I could add to this game, and I could spend the next year doing it. That said, here are some immediate and small things I could add:
 * Highscores
 * Healing items that randomly spawn on the ground and activate when moved over
