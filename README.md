@@ -118,7 +118,7 @@ playerInLOS() {
 ## Future Directions
 Of course, there are countless things I could add to this game, and I could spend the next year doing it. That said, here are some immediate and small things I could add:
 * Highscores
-* Healing item that randomly spawns on the ground and activate when moved over
+* Healing items that randomly spawn on the ground and activate when moved over
 * Oil barrels that can be kicked to move around and then shot to blow up
 * Death animations, falling animations
 * SFX
