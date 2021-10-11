@@ -114,6 +114,8 @@ playerInLOS() {
 }
 ```
 
+### Time Slow
+
 
 ## Future Direction
 Of course, there are countless things I could add to this game, and I could spend the next year doing it. That said, here are some immediate and small things I could add:
