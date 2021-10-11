@@ -26,7 +26,7 @@ Each `Floor` is made up of a 2D array of tiles. If a tile causes collision or de
 ```javascript
 let nextTileIndices = [Math.floor(this.position[1] / 40) + 1, Math.floor((this.position[0] / 40) + 1];
 let nextTile = this.game.floor.floorTiles[nextTileIndices[0]][nextTileIndices[1]];
-if (nextTile instanceof SpecialTile && nextTile.type === "wall") return false;
+if (nextTile instanceof SpecialTile && nextTile.type === "wall") // Do whatever
 ```
 Although in implementation the details got very sticky, this is the basic idea of dynamic collision.
 
