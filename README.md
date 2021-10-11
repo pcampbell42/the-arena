@@ -19,12 +19,12 @@
 
 
 ## Future Directions
-Of course, I could spend the next year adding to this game. I could make the game a fully fledged dungeon crawler, complete with a biome swap every 10 floors or so. I could improve the AI. This list goes on and on. That said, here are some immediate and small things I could add:
+Of course, there are countless things I could add to this game, and I could spend the next year doing it. That said, here are some immediate and small things I could add:
+* Highscores
 * Healing item that randomly spawns on the ground and activates when moved over
+* Oil barrels that can be kicked to move around and then shot to blow up
 * Death animations, falling animations
-* Animate the stunned icon
-* Add more floor templates
-* 
+* SFX
 
 ## Local Installation Guide
 Running this code locally is very simple. All you have to do is clone the repo and open index.html with a live server. Note that in package.json, we have a script "watch" which, if run, will automatically update the page as you change the code. This is run using npm run watch.
