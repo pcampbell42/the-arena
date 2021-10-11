@@ -19,11 +19,21 @@ A basic conceptual class diagram to show the general layout of the project.
 ## Features
 In this section, I highlight a few of the more challenging features that I Implemented.
 
+### Dynamic Collision
+Collision has two parts to it. The first is checking if two `MovingObjects` have collided. Conceptually, this is very simple, and only requires you to compare the positions of each `MovingObject`. The second is checking if a `MovingObject` has moved into a wall. When I first made the game, this was even simpler because walls were only on the outer edge of the map, and thus I simply hard coded collision into the outer edge of the map. However, later on in development, I decided I wanted more interesting floor layouts. This meant that I couldn't hard code in wall collision, and thus, enter dynamic collision.
+
+Each `Floor` is made up of a 2D array of tiles. If a tile causes collision or death, its an object of type `SpecialTile`. Thus, the cornerstone of dynamic collision is to check if a `MovingObject` is moving into a tile of type `SpecialTile`. To do this, we can use the `MovingObject's` position to get the value of the tile it's currently on. This looks something like this:
+```javascript
+let nextTileIndices = [Math.floor(this.position[1] / 40) + 1, Math.floor((this.position[0] / 40) + 1];
+let nextTile = this.game.floor.floorTiles[nextTileIndices[0]][nextTileIndices[1]];
+if (nextTile instanceof SpecialTile && nextTile.type === "wall") return false;
+```
+Although in implementation the details got very sticky, this is the basic idea of dynamic collision.
+
 ### Pathfinding
+The basic algorithm for enemy pathfinding is to build a Polytree of all the possible moves. When adding a new move to the poly tree, you check if that position is the target position (aka, the player's position). If it is, you simply step through the parent nodes, and now you have your path. To implement this algorithm, I made a class `EnemyPathfinder`, which has an instance variable `moveList`. Each `Enemy` has its own `EnemyPathfinder` instance variable. Thus, at each step of the game, the `Enemy` can use `this.pathfinder.moveList` to check where to move.
 
 ### Line of Sight
-
-### Dynamic Collision
 
 ### Time Slow
 
