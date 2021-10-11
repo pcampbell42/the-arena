@@ -17,7 +17,15 @@ A basic conceptual class diagram to show the general layout of the project.
 ![Class Diagram](https://github.com/pcampbell42/the-factory/blob/main/dist/assets/readme_assets/classDiagram.drawio.png)
 
 ## Features
+In this section, I highlight a few of the more challenging features that I Implemented.
 
+### Pathfinding
+
+### Line of Sight
+
+### Dynamic Collision
+
+### Time Slow
 
 ## Future Directions
 Of course, there are countless things I could add to this game, and I could spend the next year doing it. That said, here are some immediate and small things I could add:
