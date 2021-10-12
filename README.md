@@ -115,7 +115,7 @@ playerInLOS() {
 ```
 
 ### Time Slow
-
+One of the things that I knew I wanted to implement right from the start was a way to slow down time while holding down a button. Therefore, the question was, what does slowing down time actually mean in the context of my game. The answer was surprisingly simple - decrease the velocities of all `MovingObjects` by some factor and 
 
 ## Future Direction
 Of course, there are countless things I could add to this game, and I could spend the next year doing it. That said, here are some immediate and small things I could add:
