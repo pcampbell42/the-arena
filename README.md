@@ -114,8 +114,26 @@ playerInLOS() {
 }
 ```
 
-### Time Slow
-One of the things that I knew I wanted to implement right from the start was a way to slow down time while holding down a button. Therefore, the question was, what does slowing down time actually mean in the context of my game. The answer was surprisingly simple - decrease the velocities of all `MovingObjects` by some factor and 
+### Slow Motion
+One of the things I knew I wanted to implement right from the start was a way to slow down time while holding down a button. Therefore, the question was, what does slow motion actually mean in the context of my game. The answer was surprisingly simple - decrease the velocities of all `MovingObjects` by some factor and decrease the speed of animation. All `MovingObjects` already had a `velocity` instance variable, but there was no way to decrease the speed of animation easily. To fix this, I added an `animationPace` instance variable in `MovingObject`.
+
+Finally, I simply added logic at the top of the main game loop method (`step(dt)` in `Game`) that slows the speed if the correct button is being held down. To slow the speed, we call:
+```javascript
+_slowSpeed() {
+        this.slowed = true;
+        this.player.animationPace = 0.5;
+        this.enemies.forEach(enemy => {
+            enemy.animationPace = 0.25;
+            enemy.velocity[0] /= 4;
+            enemy.velocity[1] /= 4;
+        });
+        this.projectiles.forEach(projectile => {
+            projectile.velocity[0] /= 4;
+            projectile.velocity[1] /= 4;
+        });
+    }
+```
+This worked almost perfectly, and with few more changes here and there, I had slow motion!
 
 ## Future Direction
 Of course, there are countless things I could add to this game, and I could spend the next year doing it. That said, here are some immediate and small things I could add:
