@@ -133,7 +133,7 @@ _slowSpeed() {
         });
     }
 ```
-This worked almost perfectly, and with few more changes here and there, I had slow motion!
+This worked almost perfectly, and with a few more changes here and there, I had slow motion!
 
 ## Future Direction
 Of course, there are countless things I could add to this game, and I could spend the next year doing it. That said, here are some immediate and small things I could add:
